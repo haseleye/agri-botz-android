@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary colors -->
+    <color name="colorPrimary">#81C784</color>
+    <color name="colorPrimaryVariant">#66BB6A</color>
+    <color name="colorOnPrimary">#000000</color>
+
+    <!-- Secondary colors -->
+    <color name="colorSecondary">#FFD54F</color>
+    <color name="colorSecondaryVariant">#FFB300</color>
+    <color name="colorOnSecondary">#000000</color>
+
+    <!-- Neutral / background -->
+    <color name="colorBackground">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorOnBackground">#FFFFFF</color>
+    <color name="colorOnSurface">#E0E0E0</color>
+    <color name="colorError">#CF6679</color>
+</resources>

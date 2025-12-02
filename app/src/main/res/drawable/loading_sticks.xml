@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="96"
+    android:viewportHeight="96">
+
+  <!-- Top (12 o’clock) - 100% -->
+  <path
+      android:pathData="M48,4A5,5 0 0 1 53,9v15a5,5 0 0 1-5,5 5,5 0 0 1-5-5V9a5,5 0 0 1 5-5z"
+      android:fillColor="#FFFFC107" />
+
+  <!-- Top-right (1–2 o’clock) - 80% -->
+  <path
+      android:pathData="M61.44,27.545L72.047,16.939A5,5 0 0 1 79.118,16.939a5,5 0 0 1 0,7.071L68.511,34.617a5,5 0 0 1-7.071,0 5,5 0 0 1 0-7.072z"
+      android:fillColor="#CCFFC107" />
+
+  <!-- Right (3 o’clock) - 60% -->
+  <path
+      android:pathData="M72,43h15a5,5 0 0 1 5,5 5,5 0 0 1-5,5H72a5,5 0 0 1-5-5 5,5 0 0 1 5-5z"
+      android:fillColor="#99FFC107" />
+
+  <!-- Bottom-right (4–5 o’clock) - 40% -->
+  <path
+      android:pathData="M68.511,61.383L79.118,71.99a5,5 0 0 1 0,7.071 5,5 0 0 1-7.071,0L61.44,68.454a5,5 0 0 1 0-7.071 5,5 0 0 1 7.071,0z"
+      android:fillColor="#66FFC107" />
+
+  <!-- Bottom (6 o’clock) - 20% -->
+  <path
+      android:pathData="M48,67a5,5 0 0 1 5,5v15a5,5 0 0 1-5,5 5,5 0 0 1-5-5V72a5,5 0 0 1 5-5z"
+      android:fillColor="#33FFC107" />
+
+  <!-- Bottom-left (7–8 o’clock) - 20% but using variant -->
+  <path
+      android:pathData="M16.882,71.99L27.489,61.383a5,5 0 0 1 7.071,0 5,5 0 0 1 0,7.071L23.953,79.061a5,5 0 0 1-7.071,0 5,5 0 0 1 0-7.071z"
+      android:fillColor="#33FFA000" />
+
+  <!-- Left (9 o’clock) - 40% variant -->
+  <path
+      android:pathData="M9,43h15a5,5 0 0 1 5,5 5,5 0 0 1-5,5H9a5,5 0 0 1-5-5 5,5 0 0 1 5-5z"
+      android:fillColor="#66FFA000" />
+
+  <!-- Top-left (10–11 o’clock) - 60% variant -->
+  <path
+      android:pathData="M23.953,16.939L34.56,27.545a5,5 0 0 1 0,7.072 5,5 0 0 1-7.071,0L16.882,24.01a5,5 0 0 1 0-7.071 5,5 0 0 1 7.071,0z"
+      android:fillColor="#99FFA000" />
+</vector>

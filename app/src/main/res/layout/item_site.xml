@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="site"
+            type="com.example.agribotz.app.ui.home.SiteUi" />
+        <variable
+            name="viewModel"
+            type="com.example.agribotz.app.viewmodels.home.SitesViewModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="12dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/siteName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{site.name}"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/renameSiteBtn" />
+
+            <ImageView
+                android:id="@+id/deleteSiteBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="@string/Delete_Site"
+                app:enabledState="@{site.numberOfGadgets == 0}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/renameSiteBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="@string/Rename_Site"
+                app:enabledState="@{!site.isTerminated}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/deleteSiteBtn"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/siteCreated"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text='@{@string/Created_Since(site.createdAtFormatted)}'
+                app:layout_constraintTop_toBottomOf="@id/siteName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/siteStatusLine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:statusRes="@{site.statusLineResId}"
+                app:statusDate="@{site.statusDate}"
+                app:layout_constraintTop_toBottomOf="@id/siteCreated"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/siteGadget"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text='@{@string/Gadgets_Count(site.numberOfGadgets)}'
+                android:textColor="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/siteStatusLine"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

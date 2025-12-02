@@ -1,0 +1,41 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="gadget"
+            type="com.example.agribotz.app.ui.home.GadgetCardUi"/>
+        <variable
+            name="handler"
+            type="com.example.agribotz.app.viewholders.home.GadgetItemAdapter"/>
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:clickable="@{!gadget.isTerminated}"
+        android:onClick='@{() -> handler.onClick(gadget)}'
+        app:alpha='@{gadget.isTerminated ? 0.5f : 1f}'>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text='@{gadget.name}'
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+            <TextView
+                android:text='@{gadget.statusLine}'
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+
+            <TextView
+                android:text='@{"Valves: " + String.valueOf(gadget.numberOfValves) + " | Sensors: " + String.valueOf(gadget.numberOfSensors)}'
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

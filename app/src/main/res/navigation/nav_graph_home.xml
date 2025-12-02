@@ -1,0 +1,26 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_home"
+    app:startDestination="@id/sitesFragment">
+
+    <fragment
+        android:id="@+id/sitesFragment"
+        android:name="com.example.agribotz.app.ui.home.SitesFragment"
+        android:label="SitesFragment"
+        tools:layout="@layout/fragment_sites" >
+        <action
+            android:id="@+id/action_sitesFragment_to_siteDetailsFragment"
+            app:destination="@id/siteDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/siteDetailsFragment"
+        android:name="com.example.agribotz.app.ui.home.SiteDetailsFragment"
+        android:label="SiteDetailsFragment"
+        tools:layout="@layout/fragment_site_details" >
+        <argument
+            android:name="siteId"
+            app:argType="string" />
+    </fragment>
+</navigation>
