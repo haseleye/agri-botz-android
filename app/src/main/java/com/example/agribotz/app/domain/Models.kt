@@ -1,5 +1,7 @@
 package com.example.agribotz.app.domain
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.util.Date
 
 data class MobileNumber(
@@ -90,11 +92,59 @@ data class ScheduleValue(
     val msk: Int
 )
 
+@JsonClass(generateAdapter = true)
 sealed class Variable {
-    data class BooleanVar(val _id: String, val name: String, val label: String, val type: String, val value: Boolean, val updatedAt: String?, val category: String): Variable()
-    data class IntegerVar(val _id: String, val name: String, val label: String, val type: String, val value: Int, val unit: String?, val updatedAt: String?, val category: String): Variable()
-    data class FloatVar(val _id: String, val name: String, val label: String, val type: String, val value: Float, val unit: String?, val updatedAt: String?, val category: String): Variable()
-    data class StringVar(val _id: String, val name: String, val label: String, val type: String, val value: String, val updatedAt: String?, val category: String): Variable()
-    data class ScheduleVar(val _id: String, val name: String, val label: String, val type: String, val value: ScheduleValue, val updatedAt: String?, val category: String): Variable()
+    @JsonClass(generateAdapter = true)
+    data class BooleanVar(
+        val _id: String,
+        val name: String,
+        val label: String,
+        @field:Json(name = "type") val type: String,
+        val value: Boolean,
+        val updatedAt: String?,
+        val category: String
+    ): Variable()
+    @JsonClass(generateAdapter = true)
+    data class IntegerVar(
+        val _id: String,
+        val name: String,
+        val label: String,
+        @field:Json(name = "type") val type: String,
+        val value: Int,
+        val unit: String?,
+        val updatedAt: String?,
+        val category: String
+    ): Variable()
+    @JsonClass(generateAdapter = true)
+    data class FloatVar(
+        val _id: String,
+        val name: String,
+        val label: String,
+        @field:Json(name = "type") val type: String,
+        val value: Float,
+        val unit: String?,
+        val updatedAt: String?,
+        val category: String
+    ): Variable()
+    @JsonClass(generateAdapter = true)
+    data class StringVar(
+        val _id: String,
+        val name: String,
+        val label: String,
+        @field:Json(name = "type") val type: String,
+        val value: String,
+        val updatedAt: String?,
+        val category: String
+    ): Variable()
+    @JsonClass(generateAdapter = true)
+    data class ScheduleVar(
+        val _id: String,
+        val name: String,
+        val label: String,
+        @field:Json(name = "type") val type: String,
+        val value: ScheduleValue,
+        val updatedAt: String?,
+        val category: String
+    ): Variable()
 }
 

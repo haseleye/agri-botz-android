@@ -30,5 +30,4 @@ class GadgetDetailsViewModel(private val repo: Repository, private val gadgetId:
     private val _terminatedStatusText = MutableLiveData<String>("")
     val terminatedStatusText: LiveData<String> = _terminatedStatusText
 
-
 }

@@ -26,9 +26,18 @@ import com.example.agribotz.app.network.SiteInfoRequest
 import com.example.agribotz.app.network.SiteInfoResponse
 import com.example.agribotz.app.network.UpdateVariableRequest
 import com.example.agribotz.app.network.UpdateVariableResponse
-import com.google.gson.Gson
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class Repository {
+
+    private val moshi: Moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+    private val errorAdapter: JsonAdapter<ErrorResponse> = moshi.adapter(ErrorResponse::class.java)
+
 
     suspend fun login(mobileNumber: String, password: String): ApiResult<LoginResponse> {
         return try {
@@ -46,7 +55,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -90,7 +99,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -134,7 +143,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -178,7 +187,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -222,7 +231,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -266,7 +275,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -310,7 +319,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -354,7 +363,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -398,7 +407,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null
@@ -442,7 +451,7 @@ class Repository {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
-                        Gson().fromJson(it, ErrorResponse::class.java).error
+                        errorAdapter.fromJson(it)?.error
                     }
                     catch (e: Exception) {
                         null

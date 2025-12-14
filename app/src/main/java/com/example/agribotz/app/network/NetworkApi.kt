@@ -7,7 +7,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.ToJson
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlinx.coroutines.Deferred
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
@@ -25,9 +24,9 @@ import java.util.TimeZone
 private const val BASE_URL = "https://dev.agribotz.com:3001/"
 
 private val moshi = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
     .add(CustomDateAdapter)
     .add(VariablePolymorphicAdapter.factory)
+    .addLast(KotlinJsonAdapterFactory())
     .build()
 
 val logging =  HttpLoggingInterceptor()

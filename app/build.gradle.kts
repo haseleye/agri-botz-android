@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.adapters)
+
     implementation(libs.androidx.fragment)
 
     testImplementation(libs.junit)
