@@ -26,7 +26,6 @@ data class SiteUi(
     val terminatedAtFormatted: String?
         get() = terminatedAt?.toDisplayDate()
 
-    // Choose the correct label
     val statusLineResId: Int
         get() = when {
             isTerminated -> R.string.Terminated_Since
@@ -34,7 +33,6 @@ data class SiteUi(
             else -> R.string.Deactivated_Since
         }
 
-    // Choose the correct date
     val statusDate: String?
         get() = when {
             isTerminated -> terminatedAtFormatted
@@ -60,27 +58,136 @@ fun SiteUi.toDomain(): com.example.agribotz.app.domain.Site {
 data class GadgetCardUi(
     val id: String,
     val name: String,
-    val isActive: Boolean,
+
+    // Online state
     val isOnline: Boolean,
+    val onlineAt: String?,
+    val offlineAt: String?,
+    val onlineTimeAgo: String?,
+    val offlineTimeAgo: String?,
+
+    // Activation state
+    val isActive: Boolean,
+    val activatedAt: String?,
+    val deactivatedAt: String?,
+    val activeTimeAgo: String?,
+    val inactiveTimeAgo: String?,
+
+    // Termination state
     val isTerminated: Boolean,
+    val terminatedAt: String?,
+    val terminatedTimeAgo: String?,
+
+    // Hardware info
     val numberOfValves: Int,
-    val numberOfSensors: Int,
-    val statusLine: String? = ""
-)
+    val numberOfSensors: Int
+) {
+
+    /* ==============================
+     * Formatted dates (for drill-down)
+     * ============================== */
+
+    val onlineAtFormatted: String?
+        get() = onlineAt?.toDisplayDate()
+
+    val offlineAtFormatted: String?
+        get() = offlineAt?.toDisplayDate()
+
+    val activatedAtFormatted: String?
+        get() = activatedAt?.toDisplayDate()
+
+    val deactivatedAtFormatted: String?
+        get() = deactivatedAt?.toDisplayDate()
+
+    val terminatedAtFormatted: String?
+        get() = terminatedAt?.toDisplayDate()
+
+    /* ==============================
+     * PRIMARY STATUS (ICON + timeAgo)
+     * ============================== */
+
+    /**
+     * Priority:
+     * 1) Terminated
+     * 2) Inactive
+     * 3) Active
+     */
+    val primaryStatusResId: Int
+        get() = when {
+            isTerminated -> R.string.Terminated
+            !isActive -> R.string.Inactive
+            else -> R.string.Active
+        }
+
+    val primaryStatusTimeAgo: String?
+        get() = when {
+            isTerminated -> terminatedTimeAgo
+            !isActive -> inactiveTimeAgo
+            else -> activeTimeAgo
+        }
+
+    /* ==============================
+     * ONLINE / OFFLINE (SECONDARY)
+     * ============================== */
+
+    /**
+     * Online/Offline is shown ONLY if:
+     * - Not terminated
+     * - Active
+     */
+    val showOnlineState: Boolean
+        get() = !isTerminated && isActive
+
+    val onlineStateResId: Int
+        get() = if (isOnline) R.string.Online else R.string.Offline
+
+    val onlineStateTimeAgo: String?
+        get() = if (isOnline) onlineTimeAgo else offlineTimeAgo
+
+    /* ==============================
+     * FULL STATUS TEXT (for dialogs)
+     * ============================== */
+
+    val terminatedFullText: String?
+        get() = terminatedAtFormatted?.let {
+            "Terminated since $it"
+        }
+
+    val inactiveFullText: String?
+        get() = deactivatedAtFormatted?.let {
+            "Deactivated since $it"
+        }
+
+    val activeFullText: String?
+        get() = activatedAtFormatted?.let {
+            "Activated since $it"
+        }
+
+    val onlineFullText: String?
+        get() = onlineAtFormatted?.let {
+            "Online since $it"
+        }
+
+    val offlineFullText: String?
+        get() = offlineAtFormatted?.let {
+            "Offline since $it"
+        }
+
+}
 
 data class ScheduleUi(
-    val index: Int,               // 1..5
-    val startTime: String,        // "HH:mm"
+    val index: Int,
+    val startTime: String,
     val durationMin: Int,
-    val daysMask: Int,            // bitmask for days, or list if you prefer
+    val daysMask: Int,
     val enabled: Boolean
 )
 
 data class ValveUi(
     val id: String,
-    val label: String,            // "Valve 1"
+    val label: String,
     val isOpen: Boolean,
-    val lastChangeAgo: String,    // "13 minutes ago"
+    val lastChangeAgo: String,
     val manualMode: Boolean,
     val schedules: List<ScheduleUi>
 )

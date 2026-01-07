@@ -102,6 +102,7 @@ sealed class Variable {
         @field:Json(name = "type") val type: String,
         val value: Boolean,
         val updatedAt: String?,
+        val timeAgo: String,
         val category: String
     ): Variable()
     @JsonClass(generateAdapter = true)
@@ -113,6 +114,7 @@ sealed class Variable {
         val value: Int,
         val unit: String?,
         val updatedAt: String?,
+        val timeAgo: String,
         val category: String
     ): Variable()
     @JsonClass(generateAdapter = true)
@@ -124,6 +126,7 @@ sealed class Variable {
         val value: Float,
         val unit: String?,
         val updatedAt: String?,
+        val timeAgo: String,
         val category: String
     ): Variable()
     @JsonClass(generateAdapter = true)
@@ -134,6 +137,7 @@ sealed class Variable {
         @field:Json(name = "type") val type: String,
         val value: String,
         val updatedAt: String?,
+        val timeAgo: String,
         val category: String
     ): Variable()
     @JsonClass(generateAdapter = true)
@@ -144,6 +148,7 @@ sealed class Variable {
         @field:Json(name = "type") val type: String,
         val value: ScheduleValue,
         val updatedAt: String?,
+        val timeAgo: String,
         val category: String
     ): Variable()
 }

@@ -42,7 +42,7 @@
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:visibility="gone"
-                    app:fadeVisible="@{viewModel.gadgets.size() == 0}"
+                    app:fadeVisible="@{viewModel.showEmptyStateIcon}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView

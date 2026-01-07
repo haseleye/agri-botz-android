@@ -39,11 +39,19 @@
     <string name="Rename">تغيير</string>
     <string name="Enter_New_Site_Name">أدخل الاسم الجديد للموقع</string>
     <string name="Created_Since">تم الأنشاء منذ  %1$s</string>
+    <string name="Offline_Since">غير متصل بالإنترنت منذ  %1$s</string>
     <string name="Activated_Since">تم التفعيل منذ %1$s</string>
     <string name="Terminated_Since">تم الإنهاء منذ %1$s</string>
     <string name="Gadgets_Count">الأجهزة: %1$d</string>
     <string name="Deactivated_Since">تم الإيقاف منذ %1$s</string>
+    <string name="GPS">تحديد الموقع</string>
+    <string name="Offline">غير متصلة بالإنترنت</string>
     <string name="no_sites_message">ليس لديك أي مواقع الآن. \\n يمكنك الضغط على \"+\" لإضافة موقع</string>
     <string name="no_gadgets_message">ليس لديك أي أجهزة الآن. \\n يمكنك التواصل مع مندوبنا لإنهاء هذه المهمة</string>
     <string name="Ok">موافق</string>
+    <string name="Online_Since">متصل بالإنترنت منذ  %1$s</string>
+    <string name="Inactive">تم الإيقاف</string>
+    <string name="Online">متصل بالإنترنت</string>
+    <string name="Terminated">تم الإنهاء</string>
+    <string name="Active">تم التفعيل</string>
 </resources>

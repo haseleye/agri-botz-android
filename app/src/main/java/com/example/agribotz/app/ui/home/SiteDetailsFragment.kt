@@ -38,18 +38,15 @@ class SiteDetailsFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val adapter = SiteDetailsAdapter(viewModel) { gadget ->
-            // you can change this to navigate to gadget details later
             viewModel.onGadgetClicked(gadget.id)
         }
         binding.gadgetsRecycler.adapter = adapter
 
-        // layout manager - same responsive logic as sites
         val displayMetrics = resources.displayMetrics
         val dpWidth = displayMetrics.widthPixels / displayMetrics.density
         val spanCount = (dpWidth / 320).toInt().coerceAtLeast(1)
         binding.gadgetsRecycler.layoutManager = GridLayoutManager(requireContext(), spanCount)
 
-        // small top offset for first item like SitesFragment
         val firstItemTopDp = 12
         val density = resources.displayMetrics.density
         val firstItemTopPx = (firstItemTopDp * density).toInt()
@@ -66,13 +63,11 @@ class SiteDetailsFragment : Fragment() {
 
         setupObservers()
 
-        // swipe refresh: hide native spinner immediately so only custom loader appears
         binding.swipeRefresh.setOnRefreshListener {
             binding.swipeRefresh.isRefreshing = false
             viewModel.onLoad()
         }
 
-        // initial load
         viewModel.onLoad()
 
         return binding.root
@@ -96,14 +91,24 @@ class SiteDetailsFragment : Fragment() {
 
         viewModel.navigateToGadget.observe(viewLifecycleOwner) { gadgetId ->
             gadgetId?.let {
-                // placeholder: show a simple dialog/toast for now
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.Water_Valves)
-                    .setMessage(getString(R.string.Gadgets_Count, 0)) // sample; adjust as desired
+                    .setMessage(getString(R.string.Gadgets_Count, 0))
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
 
                 viewModel.onNavigatedToGadget()
+            }
+        }
+
+        viewModel.showStatusDetails.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                AlertDialog.Builder(requireContext())
+                    .setMessage(it)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+
+                viewModel.onStatusDetailsShown()
             }
         }
     }

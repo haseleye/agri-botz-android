@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
+import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.util.PreferencesManager
@@ -22,10 +23,11 @@ class SiteDetailsViewModel(
     private val _gadgets = MutableLiveData<List<GadgetCardUi>>(emptyList())
     val gadgets: LiveData<List<GadgetCardUi>> = _gadgets
 
+    private val _showEmptyStateIcon = MutableLiveData<Boolean>(false)
+    val showEmptyStateIcon: LiveData<Boolean> = _showEmptyStateIcon
+
     private val _navigateToGadget = MutableLiveData<String?>()
     val navigateToGadget: LiveData<String?> = _navigateToGadget
-
-    private var _token: String? = null
 
     private val _status = MutableLiveData<ApiStatus>()
     val status: LiveData<ApiStatus> = _status
@@ -39,13 +41,15 @@ class SiteDetailsViewModel(
     private val _errorServerMessageRes = MutableLiveData<Int?>()
     val errorServerMessageRes: LiveData<Int?> = _errorServerMessageRes
 
+    private val _showStatusDetails = MutableLiveData<String?>()
+    val showStatusDetails: LiveData<String?> = _showStatusDetails
+
+    private var _token: String? = null
+
     init {
         _token = prefManager.getAccessToken()
     }
 
-    /**
-     * Load site info (site meta + gadgets)
-     */
     fun onLoad() {
         viewModelScope.launch {
             try {
@@ -56,42 +60,77 @@ class SiteDetailsViewModel(
                         val msg = result.data.message
                         _siteName.value = msg.siteInfo.name
 
-                        _gadgets.value = msg.gadgets.map { g ->
+                        _gadgets.value = msg.gadgets.map { gadget ->
+
+                            val isOnlineVar = gadget.variables
+                                .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" }
+                                    as Variable.BooleanVar?
+
+                            val isActiveVar = gadget.variables
+                                .firstOrNull { it is Variable.BooleanVar && it.name == "isActive" }
+                                    as Variable.BooleanVar?
+
+                            val isTerminatedVar = gadget.variables
+                                .firstOrNull { it is Variable.BooleanVar && it.name == "isTerminated" }
+                                    as Variable.BooleanVar?
+
+                            val isOnline = isOnlineVar?.value ?: false
+                            val isActive = isActiveVar?.value ?: false
+                            val isTerminated = isTerminatedVar?.value ?: false
+
                             GadgetCardUi(
-                                id = g.id,
-                                name = g.name,
-                                isActive = true,             // backend doesn't provide explicit flags here
-                                isOnline = false,            // no online flag in returned model; keep default
-                                isTerminated = false,        // default
-                                numberOfValves = g.numberOfValves ?: 0,
-                                numberOfSensors = g.numberOfSensors ?: 0,
-                                statusLine = ""              // could be populated if backend returns status
+                                id = gadget.id,
+                                name = gadget.name,
+
+                                // Online state
+                                isOnline = isOnline,
+                                onlineAt = if (isOnline) isOnlineVar?.updatedAt else null,
+                                offlineAt = if (!isOnline) isOnlineVar?.updatedAt else null,
+                                onlineTimeAgo = if (isOnline) isOnlineVar?.timeAgo else null,
+                                offlineTimeAgo = if (!isOnline) isOnlineVar?.timeAgo else null,
+
+                                // Activation state
+                                isActive = isActive,
+                                activatedAt = if (isActive) isActiveVar?.updatedAt else null,
+                                deactivatedAt = if (!isActive) isActiveVar?.updatedAt else null,
+                                activeTimeAgo = if (isActive) isActiveVar?.timeAgo else null,
+                                inactiveTimeAgo = if (!isActive) isActiveVar?.timeAgo else null,
+
+                                // Termination state
+                                isTerminated = isTerminated,
+                                terminatedAt = if (isTerminated) isTerminatedVar?.updatedAt else null,
+                                terminatedTimeAgo = if (isTerminated) isTerminatedVar?.timeAgo else null,
+
+                                // Hardware info
+                                numberOfValves = gadget.numberOfValves ?: 0,
+                                numberOfSensors = gadget.numberOfSensors ?: 0
                             )
                         }
+
                         _status.value = ApiStatus.DONE
+                        _showEmptyStateIcon.value = _gadgets.value?.isEmpty()
                     }
+
                     is ApiResult.Error -> {
                         Log.e("SiteDetailsViewModel", "Loading failed: ${result.devMessage}")
 
-                        _status.value = if (result.userMessageKey == R.string.Error_Internet_Connection) {
-                            ApiStatus.ERROR
-                        }
-                        else {
-                            ApiStatus.DONE
-                        }
+                        _status.value =
+                            if (result.userMessageKey == R.string.Error_Internet_Connection) {
+                                ApiStatus.ERROR
+                            } else {
+                                ApiStatus.DONE
+                            }
 
                         if (!result.userMessageString.isNullOrBlank()) {
                             _errorServerMessage.value = result.userMessageString
                             _errorServerMessageRes.value = null
-                        }
-                        else {
+                        } else {
                             _errorServerMessageRes.value = result.userMessageKey
                             _errorServerMessage.value = null
                         }
                     }
                 }
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 _status.value = ApiStatus.DONE
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("SiteDetailsViewModel", "Loading failed with exception", e)
@@ -109,5 +148,15 @@ class SiteDetailsViewModel(
 
     fun onTransErrorCompleted() {
         _eventTransError.value = null
+    }
+
+    fun onStatusIconClicked(fullText: String?) {
+        if (!fullText.isNullOrBlank()) {
+            _showStatusDetails.value = fullText
+        }
+    }
+
+    fun onStatusDetailsShown() {
+        _showStatusDetails.value = null
     }
 }
