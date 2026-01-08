@@ -22,5 +22,21 @@
         <argument
             android:name="siteId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_gadgetLocationFragment"
+            app:destination="@id/gadgetLocationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/gadgetLocationFragment"
+        android:name="com.example.agribotz.app.ui.home.GadgetLocationFragment"
+        android:label="GadgetLocationFragment"
+        tools:layout="@layout/fragment_gadget_location" >
+        <argument
+            android:name="lat"
+            app:argType="float" />
+        <argument
+            android:name="lng"
+            app:argType="float" />
     </fragment>
 </navigation>

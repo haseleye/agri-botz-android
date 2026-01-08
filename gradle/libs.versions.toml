@@ -18,6 +18,7 @@ safeArgs = "2.7.7"
 moshi = "1.15.2"
 fragment = "1.8.9"
 swiperefreshlayout = "1.1.0"
+playServicesMaps = "19.2.0"
 
 
 [libraries]
@@ -52,6 +53,7 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 
 kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

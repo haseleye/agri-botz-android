@@ -18,6 +18,7 @@ import com.example.agribotz.app.viewholders.home.SiteDetailsAdapter
 import com.example.agribotz.app.viewmodels.home.SiteDetailsViewModel
 import com.example.agribotz.app.viewmodels.home.SiteDetailsViewModelFactory
 import com.example.agribotz.databinding.FragmentSiteDetailsBinding
+import androidx.navigation.fragment.findNavController
 
 class SiteDetailsFragment : Fragment() {
 
@@ -109,6 +110,27 @@ class SiteDetailsFragment : Fragment() {
                     .show()
 
                 viewModel.onStatusDetailsShown()
+            }
+        }
+
+        viewModel.navigateToMap.observe(viewLifecycleOwner) { gps ->
+            gps?.let {
+                val lat = it.lat
+                val lng = it.long
+
+                if (lat != null && lng != null) {
+                    val bundle = Bundle().apply {
+                        putFloat("lat", lat.toFloat())
+                        putFloat("lng", lng.toFloat())
+                    }
+
+                    findNavController().navigate(
+                        R.id.action_siteDetailsFragment_to_gadgetLocationFragment,
+                        bundle
+                    )
+
+                    viewModel.onMapNavigated()
+                }
             }
         }
     }

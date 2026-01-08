@@ -52,6 +52,7 @@
     <string name="Online_Since">متصل بالإنترنت منذ  %1$s</string>
     <string name="Inactive">تم الإيقاف</string>
     <string name="Online">متصل بالإنترنت</string>
+    <string name="Gadget_Location">موقع الجهاز</string>
     <string name="Terminated">تم الإنهاء</string>
     <string name="Active">تم التفعيل</string>
 </resources>

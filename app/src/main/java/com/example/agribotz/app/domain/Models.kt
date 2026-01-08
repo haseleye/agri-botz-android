@@ -22,8 +22,8 @@ data class Email(
 )
 
 data class GPS(
-    val lat: Float? = null,
-    val long: Float? = null
+    val lat: Double? = null,
+    val long: Double? = null
 )
 
 data class Gadget(

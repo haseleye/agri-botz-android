@@ -11,9 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AgriBotz">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAGAelMB48HDjqTzjjOfbhqx0jwRDBtmJk" />
+
         <activity
             android:name=".app.ui.home.HomeActivity"
             android:exported="false" />
+
         <activity
             android:name=".app.ui.main.MainActivity"
             android:exported="true"
@@ -24,6 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
+import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
@@ -44,6 +45,9 @@ class SiteDetailsViewModel(
     private val _showStatusDetails = MutableLiveData<String?>()
     val showStatusDetails: LiveData<String?> = _showStatusDetails
 
+    private val _navigateToMap = MutableLiveData<GPS?>()
+    val navigateToMap: LiveData<GPS?> = _navigateToMap
+
     private var _token: String? = null
 
     init {
@@ -61,6 +65,8 @@ class SiteDetailsViewModel(
                         _siteName.value = msg.siteInfo.name
 
                         _gadgets.value = msg.gadgets.map { gadget ->
+
+                            val hasGps = gadget.gps != null
 
                             val isOnlineVar = gadget.variables
                                 .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" }
@@ -82,24 +88,28 @@ class SiteDetailsViewModel(
                                 id = gadget.id,
                                 name = gadget.name,
 
+                                // GPS
+                                hasGps = gadget.gps != null,
+                                gps = gadget.gps,
+
                                 // Online state
                                 isOnline = isOnline,
-                                onlineAt = if (isOnline) isOnlineVar?.updatedAt else null,
+                                onlineAt = if (isOnline) isOnlineVar.updatedAt else null,
                                 offlineAt = if (!isOnline) isOnlineVar?.updatedAt else null,
-                                onlineTimeAgo = if (isOnline) isOnlineVar?.timeAgo else null,
+                                onlineTimeAgo = if (isOnline) isOnlineVar.timeAgo else null,
                                 offlineTimeAgo = if (!isOnline) isOnlineVar?.timeAgo else null,
 
                                 // Activation state
                                 isActive = isActive,
-                                activatedAt = if (isActive) isActiveVar?.updatedAt else null,
+                                activatedAt = if (isActive) isActiveVar.updatedAt else null,
                                 deactivatedAt = if (!isActive) isActiveVar?.updatedAt else null,
-                                activeTimeAgo = if (isActive) isActiveVar?.timeAgo else null,
+                                activeTimeAgo = if (isActive) isActiveVar.timeAgo else null,
                                 inactiveTimeAgo = if (!isActive) isActiveVar?.timeAgo else null,
 
                                 // Termination state
                                 isTerminated = isTerminated,
-                                terminatedAt = if (isTerminated) isTerminatedVar?.updatedAt else null,
-                                terminatedTimeAgo = if (isTerminated) isTerminatedVar?.timeAgo else null,
+                                terminatedAt = if (isTerminated) isTerminatedVar.updatedAt else null,
+                                terminatedTimeAgo = if (isTerminated) isTerminatedVar.timeAgo else null,
 
                                 // Hardware info
                                 numberOfValves = gadget.numberOfValves ?: 0,
@@ -159,4 +169,15 @@ class SiteDetailsViewModel(
     fun onStatusDetailsShown() {
         _showStatusDetails.value = null
     }
+
+    fun onGpsClicked(gadget: GadgetCardUi) {
+        if (gadget.canOpenMap) {
+            _navigateToMap.value = gadget.gps
+        }
+    }
+
+    fun onMapNavigated() {
+        _navigateToMap.value = null
+    }
+
 }

@@ -45,6 +45,7 @@
     <string name="Terminated_Since">Terminated since %1$s</string>
     <string name="Gadgets_Count">Gadgets: %1$d</string>
     <string name="GPS">GPS Location</string>
+    <string name="Gadget_Location">Gadget Location</string>
     <string name="Terminated">Terminated</string>
     <string name="Active">Active</string>
     <string name="Inactive">Inactive</string>

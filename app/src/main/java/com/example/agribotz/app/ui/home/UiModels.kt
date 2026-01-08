@@ -1,6 +1,7 @@
 package com.example.agribotz.app.ui.home
 
 import com.example.agribotz.R
+import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.util.toDisplayDate
 
 data class SiteUi(
@@ -58,6 +59,8 @@ fun SiteUi.toDomain(): com.example.agribotz.app.domain.Site {
 data class GadgetCardUi(
     val id: String,
     val name: String,
+    val hasGps: Boolean,
+    val gps: GPS?,
 
     // Online state
     val isOnline: Boolean,
@@ -83,6 +86,9 @@ data class GadgetCardUi(
     val numberOfSensors: Int
 ) {
 
+    val canOpenMap: Boolean
+        get() = hasGps && gps != null
+
     /* ==============================
      * Formatted dates (for drill-down)
      * ============================== */
@@ -103,30 +109,6 @@ data class GadgetCardUi(
         get() = terminatedAt?.toDisplayDate()
 
     /* ==============================
-     * PRIMARY STATUS (ICON + timeAgo)
-     * ============================== */
-
-    /**
-     * Priority:
-     * 1) Terminated
-     * 2) Inactive
-     * 3) Active
-     */
-    val primaryStatusResId: Int
-        get() = when {
-            isTerminated -> R.string.Terminated
-            !isActive -> R.string.Inactive
-            else -> R.string.Active
-        }
-
-    val primaryStatusTimeAgo: String?
-        get() = when {
-            isTerminated -> terminatedTimeAgo
-            !isActive -> inactiveTimeAgo
-            else -> activeTimeAgo
-        }
-
-    /* ==============================
      * ONLINE / OFFLINE (SECONDARY)
      * ============================== */
 
@@ -137,9 +119,6 @@ data class GadgetCardUi(
      */
     val showOnlineState: Boolean
         get() = !isTerminated && isActive
-
-    val onlineStateResId: Int
-        get() = if (isOnline) R.string.Online else R.string.Offline
 
     val onlineStateTimeAgo: String?
         get() = if (isOnline) onlineTimeAgo else offlineTimeAgo

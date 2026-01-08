@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.moshi.adapters)
 
     implementation(libs.androidx.fragment)
+    implementation(libs.play.services.maps)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
