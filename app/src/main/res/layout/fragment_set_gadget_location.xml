@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top App Bar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/set_location_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:title="@string/Set_Gadget_Location"
+        app:titleCentered="true"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Google Map -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/set_location_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/confirm_location_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Center Pin -->
+    <ImageView
+        android:id="@+id/center_pin"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_gps_pin"
+        android:contentDescription="@string/Selected_Location"
+        app:layout_constraintTop_toTopOf="@id/map"
+        app:layout_constraintBottom_toBottomOf="@id/map"
+        app:layout_constraintStart_toStartOf="@id/map"
+        app:layout_constraintEnd_toEndOf="@id/map"/>
+
+    <!-- Loading Spinner (for current location) -->
+    <ProgressBar
+        android:id="@+id/location_loading"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/map"
+        app:layout_constraintBottom_toBottomOf="@id/map"
+        app:layout_constraintStart_toStartOf="@id/map"
+        app:layout_constraintEnd_toEndOf="@id/map"/>
+
+    <!-- Bottom Confirmation Area -->
+    <LinearLayout
+        android:id="@+id/confirm_location_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:elevation="8dp">
+
+        <TextView
+            android:id="@+id/location_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Move_Map"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textColor="@color/colorOnBackground"
+            android:paddingBottom="12dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_use_current_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Use_Current_Location"
+            app:icon="@drawable/ic_my_location"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_marginBottom="8dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/Set_Location"
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

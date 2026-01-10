@@ -120,7 +120,7 @@ data class GadgetGpsRequest(
 data class GadgetGpsResponse(
     val status: String,
     val error: String,
-    val message: String?
+    val message: Any?
 )
 
 data class UpdateVariableRequest(

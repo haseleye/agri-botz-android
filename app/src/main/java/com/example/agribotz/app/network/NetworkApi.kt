@@ -104,7 +104,7 @@ interface Services {
     ): Response<RenameGadgetResponse>
 
     @POST("api/iotCloud/update-gadget-gps")
-    suspend fun gadgetGpsAsync(
+    suspend fun updateGadgetGpsAsync(
         @Header("Authorization") token: String,
         @Body gadgetGpsRequest: GadgetGpsRequest
     ): Response<GadgetGpsResponse>

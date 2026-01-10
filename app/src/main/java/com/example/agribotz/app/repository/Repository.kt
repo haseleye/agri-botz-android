@@ -391,9 +391,9 @@ class Repository {
         }
     }
 
-    suspend fun gadgetGps(token: String, gadgetId: String, gps: GPS): ApiResult<GadgetGpsResponse> {
+    suspend fun updateGadgetGps(token: String, gadgetId: String, gps: GPS): ApiResult<GadgetGpsResponse> {
         return try {
-            val response = NetworkApi.services.gadgetGpsAsync(token, GadgetGpsRequest(gadgetId, gps))
+            val response = NetworkApi.services.updateGadgetGpsAsync(token, GadgetGpsRequest(gadgetId, gps))
 
             if (response.isSuccessful) {
                 response.body()?.let { body ->

@@ -44,6 +44,8 @@
     <string name="Terminated_Since">تم الإنهاء منذ %1$s</string>
     <string name="Gadgets_Count">الأجهزة: %1$d</string>
     <string name="Deactivated_Since">تم الإيقاف منذ %1$s</string>
+    <string name="Site_Gadgets">أجهزة الموقع</string>
+    <string name="Gadget_Details">تفاصيل الجهاز</string>
     <string name="GPS">تحديد الموقع</string>
     <string name="Offline">غير متصلة بالإنترنت</string>
     <string name="no_sites_message">ليس لديك أي مواقع الآن. \\n يمكنك الضغط على \"+\" لإضافة موقع</string>
@@ -52,7 +54,19 @@
     <string name="Online_Since">متصل بالإنترنت منذ  %1$s</string>
     <string name="Inactive">تم الإيقاف</string>
     <string name="Online">متصل بالإنترنت</string>
+    <string name="Satellite_View">القمر الصناعي</string>
+    <string name="Map_View">الخريطة</string>
+    <string name="Set_Gadget_Location">تحديد موقع الجهاز</string>
+    <string name="Selected_Location">الموقع المحدد</string>
+    <string name="Move_Map">حرك الخريطة لتحديد الموقع</string>
+    <string name="Location_Permission_Required">يلزم الحصول على إذن لاستخدام موقعك الحالي.</string>
+    <string name="Use_Current_Location">استخدام الموقع الحالي</string>
+    <string name="Location_Not_Available">موقعك غير متاح</string>
+    <string name="Set_Location">تحديد الموقع</string>
+    <string name="Location_Updated">تم تحديث الموقع بنجاح</string>
+    <string name="Google_Maps">افتح في خرائط جوجل</string>
     <string name="Gadget_Location">موقع الجهاز</string>
     <string name="Terminated">تم الإنهاء</string>
     <string name="Active">تم التفعيل</string>
+    <string name="My_Sites">مواقعي</string>
 </resources>

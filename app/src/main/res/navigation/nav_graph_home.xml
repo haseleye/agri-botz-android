@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_siteDetailsFragment_to_gadgetLocationFragment"
             app:destination="@id/gadgetLocationFragment" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_setGadgetLocationFragment"
+            app:destination="@id/setGadgetLocationFragment" />
     </fragment>
 
     <fragment
@@ -38,5 +41,15 @@
         <argument
             android:name="lng"
             app:argType="float" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/setGadgetLocationFragment"
+        android:name="com.example.agribotz.app.ui.home.SetGadgetLocationFragment"
+        android:label="SetGadgetLocationFragment"
+        tools:layout="@layout/fragment_set_gadget_location" >
+        <argument
+            android:name="gadgetId"
+            app:argType="string" />
     </fragment>
 </navigation>

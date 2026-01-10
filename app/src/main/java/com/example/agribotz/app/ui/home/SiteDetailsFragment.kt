@@ -74,6 +74,14 @@ class SiteDetailsFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val toolbar = view.findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.site_details_toolbar)
+        toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+    }
     private fun setupObservers() {
         viewModel.eventTransError.observe(viewLifecycleOwner) { errRes ->
             errRes?.let {
@@ -131,6 +139,21 @@ class SiteDetailsFragment : Fragment() {
 
                     viewModel.onMapNavigated()
                 }
+            }
+        }
+
+        viewModel.navigateToSetLocation.observe(viewLifecycleOwner) { gadgetId ->
+            gadgetId?.let {
+                val bundle = Bundle().apply {
+                    putString("gadgetId", it)
+                }
+
+                findNavController().navigate(
+                    R.id.action_siteDetailsFragment_to_setGadgetLocationFragment,
+                    bundle
+                )
+
+                viewModel.onSetGpsNavigated()
             }
         }
     }
