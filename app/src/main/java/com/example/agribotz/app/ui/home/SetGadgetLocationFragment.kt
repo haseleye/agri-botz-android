@@ -237,18 +237,13 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
             }
     }
 
-
     private fun selectLocation(latLng: LatLng) {
         selectedLatLng = latLng
         selectedMarker?.remove()
         binding.centerPin.isVisible = false
         binding.locationHint.text = getString(R.string.Save_Or_Select_Another)
 
-        selectedMarker = googleMap?.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .title(getString(R.string.Selected_Location))
-        )
+        addMarkerWithDropAnimation(latLng)
 
         googleMap?.animateCamera(
             CameraUpdateFactory.newLatLngZoom(latLng, 16f)
@@ -256,6 +251,49 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
 
         viewModel.onLocationSelected(latLng.latitude, latLng.longitude)
     }
+
+    private fun addMarkerWithDropAnimation(latLng: LatLng) {
+        val map = googleMap ?: return
+
+        // Offset start position slightly above
+        val startLatLng = LatLng(
+            latLng.latitude + 0.0005,
+            latLng.longitude
+        )
+
+        val marker = map.addMarker(
+            MarkerOptions()
+                .position(startLatLng)
+                .title(getString(R.string.Selected_Location))
+        )
+
+        marker?.let {
+            val handler = android.os.Handler(android.os.Looper.getMainLooper())
+            val startTime = System.currentTimeMillis()
+            val duration = 600L // ms
+            val interpolator = android.view.animation.BounceInterpolator()
+
+            handler.post(object : Runnable {
+                override fun run() {
+                    val elapsed = System.currentTimeMillis() - startTime
+                    val t = (elapsed.toFloat() / duration).coerceIn(0f, 1f)
+                    val v = interpolator.getInterpolation(t)
+
+                    val newLat = startLatLng.latitude +
+                            (latLng.latitude - startLatLng.latitude) * v
+
+                    it.position = LatLng(newLat, latLng.longitude)
+
+                    if (t < 1f) {
+                        handler.postDelayed(this, 16)
+                    }
+                }
+            })
+        }
+
+        selectedMarker = marker
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
