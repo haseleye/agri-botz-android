@@ -59,6 +59,7 @@
     <string name="Set_Gadget_Location">تحديد موقع الجهاز</string>
     <string name="Selected_Location">الموقع المحدد</string>
     <string name="Move_Map">حرك الخريطة لتحديد الموقع</string>
+    <string name="Save_Or_Select_Another">احفظ هذا الموقع أو اختر موقعاً آخر</string>
     <string name="Location_Permission_Required">يلزم الحصول على إذن لاستخدام موقعك الحالي.</string>
     <string name="Use_Current_Location">استخدام الموقع الحالي</string>
     <string name="Location_Not_Available">موقعك غير متاح</string>

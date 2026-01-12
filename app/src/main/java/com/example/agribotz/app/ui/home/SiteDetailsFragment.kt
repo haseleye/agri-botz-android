@@ -142,10 +142,16 @@ class SiteDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.navigateToSetLocation.observe(viewLifecycleOwner) { gadgetId ->
-            gadgetId?.let {
+        viewModel.navigateToSetLocation.observe(viewLifecycleOwner) { nav ->
+            nav?.let {
+
                 val bundle = Bundle().apply {
-                    putString("gadgetId", it)
+                    putString("gadgetId", it.gadgetId)
+
+                    it.gps?.let { gps ->
+                        gps.lat?.let { lat -> putFloat("gadgetLat", lat.toFloat()) }
+                        gps.long?.let { lng -> putFloat("gadgetLng", lng.toFloat()) }
+                    }
                 }
 
                 findNavController().navigate(

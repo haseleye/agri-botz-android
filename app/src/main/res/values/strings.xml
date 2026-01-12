@@ -53,6 +53,7 @@
     <string name="Set_Gadget_Location">Set Gadget Location</string>
     <string name="Selected_Location">Selected Location</string>
     <string name="Move_Map">Move the map to choose the location</string>
+    <string name="Save_Or_Select_Another">Save this location or select another</string>
     <string name="Location_Permission_Required">Location permission is required to use your current location</string>
     <string name="Use_Current_Location">Use my current location</string>
     <string name="Location_Not_Available">Your location is not available</string>

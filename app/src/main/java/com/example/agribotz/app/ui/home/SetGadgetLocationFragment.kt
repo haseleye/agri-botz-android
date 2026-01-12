@@ -39,8 +39,17 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
     private var selectedMarker: Marker? = null
     private var selectedLatLng: LatLng? = null
 
-    // gadgetId is passed as nav arg "gadgetId"
+    // Fetching arguments
     private val gadgetId: String by lazy { arguments?.getString("gadgetId") ?: "" }
+    private val hasExistingGps: Boolean by lazy {
+        gadgetLat != 0f && gadgetLng != 0f
+    }
+    private val gadgetLat: Float by lazy {
+        requireArguments().getFloat("gadgetLat")
+    }
+    private val gadgetLng: Float by lazy {
+        requireArguments().getFloat("gadgetLng")
+    }
 
     private val viewModel: SetGadgetLocationViewModel by viewModels {
         SetGadgetLocationViewModelFactory(
@@ -140,21 +149,34 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        val defaultLocation = LatLng(30.0444, 31.2357) // Cairo
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 12f))
+        if (hasExistingGps) {
+            val latLng = LatLng(gadgetLat.toDouble(), gadgetLng.toDouble())
 
-        map.setOnMapClickListener { latLng ->
-            selectedLatLng = latLng
-            selectedMarker?.remove()
+            // Hide center pin
             binding.centerPin.isVisible = false
+            binding.locationHint.text = getString(R.string.Save_Or_Select_Another)
 
+            // Add marker
             selectedMarker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)
                     .title(getString(R.string.Selected_Location))
             )
 
-            viewModel.onLocationSelected(latLng.latitude, latLng.longitude)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
+
+            viewModel.onLocationSelected(
+                latLng.latitude,
+                latLng.longitude
+            )
+        }
+        else {
+            val defaultLocation = LatLng(30.0444, 31.2357)
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 12f))
+        }
+
+        map.setOnMapClickListener { latLng ->
+            selectLocation(latLng)
         }
     }
 
@@ -220,6 +242,7 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
         selectedLatLng = latLng
         selectedMarker?.remove()
         binding.centerPin.isVisible = false
+        binding.locationHint.text = getString(R.string.Save_Or_Select_Another)
 
         selectedMarker = googleMap?.addMarker(
             MarkerOptions()

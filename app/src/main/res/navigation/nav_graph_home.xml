@@ -51,5 +51,13 @@
         <argument
             android:name="gadgetId"
             app:argType="string" />
+        <argument
+            android:name="gadgetLat"
+            app:argType="float"
+            android:defaultValue="0.0" />
+        <argument
+            android:name="gadgetLng"
+            app:argType="float"
+            android:defaultValue="0.0" />
     </fragment>
 </navigation>

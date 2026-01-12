@@ -35,6 +35,11 @@ data class Gadget(
     val variables: List<Variable>
 )
 
+data class SetLocationNav(
+    val gadgetId: String,
+    val gps: GPS?
+)
+
 data class Site(
     val id: String,
     val name: String,

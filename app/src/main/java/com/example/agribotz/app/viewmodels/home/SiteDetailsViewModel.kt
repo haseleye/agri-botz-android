@@ -6,6 +6,7 @@ import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.domain.GPS
+import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
@@ -48,8 +49,9 @@ class SiteDetailsViewModel(
     private val _navigateToMap = MutableLiveData<GPS?>()
     val navigateToMap: LiveData<GPS?> = _navigateToMap
 
-    private val _navigateToSetLocation = MutableLiveData<String?>()
-    val navigateToSetLocation: LiveData<String?> = _navigateToSetLocation
+    private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
+    val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
+
 
     private var _token: String? = null
 
@@ -176,22 +178,27 @@ class SiteDetailsViewModel(
     fun onGpsClicked(gadget: GadgetCardUi) {
         if (gadget.canOpenMap) {
             _navigateToMap.value = gadget.gps
-        } else {
-            _navigateToSetLocation.value = gadget.id
+        }
+        else {
+            _navigateToSetLocation.value =
+                SetLocationNav(
+                    gadgetId = gadget.id,
+                    gps = null
+                )
         }
     }
 
     fun onGpsLongPressed(gadget: GadgetCardUi): Boolean {
-        _navigateToSetLocation.value = gadget.id
+        _navigateToSetLocation.value =
+            SetLocationNav(
+                gadgetId = gadget.id,
+                gps = gadget.gps
+            )
         return true
     }
 
     fun onMapNavigated() {
         _navigateToMap.value = null
-    }
-
-    fun onSetGpsRequested(gadgetId: String) {
-        _navigateToSetLocation.value = gadgetId
     }
 
     fun onSetGpsNavigated() {
