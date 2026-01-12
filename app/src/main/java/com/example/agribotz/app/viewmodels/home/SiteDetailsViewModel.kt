@@ -46,8 +46,8 @@ class SiteDetailsViewModel(
     private val _showStatusDetails = MutableLiveData<String?>()
     val showStatusDetails: LiveData<String?> = _showStatusDetails
 
-    private val _navigateToMap = MutableLiveData<GPS?>()
-    val navigateToMap: LiveData<GPS?> = _navigateToMap
+    private val _navigateToMap = MutableLiveData<SetLocationNav?>()
+    val navigateToMap: LiveData<SetLocationNav?> = _navigateToMap
 
     private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
     val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
@@ -178,12 +178,17 @@ class SiteDetailsViewModel(
         _status.value = ApiStatus.LOADING
 
         if (gadget.canOpenMap) {
-            _navigateToMap.value = gadget.gps
+            _navigateToMap.value = SetLocationNav(
+                gadgetId = gadget.id,
+                gadgetName = gadget.name,
+                gps = gadget.gps
+            )
         }
         else {
             _navigateToSetLocation.value =
                 SetLocationNav(
                     gadgetId = gadget.id,
+                    gadgetName = gadget.name,
                     gps = null
                 )
         }
@@ -195,6 +200,7 @@ class SiteDetailsViewModel(
         _navigateToSetLocation.value =
             SetLocationNav(
                 gadgetId = gadget.id,
+                gadgetName = gadget.name,
                 gps = gadget.gps
             )
         return true
@@ -202,7 +208,6 @@ class SiteDetailsViewModel(
 
     fun onMapNavigated() {
         _navigateToMap.value = null
-        _status.value = ApiStatus.DONE
     }
 
     fun onSetGpsNavigated() {

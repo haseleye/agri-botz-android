@@ -41,6 +41,9 @@
         <argument
             android:name="lng"
             app:argType="float" />
+        <argument
+            android:name="gadgetName"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -59,5 +62,8 @@
             android:name="gadgetLng"
             app:argType="float"
             android:defaultValue="0.0" />
+        <argument
+            android:name="gadgetName"
+            app:argType="string" />
     </fragment>
 </navigation>

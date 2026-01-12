@@ -41,6 +41,7 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
 
     // Fetching arguments
     private val gadgetId: String by lazy { arguments?.getString("gadgetId") ?: "" }
+    private val gadgetName: String by lazy { arguments?.getString("gadgetName") ?: "" }
     private val hasExistingGps: Boolean by lazy {
         gadgetLat != 0f && gadgetLng != 0f
     }
@@ -160,8 +161,9 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
             selectedMarker = map.addMarker(
                 MarkerOptions()
                     .position(latLng)
-                    .title(getString(R.string.Selected_Location))
+                    .title(gadgetName)
             )
+            selectedMarker?.showInfoWindow()
 
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f))
 
@@ -264,8 +266,9 @@ class SetGadgetLocationFragment : Fragment(), OnMapReadyCallback {
         val marker = map.addMarker(
             MarkerOptions()
                 .position(startLatLng)
-                .title(getString(R.string.Selected_Location))
+                .title(gadgetName)
         )
+        marker?.showInfoWindow()
 
         marker?.let {
             val handler = android.os.Handler(android.os.Looper.getMainLooper())

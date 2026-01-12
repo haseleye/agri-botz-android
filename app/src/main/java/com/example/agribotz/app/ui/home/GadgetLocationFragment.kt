@@ -23,6 +23,7 @@ class GadgetLocationFragment : Fragment(), OnMapReadyCallback {
     private val binding get() = _binding!!
     private var lat: Double = 0.0
     private var lng: Double = 0.0
+    private var gadgetName = ""
     private var googleMap: GoogleMap? = null
     private var isSatellite = false
 
@@ -31,6 +32,7 @@ class GadgetLocationFragment : Fragment(), OnMapReadyCallback {
 
         lat = requireArguments().getFloat("lat").toDouble()
         lng = requireArguments().getFloat("lng").toDouble()
+        gadgetName = requireArguments().getString("gadgetName", "")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -80,11 +82,12 @@ class GadgetLocationFragment : Fragment(), OnMapReadyCallback {
 
         val location = LatLng(lat, lng)
 
-        map.addMarker(
+        val marker = map.addMarker(
             MarkerOptions()
                 .position(location)
-                .title(getString(R.string.Gadget_Location))
+                .title(gadgetName)
         )
+        marker?.showInfoWindow()
 
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 16f))
     }

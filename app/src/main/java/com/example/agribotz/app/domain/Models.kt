@@ -37,6 +37,7 @@ data class Gadget(
 
 data class SetLocationNav(
     val gadgetId: String,
+    val gadgetName: String,
     val gps: GPS?
 )
 

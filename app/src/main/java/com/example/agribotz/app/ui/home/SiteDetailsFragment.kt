@@ -121,15 +121,16 @@ class SiteDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.navigateToMap.observe(viewLifecycleOwner) { gps ->
-            gps?.let {
-                val lat = it.lat
-                val lng = it.long
+        viewModel.navigateToMap.observe(viewLifecycleOwner) { locationNav ->
+            locationNav?.let {
+                val lat = it.gps?.lat
+                val lng = it.gps?.long
 
                 if (lat != null && lng != null) {
                     val bundle = Bundle().apply {
                         putFloat("lat", lat.toFloat())
                         putFloat("lng", lng.toFloat())
+                        putString("gadgetName", it.gadgetName)
                     }
 
                     findNavController().navigate(
@@ -147,6 +148,7 @@ class SiteDetailsFragment : Fragment() {
 
                 val bundle = Bundle().apply {
                     putString("gadgetId", it.gadgetId)
+                    putString("gadgetName", it.gadgetName)
 
                     it.gps?.let { gps ->
                         gps.lat?.let { lat -> putFloat("gadgetLat", lat.toFloat()) }
