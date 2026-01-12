@@ -52,7 +52,6 @@ class SiteDetailsViewModel(
     private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
     val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
 
-
     private var _token: String? = null
 
     init {
@@ -176,6 +175,8 @@ class SiteDetailsViewModel(
     }
 
     fun onGpsClicked(gadget: GadgetCardUi) {
+        _status.value = ApiStatus.LOADING
+
         if (gadget.canOpenMap) {
             _navigateToMap.value = gadget.gps
         }
@@ -189,6 +190,8 @@ class SiteDetailsViewModel(
     }
 
     fun onGpsLongPressed(gadget: GadgetCardUi): Boolean {
+        _status.value = ApiStatus.LOADING
+
         _navigateToSetLocation.value =
             SetLocationNav(
                 gadgetId = gadget.id,
@@ -199,6 +202,7 @@ class SiteDetailsViewModel(
 
     fun onMapNavigated() {
         _navigateToMap.value = null
+        _status.value = ApiStatus.DONE
     }
 
     fun onSetGpsNavigated() {
