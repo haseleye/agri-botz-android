@@ -2,17 +2,30 @@ package com.example.agribotz.app.ui.home
 
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.GPS
+import com.example.agribotz.app.domain.Site
 import com.example.agribotz.app.util.toDisplayDate
 
 data class SiteUi(
     val id: String,
     val name: String,
+
+    // Creation state
     val createdAt: String?,
+    val createdAgo: String?,
+
+    // Activation state
     val isActive: Boolean,
     val activatedAt: String?,
     val deactivatedAt: String?,
+    val activatedAgo: String?,
+    val deactivatedAgo: String?,
+
+    // Termination state
     val isTerminated: Boolean,
     val terminatedAt: String?,
+    val terminatedAgo: String?,
+
+    // Hardware info
     val numberOfGadgets: Int
 ) {
     val createdAtFormatted: String?
@@ -27,7 +40,9 @@ data class SiteUi(
     val terminatedAtFormatted: String?
         get() = terminatedAt?.toDisplayDate()
 
-    val statusLineResId: Int
+    val createdResId = R.string.Created_Since
+
+    val statusResId: Int
         get() = when {
             isTerminated -> R.string.Terminated_Since
             isActive -> R.string.Activated_Since
@@ -42,8 +57,8 @@ data class SiteUi(
         }
 }
 
-fun SiteUi.toDomain(): com.example.agribotz.app.domain.Site {
-    return com.example.agribotz.app.domain.Site(
+fun SiteUi.toDomain(): Site {
+    return Site(
         id = id,
         name = name,
         createdAt = createdAt,
@@ -123,35 +138,23 @@ data class GadgetCardUi(
     val onlineStateTimeAgo: String?
         get() = if (isOnline) onlineTimeAgo else offlineTimeAgo
 
-    /* ==============================
-     * FULL STATUS TEXT (for dialogs)
-     * ============================== */
-
-    val terminatedFullText: String?
-        get() = terminatedAtFormatted?.let {
-            "Terminated since $it"
+    val statusResId: Int?
+        get() = when {
+            isTerminated -> R.string.Terminated_Since
+            isActive -> R.string.Activated_Since
+            !isActive -> R.string.Deactivated_Since
+            isOnline -> R.string.Online_Since
+            else -> R.string.Offline_Since
         }
 
-    val inactiveFullText: String?
-        get() = deactivatedAtFormatted?.let {
-            "Deactivated since $it"
+    val statusDate: String?
+        get() = when {
+            isTerminated -> terminatedAtFormatted
+            isActive -> activatedAtFormatted
+            !isActive -> deactivatedAtFormatted
+            isOnline -> onlineAtFormatted
+            else -> offlineAtFormatted
         }
-
-    val activeFullText: String?
-        get() = activatedAtFormatted?.let {
-            "Activated since $it"
-        }
-
-    val onlineFullText: String?
-        get() = onlineAtFormatted?.let {
-            "Online since $it"
-        }
-
-    val offlineFullText: String?
-        get() = offlineAtFormatted?.let {
-            "Offline since $it"
-        }
-
 }
 
 data class ScheduleUi(

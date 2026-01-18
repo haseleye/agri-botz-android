@@ -45,11 +45,15 @@ data class Site(
     val id: String,
     val name: String,
     val createdAt: String? = null,
+    val createdAgo: String? = null,
     val isActive: Boolean,
     val activatedAt: String? = null,
+    val activatedAgo: String? = null,
     val deactivatedAt: String? = null,
+    val deactivatedAgo: String? = null,
     val isTerminated: Boolean,
     val terminatedAt: String? = null,
+    val terminatedAgo: String? = null,
     val numberOfGadgets: Int
 )
 

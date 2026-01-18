@@ -82,8 +82,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/Terminated"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.terminatedFullText)}"
-                        android:tooltipText="@{gadget.terminatedFullText}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
@@ -110,8 +110,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/Inactive"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.inactiveFullText)}"
-                        android:tooltipText="@{gadget.inactiveFullText}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
@@ -138,8 +138,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/Active"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.activeFullText)}"
-                        android:tooltipText="@{gadget.activeFullText}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
@@ -166,8 +166,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/Online"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.onlineFullText)}"
-                        android:tooltipText="@{gadget.onlineFullText}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
@@ -194,8 +194,8 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:contentDescription="@string/Offline"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.offlineFullText)}"
-                        android:tooltipText="@{gadget.offlineFullText}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView

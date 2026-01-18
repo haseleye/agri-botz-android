@@ -67,6 +67,7 @@
     <string name="Location_Updated">تم تحديث الموقع بنجاح</string>
     <string name="Google_Maps">افتح في خرائط جوجل</string>
     <string name="Gadget_Location">موقع الجهاز</string>
+    <string name="Created">الإنشاء</string>
     <string name="Terminated">تم الإنهاء</string>
     <string name="Active">تم التفعيل</string>
     <string name="My_Sites">مواقعي</string>

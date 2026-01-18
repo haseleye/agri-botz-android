@@ -61,6 +61,7 @@
     <string name="Location_Updated">Location updated successfully</string>
     <string name="Google_Maps">Open in Google maps</string>
     <string name="Gadget_Location">Gadget Location</string>
+    <string name="Created">Creation</string>
     <string name="Terminated">Terminated</string>
     <string name="Active">Active</string>
     <string name="Inactive">Inactive</string>

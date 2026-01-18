@@ -1,6 +1,7 @@
 package com.example.agribotz.app.viewmodels.home
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.*
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
@@ -43,8 +44,8 @@ class SiteDetailsViewModel(
     private val _errorServerMessageRes = MutableLiveData<Int?>()
     val errorServerMessageRes: LiveData<Int?> = _errorServerMessageRes
 
-    private val _showStatusDetails = MutableLiveData<String?>()
-    val showStatusDetails: LiveData<String?> = _showStatusDetails
+    private val _showStatusDetails = MutableLiveData<Pair<Int, String>?>()
+    val showStatusDetails: LiveData<Pair<Int, String>?> = _showStatusDetails
 
     private val _navigateToMap = MutableLiveData<SetLocationNav?>()
     val navigateToMap: LiveData<SetLocationNav?> = _navigateToMap
@@ -69,8 +70,6 @@ class SiteDetailsViewModel(
                         _siteName.value = msg.siteInfo.name
 
                         _gadgets.value = msg.gadgets.map { gadget ->
-
-                            val hasGps = gadget.gps != null
 
                             val isOnlineVar = gadget.variables
                                 .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" }
@@ -164,9 +163,9 @@ class SiteDetailsViewModel(
         _eventTransError.value = null
     }
 
-    fun onStatusIconClicked(fullText: String?) {
-        if (!fullText.isNullOrBlank()) {
-            _showStatusDetails.value = fullText
+    fun onStatusIconClicked(@StringRes resId: Int?, date: String?) {
+        if (resId != null && !date.isNullOrBlank()) {
+            _showStatusDetails.value = Pair(resId, date)
         }
     }
 

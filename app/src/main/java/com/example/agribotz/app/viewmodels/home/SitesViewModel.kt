@@ -1,6 +1,7 @@
 package com.example.agribotz.app.viewmodels.home
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,17 +37,24 @@ class SitesViewModel(private val repository: Repository, private val prefManager
     private val _errorServerMessageRes = MutableLiveData<Int?>()
     val errorServerMessageRes: LiveData<Int?> = _errorServerMessageRes
 
+    private val _showStatusDetails = MutableLiveData<Pair<Int, String>?>()
+    val showStatusDetails: LiveData<Pair<Int, String>?> = _showStatusDetails
+
     init {
         _sites.value = prefManager.getSites()?.map {
             SiteUi(
                 id = it.id,
                 name = it.name,
                 createdAt = it.createdAt,
+                createdAgo = it.createdAgo,
                 isActive = it.isActive,
                 activatedAt = it.createdAt,
+                activatedAgo = it.activatedAgo,
                 deactivatedAt = it.deactivatedAt,
+                deactivatedAgo = it.deactivatedAgo,
                 isTerminated = it.isTerminated,
                 terminatedAt = it.terminatedAt,
+                terminatedAgo = it.terminatedAgo,
                 numberOfGadgets = it.numberOfGadgets
             )
         }
@@ -66,11 +74,15 @@ class SitesViewModel(private val repository: Repository, private val prefManager
                                 id = it.id,
                                 name = it.name,
                                 createdAt = it.createdAt,
+                                createdAgo = it.createdAgo,
                                 isActive = it.isActive,
                                 activatedAt = it.createdAt,
+                                activatedAgo = it.activatedAgo,
                                 deactivatedAt = it.deactivatedAt,
+                                deactivatedAgo = it.deactivatedAgo,
                                 isTerminated = it.isTerminated,
                                 terminatedAt = it.terminatedAt,
+                                terminatedAgo = it.terminatedAgo,
                                 numberOfGadgets = it.numberOfGadgets
                             )
                         }
@@ -226,5 +238,15 @@ class SitesViewModel(private val repository: Repository, private val prefManager
 
     fun onTransErrorCompleted() {
         _eventTransError.value = null
+    }
+
+    fun onStatusIconClicked(@StringRes resId: Int?, date: String?) {
+        if (resId != null && !date.isNullOrBlank()) {
+            _showStatusDetails.value = Pair(resId, date)
+        }
+    }
+
+    fun onStatusDetailsShown() {
+        _showStatusDetails.value = null
     }
 }

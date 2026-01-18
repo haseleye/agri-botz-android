@@ -110,10 +110,10 @@ class SiteDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.showStatusDetails.observe(viewLifecycleOwner) { text ->
-            text?.let {
+        viewModel.showStatusDetails.observe(viewLifecycleOwner) { data ->
+            data?.let { (resId, date) ->
                 AlertDialog.Builder(requireContext())
-                    .setMessage(it)
+                    .setMessage(getString(resId, date))
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
 

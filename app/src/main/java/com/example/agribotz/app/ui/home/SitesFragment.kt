@@ -117,6 +117,17 @@ class SitesFragment : Fragment() {
                 Toast.makeText(requireContext(), getString(it), Toast.LENGTH_LONG).show()
             }
         }
+
+        viewModel.showStatusDetails.observe(viewLifecycleOwner) { data ->
+            data?.let { (resId, date) ->
+                AlertDialog.Builder(requireContext())
+                    .setMessage(getString(resId, date))
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+
+                viewModel.onStatusDetailsShown()
+            }
+        }
     }
 
     private fun showAddSiteDialog() {
