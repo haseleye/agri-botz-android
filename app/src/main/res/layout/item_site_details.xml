@@ -43,8 +43,8 @@
             <!-- GPS button -->
             <ImageView
                 android:id="@+id/gpsBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@{gadget.hasGps ? @drawable/gps : @drawable/no_gps}"
                 android:onClick="@{() -> viewModel.onGpsClicked(gadget)}"
                 android:onLongClick="@{() -> viewModel.onGpsLongPressed(gadget)}"
@@ -52,10 +52,24 @@
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/GPS"
+                app:enabledState="@{!gadget.isTerminated}"
                 android:scaleType="centerInside"
-                android:padding="6dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Rename button -->
+            <ImageView
+                android:id="@+id/renameSiteBtn"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_edit"
+                android:contentDescription="@string/Rename_Site"
+                app:enabledState="@{!gadget.isTerminated}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gpsBtn"
+                android:layout_marginEnd="8dp"/>
 
             <!-- STATUS ROW -->
             <LinearLayout
@@ -69,20 +83,21 @@
 
                 <!-- TERMINATED -->
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     app:visibleIf="@{gadget.isTerminated}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/badge_terminated"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/Terminated"
+                        android:focusable="true"
                         android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:src="@drawable/badge_terminated"
                         android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
@@ -90,27 +105,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{gadget.terminatedTimeAgo}"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorOnBackground" />
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- INACTIVE -->
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     app:visibleIf="@{!gadget.isTerminated &amp;&amp; !gadget.isActive}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/badge_inactive"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/Inactive"
+                        android:focusable="true"
                         android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:src="@drawable/badge_inactive"
                         android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
@@ -118,27 +135,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{gadget.inactiveTimeAgo}"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorOnBackground" />
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- ACTIVE -->
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     app:visibleIf="@{!gadget.isTerminated &amp;&amp; gadget.isActive}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/badge_active"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/Active"
+                        android:focusable="true"
                         android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:src="@drawable/badge_active"
                         android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
@@ -146,27 +165,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{gadget.activeTimeAgo}"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorOnBackground" />
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- ONLINE -->
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     app:visibleIf="@{gadget.showOnlineState &amp;&amp; gadget.isOnline}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/badge_online"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/Online"
+                        android:focusable="true"
                         android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:src="@drawable/badge_online"
                         android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
@@ -174,27 +195,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{gadget.onlineStateTimeAgo}"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorOnBackground" />
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <!-- OFFLINE -->
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     app:visibleIf="@{gadget.showOnlineState &amp;&amp; !gadget.isOnline}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/badge_offline"
                         android:clickable="true"
-                        android:focusable="true"
                         android:contentDescription="@string/Offline"
+                        android:focusable="true"
                         android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:src="@drawable/badge_offline"
                         android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
                         tools:ignore="UnusedAttribute" />
 
@@ -202,8 +225,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{gadget.onlineStateTimeAgo}"
-                        android:textSize="12sp"
-                        android:textColor="@color/colorOnBackground" />
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
             </LinearLayout>

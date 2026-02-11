@@ -4,20 +4,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <!-- Gadget UI model -->
         <variable
-            name="site"
-            type="com.example.agribotz.app.ui.home.SiteUi" />
+            name="gadget"
+            type="com.example.agribotz.app.ui.home.GadgetCardUi" />
+
+        <!-- Actions delegated to hosting ViewModel -->
         <variable
-            name="viewModel"
-            type="com.example.agribotz.app.viewmodels.home.SitesViewModel" />
+            name="onRename"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onGpsClick"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onGpsLongClick"
+            type="android.view.View.OnLongClickListener" />
+
+        <variable
+            name="onStatusClick"
+            type="android.view.View.OnClickListener" />
+
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:clickable="true"
-        android:focusable="true"
         app:cardElevation="4dp"
         app:cardCornerRadius="12dp">
 
@@ -26,83 +41,61 @@
             android:layout_height="wrap_content"
             android:padding="12dp">
 
-            <!-- Site name -->
+            <!-- ================= GADGET NAME ================= -->
             <TextView
-                android:id="@+id/siteName"
+                android:id="@+id/gadgetName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@{site.name}"
+                android:text="@{gadget.name}"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/renameSiteBtn" />
+                app:layout_constraintEnd_toStartOf="@id/gpsBtn" />
 
-            <!-- Delete button -->
+            <!-- ================= GPS BUTTON ================= -->
             <ImageView
-                android:id="@+id/deleteSiteBtn"
+                android:id="@+id/gpsBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:src="@{gadget.hasGps ? @drawable/gps : @drawable/no_gps}"
+                android:onClick="@{onGpsClick}"
+                android:onLongClick="@{onGpsLongClick}"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_delete"
-                android:contentDescription="@string/Delete_Site"
-                app:enabledState="@{site.numberOfGadgets == 0}"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/GPS"
+                app:enabledState="@{!gadget.isTerminated}"
+                android:scaleType="centerInside"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Rename button -->
+            <!-- ================= RENAME ================= -->
             <ImageView
-                android:id="@+id/renameSiteBtn"
+                android:id="@+id/renameBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:src="@drawable/ic_edit"
+                android:onClick="@{onRename}"
                 android:clickable="true"
                 android:focusable="true"
-                android:src="@drawable/ic_edit"
-                android:contentDescription="@string/Rename_Site"
-                app:enabledState="@{!site.isTerminated}"
+                android:contentDescription="@string/Rename_Gadget"
+                app:enabledState="@{!gadget.isTerminated}"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/deleteSiteBtn"
-                android:layout_marginEnd="8dp"/>
+                app:layout_constraintEnd_toStartOf="@id/gpsBtn"
+                android:layout_marginEnd="8dp" />
 
-            <!-- Status Row -->
+            <!-- ================= STATUS ROW ================= -->
             <LinearLayout
                 android:id="@+id/statusRow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/siteName"
+                app:layout_constraintTop_toBottomOf="@id/gadgetName"
                 app:layout_constraintStart_toStartOf="parent">
-
-                <!-- CREATED -->
-                <LinearLayout
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    tools:ignore="UselessParent">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:contentDescription="@string/Created"
-                        android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(site.createdResId, site.createdAtFormatted)}"
-                        android:src="@drawable/badge_created"
-                        android:tooltipText="@{context.getString(site.createdResId, site.createdAtFormatted)}"
-                        tools:ignore="UnusedAttribute" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@{site.createdAgo}"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="12sp" />
-                </LinearLayout>
 
                 <!-- TERMINATED -->
                 <LinearLayout
@@ -110,25 +103,24 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:visibleIf="@{site.isTerminated}"
+                    app:visibleIf="@{gadget.isTerminated}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:contentDescription="@string/Terminated"
-                        android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(site.statusResId, site.statusDate)}"
                         android:src="@drawable/badge_terminated"
-                        android:tooltipText="@{context.getString(site.statusResId, site.statusDate)}"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{onStatusClick}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:contentDescription="@string/Terminated"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@{site.terminatedAgo}"
+                        android:text="@{gadget.terminatedTimeAgo}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -141,25 +133,24 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:visibleIf="@{!site.isTerminated &amp;&amp; !site.isActive}"
+                    app:visibleIf="@{!gadget.isTerminated &amp;&amp; !gadget.isActive}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:contentDescription="@string/Inactive"
-                        android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(site.statusResId, site.statusDate)}"
                         android:src="@drawable/badge_inactive"
-                        android:tooltipText="@{context.getString(site.statusResId, site.statusDate)}"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{onStatusClick}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:contentDescription="@string/Inactive"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@{site.deactivatedAgo}"
+                        android:text="@{gadget.inactiveTimeAgo}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -172,25 +163,84 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    app:visibleIf="@{!site.isTerminated &amp;&amp; site.isActive}"
+                    app:visibleIf="@{!gadget.isTerminated &amp;&amp; gadget.isActive}"
                     tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:contentDescription="@string/Active"
-                        android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(site.statusResId, site.statusDate)}"
                         android:src="@drawable/badge_active"
-                        android:tooltipText="@{context.getString(site.statusResId, site.statusDate)}"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{onStatusClick}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:contentDescription="@string/Active"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="@{site.activatedAgo}"
+                        android:text="@{gadget.activeTimeAgo}"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- ONLINE -->
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:visibleIf="@{gadget.showOnlineState &amp;&amp; gadget.isOnline}"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/badge_online"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{onStatusClick}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:contentDescription="@string/Online"
+                        tools:ignore="UnusedAttribute" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{gadget.onlineStateTimeAgo}"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- OFFLINE -->
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:visibleIf="@{gadget.showOnlineState &amp;&amp; !gadget.isOnline}"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/badge_offline"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{onStatusClick}"
+                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:contentDescription="@string/Offline"
+                        tools:ignore="UnusedAttribute" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{gadget.onlineStateTimeAgo}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -198,18 +248,19 @@
 
             </LinearLayout>
 
-            <!-- Number of Gadgets -->
+            <!-- ================= VALVES / SENSORS ================= -->
             <TextView
-                android:id="@+id/siteGadget"
+                android:id="@+id/gadgetDetails"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text='@{@string/Gadgets_Count(site.numberOfGadgets)}'
+                android:text='@{"Valves: " + gadget.numberOfValves + "  |  Sensors: " + gadget.numberOfSensors}'
                 android:textColor="@color/colorPrimary"
+                android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@id/statusRow"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
 </layout>

@@ -21,6 +21,7 @@
     <string name="Forgot_Password">Forgot Password</string>
     <string name="Required_Field">Required Field</string>
     <string name="Water_Valves">Water Valves</string>
+    <string name="Water_Valve2_Status">Water Valve 2 Status</string>
     <string name="Sensors">Sensors</string>
     <string name="Settings">Settings</string>
     <string name="Valve_Open">Open</string>
@@ -29,12 +30,14 @@
     <string name="Add_Site">Add new site</string>
     <string name="Delete_Site">Delete site</string>
     <string name="Enter_Site_Name">Enter site name</string>
+    <string name="Enter_Gadget_Name">Enter gadget name</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
     <string name="Confirmation">Are you sure you want to continue?</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
     <string name="Rename_Site">Rename Site</string>
+    <string name="Rename_Gadget">Rename Gadget</string>
     <string name="Rename">Rename</string>
     <string name="Enter_New_Site_Name">Enter new site name</string>
     <string name="Created_Since">Created since %1$s</string>
@@ -43,6 +46,11 @@
     <string name="Activated_Since">Activated since %1$s</string>
     <string name="Deactivated_Since">Deactivated since %1$s</string>
     <string name="Terminated_Since">Terminated since %1$s</string>
+    <string name="Opened_Since">Water valve opened since %1$s</string>
+    <string name="Closed_Since">Water valve closed since %1$s</string>
+    <string name="Manual_Since">Manual irrigation adjusted since %1$s</string>
+    <string name="Automatic_Since">Automatic irrigation adjusted since %1$s</string>
+    <string name="Updated_Since">Updated since %1$s</string>
     <string name="Gadgets_Count">Gadgets: %1$d</string>
     <string name="My_Sites">My Sites</string>
     <string name="Site_Gadgets">Site Gadgets</string>
@@ -70,4 +78,15 @@
     <string name="no_sites_message">You don’t have any sites yet.\nTap + to add one.</string>
     <string name="no_gadgets_message">You don’t have any gadgets yet.\nContact our representative to accomplish\n that mission.</string>
     <string name="Ok">OK</string>
+    <string name="Gadget_Manager">Gadget Manager</string>
+    <string name="Water_Valve_Status">Water Valve Status</string>
+    <string name="Manual_Irrigation">Manual Irrigation</string>
+    <string name="Edit_Settings">Edit Settings</string>
+    <string name="Delete_Settings">Delete Settings</string>
+    <string name="Deep_Sleep">Deep Sleep</string>
+    <string name="Refresh_Rate">Refresh Rate</string>
+    <string name="GMT_Zone">GMT Zone</string>
+    <string name="Restart">Restart</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

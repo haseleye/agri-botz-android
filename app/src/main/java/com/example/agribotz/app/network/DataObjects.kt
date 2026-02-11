@@ -109,7 +109,7 @@ data class RenameGadgetRequest(
 data class RenameGadgetResponse(
     val status: String,
     val error: String,
-    val message: String?
+    val message: Any?
 )
 
 data class GadgetGpsRequest(

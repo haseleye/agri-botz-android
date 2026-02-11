@@ -102,6 +102,13 @@ data class ScheduleValue(
     val msk: Int
 )
 
+data class ScheduleResult(
+    val repeatEvery: String,
+    val selectedDays: List<String>? = null,
+    val dayOfMonth: Int? = null,
+    val month: String? = null
+)
+
 @JsonClass(generateAdapter = true)
 sealed class Variable {
     @JsonClass(generateAdapter = true)
@@ -112,7 +119,7 @@ sealed class Variable {
         @field:Json(name = "type") val type: String,
         val value: Boolean,
         val updatedAt: String?,
-        val timeAgo: String,
+        val timeAgo: String?,
         val category: String
     ): Variable()
     @JsonClass(generateAdapter = true)

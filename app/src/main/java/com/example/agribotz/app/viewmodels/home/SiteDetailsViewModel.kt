@@ -163,6 +163,42 @@ class SiteDetailsViewModel(
         _eventTransError.value = null
     }
 
+    fun onRenameGadget(gadgetId: String, newName: String) {
+        viewModelScope.launch {
+            try {
+                when (val result = repository.renameGadget(_token!!, gadgetId, newName)) {
+                    is ApiResult.Success -> { onLoad() }
+
+                    is ApiResult.Error -> {
+                        Log.e("SiteDetailsViewModel", "Renaming gadget failed: ${result.devMessage}")
+
+                        // Show the "no connection" icon only for connectivity problems
+                        if (result.userMessageKey == R.string.Error_Internet_Connection) {
+                            _status.value = ApiStatus.ERROR
+                        }
+                        else {
+                            _status.value = ApiStatus.DONE
+                        }
+
+                        if (!result.userMessageString.isNullOrBlank()) {
+                            _errorServerMessage.value = result.userMessageString
+                            _errorServerMessageRes.value = null
+                        }
+                        else {
+                            _errorServerMessageRes.value = result.userMessageKey
+                            _errorServerMessage.value = null
+                        }
+                    }
+                }
+            }
+            catch (e: Exception) {
+                _status.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("SiteDetailsViewModel", "Renaming gadget failed with exception", e)
+            }
+        }
+    }
+
     fun onStatusIconClicked(@StringRes resId: Int?, date: String?) {
         if (resId != null && !date.isNullOrBlank()) {
             _showStatusDetails.value = Pair(resId, date)

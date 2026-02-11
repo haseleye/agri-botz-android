@@ -4,6 +4,11 @@ import com.example.agribotz.R
 import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.Site
 import com.example.agribotz.app.util.toDisplayDate
+import com.example.agribotz.app.util.parseScheduleMask
+import com.example.agribotz.app.domain.ScheduleResult
+import com.example.agribotz.app.domain.Variable
+import java.util.Calendar
+import java.util.Locale
 
 data class SiteUi(
     val id: String,
@@ -159,11 +164,177 @@ data class GadgetCardUi(
 
 data class ScheduleUi(
     val index: Int,
-    val startTime: String,
-    val durationMin: Int,
+    val isSet: Boolean,
+
+    // Start
+    val startEpochSec: Long,
+    val startDateText: String,   // e.g. 26/05/2025
+    val startTimeText: String,   // e.g. 12:00
+
+    // Duration
+    val durationSec: Int,
+    val durationText: String,    // e.g. 2m 30s
+
+    // Recurrence
+    val repeatLabel: String,     // e.g. Does not repeat / Day / Week / Month / Year
     val daysMask: Int,
-    val enabled: Boolean
+    val selectedDaysShort: List<String>, // e.g. ["M","W","S"] for weekly chips
+    val dayOfMonth: Int?,        // for monthly/yearly
+    val monthShort: String?,     // for yearly
+
+    // End recurrence
+    val endEpochSec: Long,       // 0 = never
+    val hasEndRecurrence: Boolean,
+    val endDateText: String?,    // e.g. 30/06/2026
+    val endTimeText: String?,    // e.g. 16:00
+
+    // Row state
+    val enabled: Boolean,
+
+    // Ready-to-render convenience summary for simple rows
+    val summaryLine: String      // e.g. "12:00 • Week on Mon, Wed, Sat • 2m 30s"
 )
+
+fun mapScheduleToUi(
+    variable: Variable.ScheduleVar,
+    index: Int
+): ScheduleUi {
+    val v = variable.value
+
+    // Not set / cleared
+    if (v.len <= 0 || v.frm <= 0L) {
+        return ScheduleUi(
+            index = index,
+            isSet = false,
+            startEpochSec = 0L,
+            startDateText = "Not Set",
+            startTimeText = "Not Set",
+            durationSec = 0,
+            durationText = "0m",
+            repeatLabel = "Does not repeat",
+            daysMask = 0,
+            selectedDaysShort = emptyList(),
+            dayOfMonth = null,
+            monthShort = null,
+            endEpochSec = 0L,
+            hasEndRecurrence = false,
+            endDateText = null,
+            endTimeText = null,
+            enabled = false,
+            summaryLine = "Not Set"
+        )
+    }
+
+    val startDateText = formatDateDmy(v.frm)
+    val startTimeText = formatTimeHm(v.frm)
+    val durationText = formatDuration(v.len)
+
+    val parsed = parseScheduleMask(v.msk.toLong())
+    val repeatLabel = repeatLabelFromParsed(parsed)
+    val selectedDays = selectedDaysShortFromParsed(parsed)
+
+    val hasEnd = v.to > 0L
+    val endDateText = if (hasEnd) formatDateDmy(v.to) else null
+    val endTimeText = if (hasEnd) formatTimeHm(v.to) else null
+
+    val summary = buildSummaryLine(
+        startTimeText = startTimeText,
+        repeatLabel = repeatLabel,
+        selectedDaysShort = selectedDays,
+        durationText = durationText
+    )
+
+    return ScheduleUi(
+        index = index,
+        isSet = true,
+        startEpochSec = v.frm,
+        startDateText = startDateText,
+        startTimeText = startTimeText,
+        durationSec = v.len,
+        durationText = durationText,
+        repeatLabel = repeatLabel,
+        daysMask = v.msk,
+        selectedDaysShort = selectedDays,
+        dayOfMonth = parsed.dayOfMonth,
+        monthShort = parsed.month?.replaceFirstChar { it.uppercaseChar() },
+        endEpochSec = v.to,
+        hasEndRecurrence = hasEnd,
+        endDateText = endDateText,
+        endTimeText = endTimeText,
+        enabled = true,
+        summaryLine = summary
+    )
+}
+
+fun formatDateDmy(epochSec: Long): String {
+    val cal = Calendar.getInstance().apply { timeInMillis = epochSec * 1000L }
+    val day = cal.get(Calendar.DAY_OF_MONTH)
+    val month = cal.get(Calendar.MONTH) + 1
+    val year = cal.get(Calendar.YEAR)
+    return String.format(Locale.US, "%02d/%02d/%04d", day, month, year)
+}
+
+fun formatTimeHm(epochSec: Long): String {
+    val cal = Calendar.getInstance().apply { timeInMillis = epochSec * 1000L }
+    val h = cal.get(Calendar.HOUR_OF_DAY)
+    val m = cal.get(Calendar.MINUTE)
+    return String.format(Locale.US, "%02d:%02d", h, m)
+}
+
+fun formatDuration(durationSec: Int): String {
+    val hours = durationSec / 3600
+    val mins = (durationSec % 3600) / 60
+    val secs = durationSec % 60
+
+    return when {
+        hours > 0 && mins > 0 -> "${hours}h ${mins}m"
+        hours > 0 && mins == 0 -> "${hours}h"
+        mins > 0 && secs > 0 -> "${mins}m ${secs}s"
+        mins > 0 -> "${mins}m"
+        else -> "${secs}s"
+    }
+}
+
+fun repeatLabelFromParsed(parsed: ScheduleResult): String {
+    return when (parsed.repeatEvery.lowercase(Locale.US)) {
+        "does not repeat" -> "Does not repeat"
+        "hour" -> "Every hour"
+        "day" -> "Every day"
+        "week" -> "Every week"
+        "month" -> "Every month"
+        "year" -> "Every year"
+        else -> "Custom repeat"
+    }
+}
+
+fun selectedDaysShortFromParsed(parsed: ScheduleResult): List<String> {
+    val map = mapOf(
+        "sun" to "S",
+        "mon" to "M",
+        "tue" to "T",
+        "wed" to "W",
+        "thu" to "T",
+        "fri" to "F",
+        "sat" to "S"
+    )
+    return parsed.selectedDays?.mapNotNull { map[it.lowercase(Locale.US)] } ?: emptyList()
+}
+
+fun buildSummaryLine(
+    startTimeText: String,
+    repeatLabel: String,
+    selectedDaysShort: List<String>,
+    durationText: String
+): String {
+    val recurrencePart = if (repeatLabel == "Every week" && selectedDaysShort.isNotEmpty()) {
+        "Week on ${selectedDaysShort.joinToString(",")}"
+    } else {
+        repeatLabel
+    }
+
+    return "$startTimeText • $recurrencePart • $durationText"
+}
+
 
 data class ValveUi(
     val id: String,

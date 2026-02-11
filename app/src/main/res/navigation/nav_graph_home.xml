@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_siteDetailsFragment_to_setGadgetLocationFragment"
             app:destination="@id/setGadgetLocationFragment" />
+        <action
+            android:id="@+id/action_siteDetailsFragment_to_gadgetManagerFragment"
+            app:destination="@id/gadgetManagerFragment" />
     </fragment>
 
     <fragment
@@ -64,6 +67,15 @@
             android:defaultValue="0.0" />
         <argument
             android:name="gadgetName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/gadgetManagerFragment"
+        android:name="com.example.agribotz.app.view.home.GadgetManagerFragment"
+        android:label="GadgetManagerFragment"
+        tools:layout="@layout/fragment_gadget_manager" >
+        <argument
+            android:name="gadgetId"
             app:argType="string" />
     </fragment>
 </navigation>

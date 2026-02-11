@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -38,7 +39,7 @@ class SiteDetailsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = SiteDetailsAdapter(viewModel) { gadget ->
+        val adapter = SiteDetailsAdapter(viewModel, onRenameClicked = { gadgetCardUi -> showRenameGadgetDialog(gadgetCardUi) }) { gadget ->
             viewModel.onGadgetClicked(gadget.id)
         }
         binding.gadgetsRecycler.adapter = adapter
@@ -99,12 +100,15 @@ class SiteDetailsFragment : Fragment() {
         }
 
         viewModel.navigateToGadget.observe(viewLifecycleOwner) { gadgetId ->
-            gadgetId?.let {
-                AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.Water_Valves)
-                    .setMessage(getString(R.string.Gadgets_Count, 0))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .show()
+            gadgetId?.let { id ->
+                val bundle = Bundle().apply {
+                    putString("gadgetId", id)
+                }
+
+                findNavController().navigate(
+                    R.id.action_siteDetailsFragment_to_gadgetManagerFragment,
+                    bundle
+                )
 
                 viewModel.onNavigatedToGadget()
             }
@@ -164,6 +168,25 @@ class SiteDetailsFragment : Fragment() {
                 viewModel.onSetGpsNavigated()
             }
         }
+    }
+
+    fun showRenameGadgetDialog(gadget: GadgetCardUi) {
+        val editText = EditText(requireContext()).apply {
+            hint = getString(R.string.Enter_Gadget_Name)
+            setText(gadget.name) // prefill current name
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.Rename_Gadget))
+            .setView(editText)
+            .setPositiveButton(R.string.Rename) { _, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotEmpty() && newName != gadget.name) {
+                    viewModel.onRenameGadget(gadget.id, newName)
+                }
+            }
+            .setNegativeButton(R.string.Cancel, null)
+            .show()
     }
 
     override fun onDestroyView() {

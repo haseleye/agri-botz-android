@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.agribotz.app.ui.home.GadgetCardUi
+import com.example.agribotz.app.ui.home.SiteUi
 import com.example.agribotz.app.viewmodels.home.SiteDetailsViewModel
 import com.example.agribotz.databinding.ItemSiteDetailsBinding
 
 class SiteDetailsAdapter(
     private val viewModel: SiteDetailsViewModel,
+    private val onRenameClicked: (GadgetCardUi) -> Unit,
     private val onClick: (GadgetCardUi) -> Unit
 ) : ListAdapter<GadgetCardUi, SiteDetailsAdapter.GadgetViewHolder>(DiffCallback) {
 
@@ -31,6 +33,10 @@ class SiteDetailsAdapter(
 
             binding.root.setOnClickListener {
                 onClick(gadget)
+            }
+
+            binding.renameSiteBtn.setOnClickListener {
+                onRenameClicked(gadget)
             }
 
             binding.executePendingBindings()

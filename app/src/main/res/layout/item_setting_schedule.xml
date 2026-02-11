@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="schedule"
+            type="com.example.agribotz.app.ui.home.ScheduleUi" />
+
+        <variable
+            name="onEdit"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="onDelete"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/scheduleRowRoot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
+        android:paddingStart="12dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        app:enabledState="@{schedule.enabled}">
+
+        <!-- Left content -->
+        <LinearLayout
+            android:id="@+id/scheduleTextContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/scheduleActionsContainer"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Primary line -->
+            <TextView
+                android:id="@+id/tvSchedulePrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{schedule.isSet ? ("Schedule " + schedule.index + ": " + schedule.summaryLine) : ("Schedule " + schedule.index + ": Not Set")}'
+                android:textColor="@color/colorOnBackground"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="Schedule 1: 12:00 • Week on M,W,F • 2h 30m" />
+
+            <!-- Secondary line -->
+            <TextView
+                android:id="@+id/tvScheduleSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text='@{schedule.isSet ? ("Start: " + schedule.startDateText + " " + schedule.startTimeText + (schedule.hasEndRecurrence ? ("   |   End: " + schedule.endDateText + " " + schedule.endTimeText) : "")) : ""}'
+                android:textColor="@color/colorOnBackground"
+                android:textSize="12sp"
+                app:visibleIf='@{schedule.isSet}'
+                tools:text="Start: 26/05/2025 12:00   |   End: 30/06/2025 16:00" />
+        </LinearLayout>
+
+        <!-- Right actions -->
+        <LinearLayout
+            android:id="@+id/scheduleActionsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/ivScheduleEdit"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@string/Edit_Settings"
+                android:src="@drawable/ic_edit"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{onEdit}"
+                app:enabledState="@{schedule.enabled}" />
+
+            <ImageView
+                android:id="@+id/ivScheduleDelete"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/Delete_Settings"
+                android:src="@drawable/ic_delete"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{onDelete}"
+                app:enabledState='@{schedule.enabled &amp;&amp; schedule.isSet}' />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
