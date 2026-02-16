@@ -144,21 +144,35 @@ data class GadgetCardUi(
         get() = if (isOnline) onlineTimeAgo else offlineTimeAgo
 
     val statusResId: Int?
-        get() = when {
-            isTerminated -> R.string.Terminated_Since
-            isActive -> R.string.Activated_Since
-            !isActive -> R.string.Deactivated_Since
-            isOnline -> R.string.Online_Since
-            else -> R.string.Offline_Since
+        get() = if (isTerminated) {
+            R.string.Terminated_Since
+        } else if (isActive) {
+            R.string.Activated_Since
+        } else {
+            R.string.Deactivated_Since
         }
 
     val statusDate: String?
-        get() = when {
-            isTerminated -> terminatedAtFormatted
-            isActive -> activatedAtFormatted
-            !isActive -> deactivatedAtFormatted
-            isOnline -> onlineAtFormatted
-            else -> offlineAtFormatted
+        get() = if (isTerminated) {
+            terminatedAtFormatted
+        } else if (isActive) {
+            activatedAtFormatted
+        } else {
+            deactivatedAtFormatted
+        }
+
+    val connectResId: Int?
+        get() = if (isOnline) {
+            R.string.Online_Since
+        } else {
+            R.string.Offline_Since
+        }
+
+    val connectDate: String?
+        get() = if (isOnline) {
+            onlineAtFormatted
+        } else {
+            offlineAtFormatted
         }
 }
 

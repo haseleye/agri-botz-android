@@ -4,29 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
-        <!-- Gadget UI model -->
         <variable
             name="gadget"
             type="com.example.agribotz.app.ui.home.GadgetCardUi" />
 
-        <!-- Actions delegated to hosting ViewModel -->
         <variable
-            name="onRename"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="onGpsClick"
-            type="android.view.View.OnClickListener" />
-
-        <variable
-            name="onGpsLongClick"
-            type="android.view.View.OnLongClickListener" />
-
-        <variable
-            name="onStatusClick"
-            type="android.view.View.OnClickListener" />
-
+            name="viewModel"
+            type="com.example.agribotz.app.viewmodels.home.GadgetManagerViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -41,7 +25,7 @@
             android:layout_height="wrap_content"
             android:padding="12dp">
 
-            <!-- ================= GADGET NAME ================= -->
+            <!-- Gadget Name -->
             <TextView
                 android:id="@+id/gadgetName"
                 android:layout_width="0dp"
@@ -55,14 +39,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/gpsBtn" />
 
-            <!-- ================= GPS BUTTON ================= -->
+            <!-- GPS Button -->
             <ImageView
                 android:id="@+id/gpsBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@{gadget.hasGps ? @drawable/gps : @drawable/no_gps}"
-                android:onClick="@{onGpsClick}"
-                android:onLongClick="@{onGpsLongClick}"
+                android:onClick="@{() -> viewModel.onGpsClicked(gadget)}"
+                android:onLongClick="@{() -> viewModel.onGpsLongPressed(gadget)}"
                 android:clickable="true"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
@@ -72,13 +56,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- ================= RENAME ================= -->
+            <!-- Rename button -->
             <ImageView
                 android:id="@+id/renameBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_edit"
-                android:onClick="@{onRename}"
+                android:onClick="@{() -> viewModel.onRenameGadget()}"
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/Rename_Gadget"
@@ -87,7 +71,7 @@
                 app:layout_constraintEnd_toStartOf="@id/gpsBtn"
                 android:layout_marginEnd="8dp" />
 
-            <!-- ================= STATUS ROW ================= -->
+            <!-- Status Row -->
             <LinearLayout
                 android:id="@+id/statusRow"
                 android:layout_width="wrap_content"
@@ -97,7 +81,7 @@
                 app:layout_constraintTop_toBottomOf="@id/gadgetName"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <!-- TERMINATED -->
+                <!-- Terminated -->
                 <LinearLayout
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
@@ -112,8 +96,8 @@
                         android:src="@drawable/badge_terminated"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="@{onStatusClick}"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{gadget.statusResId != 0 &amp;&amp; gadget.statusDate != null ? context.getString(gadget.statusResId, gadget.statusDate) : null}"
                         android:contentDescription="@string/Terminated"
                         tools:ignore="UnusedAttribute" />
 
@@ -126,37 +110,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- INACTIVE -->
-                <LinearLayout
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    app:visibleIf="@{!gadget.isTerminated &amp;&amp; !gadget.isActive}"
-                    tools:ignore="UseCompoundDrawables">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/badge_inactive"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:onClick="@{onStatusClick}"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
-                        android:contentDescription="@string/Inactive"
-                        tools:ignore="UnusedAttribute" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@{gadget.inactiveTimeAgo}"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <!-- ACTIVE -->
+                <!-- Active -->
                 <LinearLayout
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
@@ -172,8 +126,8 @@
                         android:src="@drawable/badge_active"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="@{onStatusClick}"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{gadget.statusResId != 0 &amp;&amp; gadget.statusDate != null ? context.getString(gadget.statusResId, gadget.statusDate) : null}"
                         android:contentDescription="@string/Active"
                         tools:ignore="UnusedAttribute" />
 
@@ -186,7 +140,37 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- ONLINE -->
+                <!-- Inactive -->
+                <LinearLayout
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    app:visibleIf="@{!gadget.isTerminated &amp;&amp; !gadget.isActive}"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/badge_inactive"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{gadget.statusResId != 0 &amp;&amp; gadget.statusDate != null ? context.getString(gadget.statusResId, gadget.statusDate) : null}"
+                        android:contentDescription="@string/Inactive"
+                        tools:ignore="UnusedAttribute" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{gadget.inactiveTimeAgo}"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Online -->
                 <LinearLayout
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
@@ -202,8 +186,8 @@
                         android:src="@drawable/badge_online"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="@{onStatusClick}"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.connectResId, gadget.connectDate)}"
+                        android:tooltipText="@{gadget.statusResId != 0 &amp;&amp; gadget.statusDate != null ? context.getString(gadget.connectResId, gadget.connectDate) : null}"
                         android:contentDescription="@string/Online"
                         tools:ignore="UnusedAttribute" />
 
@@ -216,7 +200,7 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <!-- OFFLINE -->
+                <!-- Offline -->
                 <LinearLayout
                     android:layout_width="80dp"
                     android:layout_height="wrap_content"
@@ -232,8 +216,8 @@
                         android:src="@drawable/badge_offline"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="@{onStatusClick}"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.connectResId, gadget.connectDate)}"
+                        android:tooltipText="@{gadget.statusResId != 0 &amp;&amp; gadget.statusDate != null ? context.getString(gadget.connectResId, gadget.connectDate) : null}"
                         android:contentDescription="@string/Offline"
                         tools:ignore="UnusedAttribute" />
 
@@ -248,7 +232,7 @@
 
             </LinearLayout>
 
-            <!-- ================= VALVES / SENSORS ================= -->
+            <!-- Valves / Sensors -->
             <TextView
                 android:id="@+id/gadgetDetails"
                 android:layout_width="0dp"

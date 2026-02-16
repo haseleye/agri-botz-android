@@ -65,7 +65,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:src="@drawable/ic_edit"
-                android:contentDescription="@string/Rename_Site"
+                android:contentDescription="@string/Rename_Gadget"
                 app:enabledState="@{!gadget.isTerminated}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/gpsBtn"
@@ -186,9 +186,9 @@
                         android:clickable="true"
                         android:contentDescription="@string/Online"
                         android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.connectResId, gadget.connectDate)}"
                         android:src="@drawable/badge_online"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.connectResId, gadget.connectDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView
@@ -216,9 +216,9 @@
                         android:clickable="true"
                         android:contentDescription="@string/Offline"
                         android:focusable="true"
-                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.statusResId, gadget.statusDate)}"
+                        android:onClick="@{() -> viewModel.onStatusIconClicked(gadget.connectResId, gadget.connectDate)}"
                         android:src="@drawable/badge_offline"
-                        android:tooltipText="@{context.getString(gadget.statusResId, gadget.statusDate)}"
+                        android:tooltipText="@{context.getString(gadget.connectResId, gadget.connectDate)}"
                         tools:ignore="UnusedAttribute" />
 
                     <TextView

@@ -76,7 +76,7 @@
     <string name="Online">Online</string>
     <string name="Offline">Offline</string>
     <string name="no_sites_message">You don’t have any sites yet.\nTap + to add one.</string>
-    <string name="no_gadgets_message">You don’t have any gadgets yet.\nContact our representative to accomplish\n that mission.</string>
+    <string name="no_gadgets_message">You don’t have any gadgets yet.\nContact our representative to add gadgets.</string>
     <string name="Ok">OK</string>
     <string name="Gadget_Manager">Gadget Manager</string>
     <string name="Water_Valve_Status">Water Valve Status</string>
@@ -87,6 +87,4 @@
     <string name="Refresh_Rate">Refresh Rate</string>
     <string name="GMT_Zone">GMT Zone</string>
     <string name="Restart">Restart</string>
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

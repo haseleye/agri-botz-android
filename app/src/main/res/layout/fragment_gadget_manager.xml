@@ -8,178 +8,214 @@
             type="com.example.agribotz.app.viewmodels.home.GadgetManagerViewModel" />
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- ================= TOOLBAR ================= -->
+        <!-- Top App Bar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/gadget_manager_toolbar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:title="@string/Gadget_Manager"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- ================= CONTENT ================= -->
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
-            android:fillViewport="true">
+        <!-- Swipe to Refresh -->
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/gadget_manager_toolbar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="24dp">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
-                <!-- ========== GADGET HEADER ========== -->
-                <include
-                    layout="@layout/item_gadget_header"
-                    app:gadget="@{viewModel.gadgetHeader}"
-                    app:onRename="@{() -> viewModel.onRenameGadget()}"
-                    app:onGpsClick="@{() -> viewModel.onGpsClicked()}"
-                    app:onGpsLongClick="@{() -> viewModel.onGpsLongPressed()}"
-                    app:onStatusClick="@{() -> viewModel.onStatusIconClicked()}" />
-
-                <!-- ================= TABS ================= -->
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/gadget_tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:tabIndicatorFullWidth="false"
-                    app:tabMode="fixed">
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Sensors" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Water_Valves" />
-
-                    <com.google.android.material.tabs.TabItem
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Settings" />
-                </com.google.android.material.tabs.TabLayout>
-
-                <!-- ================= SETTINGS CONTENT ================= -->
                 <LinearLayout
-                    android:id="@+id/settings_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingBottom="24dp">
 
-                    <!-- ===== Valve State ===== -->
+                    <!-- Gadget Header -->
                     <include
-                        layout="@layout/item_setting_switch"
-                        app:title="@string/Water_Valve_Status"
-                        app:subtitle="@{viewModel.valveStateText}"
-                        app:checked="@{viewModel.isValveOpen}"
-                        app:enabledState="@{viewModel.canToggleValve}"
-                        app:onCheckedChanged="@{viewModel::onValveToggle}" />
+                        layout="@layout/item_gadget_header"
+                        app:gadget="@{viewModel.gadgetHeader}"
+                        app:viewModel="@{viewModel}" />
 
-                    <!-- ===== Manual Irrigation (sub row) ===== -->
-                    <include
-                        layout="@layout/item_setting_switch"
+                    <!-- Tabs -->
+                    <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/gadget_tabs"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:title="@string/Manual_Irrigation"
-                        app:subtitle="@{viewModel.manualModeText}"
-                        app:checked="@{viewModel.isManualMode}"
-                        app:onCheckedChanged="@{viewModel::onManualModeChanged}" />
+                        app:tabIndicatorFullWidth="false"
+                        app:tabMode="fixed">
 
-                    <!-- ===== SCHEDULES (1 → 5) ===== -->
-                    <include
-                        layout="@layout/item_setting_schedule"
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Sensors" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Water_Valves" />
+
+                        <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Settings" />
+                    </com.google.android.material.tabs.TabLayout>
+
+                    <!-- Settings Content -->
+                    <LinearLayout
+                        android:id="@+id/settings_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:schedule="@{viewModel.schedules[0]}"
-                        app:onEdit="@{() -> viewModel.onEditSchedule(0)}"
-                        app:onDelete="@{() -> viewModel.onDeleteSchedule(0)}" />
+                        android:orientation="vertical">
 
-                    <include
-                        layout="@layout/item_setting_schedule"
-                        android:layout_width="match_parent"
+                        <!-- Valve State -->
+                        <include
+                            layout="@layout/item_setting_switch"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_state_on}"
+                            app:title="@string/Water_Valve_Status"
+                            app:subtitle="@{viewModel.valveStateText}"
+                            app:checked="@{viewModel.isValveOpen}"
+                            app:enabledState="@{viewModel.canToggleValve}"
+                            app:onCheckedChanged="@{viewModel::onValveToggleChanged}" />
+
+                        <!-- Manual Irrigation (sub row) -->
+                        <include
+                            layout="@layout/item_setting_switch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.manual_irrigation}"
+                            app:title="@string/Manual_Irrigation"
+                            app:subtitle="@{viewModel.manualModeText}"
+                            app:checked="@{viewModel.isManualMode}"
+                            app:enabledState="@{true}"
+                            app:onCheckedChanged="@{viewModel::onManualModeChangedListener}" />
+
+                        <!-- Schedules (1 → 5) -->
+                        <include
+                            layout="@layout/item_setting_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_scheduler1}"
+                            app:schedule="@{viewModel.schedules[0]}"
+                            app:onEdit="@{() -> viewModel.onEditSchedule(0)}"
+                            app:onDelete="@{() -> viewModel.onDeleteSchedule(0)}" />
+
+                        <include
+                            layout="@layout/item_setting_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_scheduler2}"
+                            app:schedule="@{viewModel.schedules[1]}"
+                            app:onEdit="@{() -> viewModel.onEditSchedule(1)}"
+                            app:onDelete="@{() -> viewModel.onDeleteSchedule(1)}" />
+
+                        <include
+                            layout="@layout/item_setting_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_scheduler3}"
+                            app:schedule="@{viewModel.schedules[2]}"
+                            app:onEdit="@{() -> viewModel.onEditSchedule(2)}"
+                            app:onDelete="@{() -> viewModel.onDeleteSchedule(2)}" />
+
+                        <include
+                            layout="@layout/item_setting_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_scheduler4}"
+                            app:schedule="@{viewModel.schedules[3]}"
+                            app:onEdit="@{() -> viewModel.onEditSchedule(3)}"
+                            app:onDelete="@{() -> viewModel.onDeleteSchedule(3)}" />
+
+                        <include
+                            layout="@layout/item_setting_schedule"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.solenoidx_scheduler5}"
+                            app:schedule="@{viewModel.schedules[4]}"
+                            app:onEdit="@{() -> viewModel.onEditSchedule(4)}"
+                            app:onDelete="@{() -> viewModel.onDeleteSchedule(4)}" />
+
+                        <!-- Deep Sleep -->
+                        <include
+                            layout="@layout/item_setting_switch"
+                            app:startIcon="@{com.example.agribotz.R.drawable.deep_sleep_mode}"
+                            app:title="@string/Deep_Sleep"
+                            app:subtitle="@{null}"
+                            app:checked="@{viewModel.isDeepSleepOn}"
+                            app:enabledState="@{true}"
+                            app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}" />
+
+                        <!-- Refresh Rate (sub row) -->
+                        <include
+                            layout="@layout/item_setting_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            app:startIcon="@{com.example.agribotz.R.drawable.daily_online_refreshes}"
+                            app:title="@string/Refresh_Rate"
+                            app:value="@{viewModel.refreshRateText}"
+                            app:enabledState="@{viewModel.isDeepSleepOn}"
+                            app:onEdit="@{() -> viewModel.onEditRefreshRate()}" />
+
+                        <!-- GMT -->
+                        <include
+                            layout="@layout/item_setting_value"
+                            app:startIcon="@{com.example.agribotz.R.drawable.gmt_zone}"
+                            app:title="@string/GMT_Zone"
+                            app:value="@{viewModel.gmtText}"
+                            app:enabledState="@{true}"
+                            app:onEdit="@{() -> viewModel.onEditGmt()}" />
+
+                    </LinearLayout>
+
+                    <!-- RESTART -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_restart"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:schedule="@{viewModel.schedules[1]}"
-                        app:onEdit="@{() -> viewModel.onEditSchedule(1)}"
-                        app:onDelete="@{() -> viewModel.onDeleteSchedule(1)}" />
-
-                    <include
-                        layout="@layout/item_setting_schedule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:schedule="@{viewModel.schedules[2]}"
-                        app:onEdit="@{() -> viewModel.onEditSchedule(2)}"
-                        app:onDelete="@{() -> viewModel.onDeleteSchedule(2)}" />
-
-                    <include
-                        layout="@layout/item_setting_schedule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:schedule="@{viewModel.schedules[3]}"
-                        app:onEdit="@{() -> viewModel.onEditSchedule(3)}"
-                        app:onDelete="@{() -> viewModel.onDeleteSchedule(3)}" />
-
-                    <include
-                        layout="@layout/item_setting_schedule"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:schedule="@{viewModel.schedules[4]}"
-                        app:onEdit="@{() -> viewModel.onEditSchedule(4)}"
-                        app:onDelete="@{() -> viewModel.onDeleteSchedule(4)}" />
-
-                    <!-- ===== Deep Sleep ===== -->
-                    <include
-                        layout="@layout/item_setting_switch"
-                        app:title="@string/Deep_Sleep"
-                        app:checked="@{viewModel.isDeepSleepOn}"
-                        app:onCheckedChanged="@{viewModel::onDeepSleepChanged}" />
-
-                    <!-- ===== Refresh Rate (sub row) ===== -->
-                    <include
-                        layout="@layout/item_setting_value"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        app:title="@string/Refresh_Rate"
-                        app:value="@{viewModel.refreshRateText}"
-                        app:enabledState="@{viewModel.isDeepSleepOn}"
-                        app:onEdit="@{viewModel::onEditRefreshRate}" />
-
-                    <!-- ===== GMT ===== -->
-                    <include
-                        layout="@layout/item_setting_value"
-                        app:title="@string/GMT_Zone"
-                        app:value="@{viewModel.gmtText}"
-                        app:onEdit="@{viewModel::onEditGmt}" />
+                        android:layout_gravity="center"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/Restart"
+                        app:enabledState="@{viewModel.isOnline}"
+                        android:onClick="@{() -> viewModel.onRestartClicked()}" />
 
                 </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                <!-- ================= RESTART ================= -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_restart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/Restart"
-                    app:enabledState="@{viewModel.isOnline}"
-                    android:onClick="@{() -> viewModel.onRestartClicked()}" />
+        <!-- Custom loader -->
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateDrawable="@drawable/loading_animation"
+            android:indeterminate="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:visibleIf='@{viewModel.apiStatus == com.example.agribotz.app.domain.ApiStatus.LOADING}' />
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

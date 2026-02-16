@@ -1,14 +1,20 @@
 package com.example.agribotz.app.viewmodels.home
 
+import android.util.Log
+import android.view.View
+import android.widget.CompoundButton
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.ScheduleValue
+import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
@@ -60,10 +66,10 @@ class GadgetManagerViewModel(
     private var manualModeVar: Variable.BooleanVar? = null
     private val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
 
-    private val _isValveOpen = MutableLiveData<Boolean>(false)
+    private val _isValveOpen = MutableLiveData(false)
     val isValveOpen: LiveData<Boolean> = _isValveOpen
 
-    private val _isManualMode = MutableLiveData<Boolean>(false)
+    private val _isManualMode = MutableLiveData(false)
     val isManualMode: LiveData<Boolean> = _isManualMode
 
     val canToggleValve: LiveData<Boolean> = _isManualMode.map { it == true }
@@ -91,7 +97,7 @@ class GadgetManagerViewModel(
     private var gmtVar: Variable.StringVar? = null
     private var deepSleepVar: Variable.BooleanVar? = null
 
-    private val _isDeepSleepOn = MutableLiveData<Boolean>(false)
+    private val _isDeepSleepOn = MutableLiveData(false)
     val isDeepSleepOn: LiveData<Boolean> = _isDeepSleepOn
 
     val refreshRateText: LiveData<String> = _isDeepSleepOn.map {
@@ -102,6 +108,16 @@ class GadgetManagerViewModel(
         gmtVar?.value ?: "GMT+00:00"
     }
 
+    private val _openRenameDialog = MutableLiveData<GadgetCardUi?>()
+    val openRenameDialog: LiveData<GadgetCardUi?> = _openRenameDialog
+
+    private val _navigateToMap = MutableLiveData<SetLocationNav?>()
+    val navigateToMap: LiveData<SetLocationNav?> = _navigateToMap
+
+    private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
+    val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
+
+
     /* ===============================
      * INIT
      * =============================== */
@@ -110,7 +126,6 @@ class GadgetManagerViewModel(
 
     init {
         _token = prefManager.getAccessToken()
-        //loadGadget()
     }
 
     fun onLoad() {
@@ -119,24 +134,30 @@ class GadgetManagerViewModel(
 
     private fun loadGadget() {
         viewModelScope.launch {
-            _apiStatus.value = ApiStatus.LOADING
+            try {
+                _apiStatus.value = ApiStatus.LOADING
 
-            val token = _token
-            if (token.isNullOrBlank()) {
-                _apiStatus.value = ApiStatus.ERROR
-                _errorServerMessage.value = "Missing access token"
-                return@launch
-            }
-
-            when (val result = repository.gadgetInfo(token, gadgetId)) {
-                is ApiResult.Success -> {
-                    parseGadget(result.data.message.gadgetInfo)
-                    _apiStatus.value = ApiStatus.DONE
+                val token = _token
+                if (token.isNullOrBlank()) {
+                    _apiStatus.value = ApiStatus.ERROR
+                    _errorServerMessage.value = "Missing access token"
+                    return@launch
                 }
 
-                is ApiResult.Error -> {
-                    handleError(result)
+                when (val result = repository.gadgetInfo(token, gadgetId)) {
+                    is ApiResult.Success -> {
+                        parseGadget(result.data.message.gadgetInfo)
+                        _apiStatus.value = ApiStatus.DONE
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Loading failed")
+                    }
                 }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "Loading failed with exception", e)
             }
         }
     }
@@ -151,27 +172,43 @@ class GadgetManagerViewModel(
     }
 
     private fun parseHeader(gadget: Gadget) {
+        val isOnlineVar = gadget.variables
+            .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" } as Variable.BooleanVar?
+
+        val isActiveVar = gadget.variables
+            .firstOrNull { it is Variable.BooleanVar && it.name == "isActive" } as Variable.BooleanVar?
+
+        val isTerminatedVar = gadget.variables
+            .firstOrNull { it is Variable.BooleanVar && it.name == "isTerminated" } as Variable.BooleanVar?
+
+        val isOnline = isOnlineVar?.value ?: false
+        val isActive = isActiveVar?.value ?: false
+        val isTerminated = isTerminatedVar?.value ?: false
+
         _gadgetHeader.value = GadgetCardUi(
             id = gadget.id,
             name = gadget.name,
             hasGps = gadget.gps != null,
             gps = gadget.gps,
 
-            isOnline = findBool(gadget, "isOnline"),
-            onlineAt = null,
-            offlineAt = null,
-            onlineTimeAgo = findTimeAgo(gadget, "isOnline"),
-            offlineTimeAgo = findTimeAgo(gadget, "isOnline"),
+            // Online state
+            isOnline = isOnline,
+            onlineAt = if (isOnline) isOnlineVar.updatedAt else null,
+            offlineAt = if (!isOnline) isOnlineVar?.updatedAt else null,
+            onlineTimeAgo = if (isOnline) isOnlineVar.timeAgo else null,
+            offlineTimeAgo = if (!isOnline) isOnlineVar?.timeAgo else null,
 
-            isActive = findBool(gadget, "isActive"),
-            activatedAt = null,
-            deactivatedAt = null,
-            activeTimeAgo = findTimeAgo(gadget, "isActive"),
-            inactiveTimeAgo = findTimeAgo(gadget, "isActive"),
+            // Activation state
+            isActive = isActive,
+            activatedAt = if (isActive) isActiveVar.updatedAt else null,
+            deactivatedAt = if (!isActive) isActiveVar?.updatedAt else null,
+            activeTimeAgo = if (isActive) isActiveVar.timeAgo else null,
+            inactiveTimeAgo = if (!isActive) isActiveVar?.timeAgo else null,
 
-            isTerminated = findBool(gadget, "isTerminated"),
-            terminatedAt = null,
-            terminatedTimeAgo = findTimeAgo(gadget, "isTerminated"),
+            // Termination state
+            isTerminated = isTerminated,
+            terminatedAt = if (isTerminated) isTerminatedVar.updatedAt else null,
+            terminatedTimeAgo = if (isTerminated) isTerminatedVar.timeAgo else null,
 
             numberOfValves = gadget.numberOfValves ?: 0,
             numberOfSensors = gadget.numberOfSensors ?: 0
@@ -264,11 +301,19 @@ class GadgetManagerViewModel(
      * ACTIONS
      * =============================== */
 
+    fun onValveToggleChanged(buttonView: CompoundButton, isChecked: Boolean) {
+        onValveToggle(isChecked)
+    }
+
     fun onValveToggle(isChecked: Boolean) {
         valveStateVar?.let {
             updateBoolean(it, isChecked)
             _isValveOpen.value = isChecked
         }
+    }
+
+    fun onManualModeChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
+        onManualModeChanged(isChecked)
     }
 
     fun onManualModeChanged(isChecked: Boolean) {
@@ -284,6 +329,10 @@ class GadgetManagerViewModel(
 
     fun onDeleteSchedule(index: Int) {
         scheduleVars.getOrNull(index)?.let { updateSchedule(it, null) }
+    }
+
+    fun onDeepSleepChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
+        onDeepSleepChanged(isChecked)
     }
 
     fun onDeepSleepChanged(isChecked: Boolean) {
@@ -306,26 +355,82 @@ class GadgetManagerViewModel(
     }
 
     fun onRenameGadget() {
-        // TODO: open rename dialog
+        _gadgetHeader.value?.let { gadget ->
+            _openRenameDialog.value = gadget
+        }
     }
 
-    fun onGpsClicked() {
-        // TODO: open map/navigation
+    fun onRenameDialogConsumed() {
+        _openRenameDialog.value = null
     }
 
-    fun onGpsLongPressed(): Boolean {
-        // TODO: show gps coordinates tooltip/dialog
+    fun renameGadget(newName: String) {
+        val gadget = _gadgetHeader.value ?: return
+        val token = _token
+        if (token.isNullOrBlank()) {
+            _apiStatus.value = ApiStatus.ERROR
+            _errorServerMessage.value = "Missing access token"
+            return
+        }
+
+        val trimmed = newName.trim()
+        if (trimmed.isEmpty() || trimmed == gadget.name) return
+
+        viewModelScope.launch {
+            try {
+                when (val result = repository.renameGadget(token, gadget.id, trimmed)) {
+                    is ApiResult.Success -> {
+                        // Re-load to reflect new name and keep behavior consistent
+                        loadGadget()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Renaming gadget failed")
+                    }
+                }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "Renaming gadget failed with exception", e)
+            }
+        }
+    }
+
+    fun onGpsClicked(gadget: GadgetCardUi) {
+        _apiStatus.value = ApiStatus.LOADING
+
+        if (gadget.canOpenMap) {
+            _navigateToMap.value = SetLocationNav(
+                gadgetId = gadget.id,
+                gadgetName = gadget.name,
+                gps = gadget.gps
+            )
+        }
+        else {
+            _navigateToSetLocation.value =
+                SetLocationNav(
+                    gadgetId = gadget.id,
+                    gadgetName = gadget.name,
+                    gps = null
+                )
+        }
+    }
+
+    fun onGpsLongPressed(gadget: GadgetCardUi): Boolean {
+        _apiStatus.value = ApiStatus.LOADING
+
+        _navigateToSetLocation.value =
+            SetLocationNav(
+                gadgetId = gadget.id,
+                gadgetName = gadget.name,
+                gps = gadget.gps
+            )
         return true
     }
 
-    fun onStatusIconClicked() {
-        val gadget = _gadgetHeader.value ?: return
-
-        val statusResId = gadget.statusResId
-        val statusDate = gadget.statusDate
-
-        if (statusResId != null && !statusDate.isNullOrBlank()) {
-            _showStatusDetails.value = Pair(statusResId, statusDate)
+    fun onStatusIconClicked(@StringRes resId: Int?, date: String?) {
+        if (resId != null && !date.isNullOrBlank()) {
+            _showStatusDetails.value = Pair(resId, date)
         }
     }
 
@@ -337,6 +442,14 @@ class GadgetManagerViewModel(
         _eventTransError.value = null
     }
 
+    fun onMapNavigated() {
+        _navigateToMap.value = null
+    }
+
+    fun onSetGpsNavigated() {
+        _navigateToSetLocation.value = null
+    }
+
     /* ===============================
      * UPDATE HELPERS
      * =============================== */
@@ -344,22 +457,32 @@ class GadgetManagerViewModel(
     private fun updateBoolean(v: Variable.BooleanVar, value: Boolean) {
         val token = _token ?: return
         viewModelScope.launch {
-            repository.updateVariable(
-                token,
-                v._id,
-                v.copy(value = value)
-            )
+            try {
+                repository.updateVariable(
+                    token,
+                    v._id,
+                    v.copy(value = value)
+                )
+            } catch (e: Exception) {
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "updateBoolean failed", e)
+            }
         }
     }
 
     private fun updateSchedule(v: Variable.ScheduleVar, value: ScheduleValue?) {
         val token = _token ?: return
         viewModelScope.launch {
-            repository.updateVariable(
-                token,
-                v._id,
-                v.copy(value = value ?: ScheduleValue(frm = 0L, to = 0L, len = 0, msk = 0))
-            )
+            try {
+                repository.updateVariable(
+                    token,
+                    v._id,
+                    v.copy(value = value ?: ScheduleValue(frm = 0L, to = 0L, len = 0, msk = 0))
+                )
+            } catch (e: Exception) {
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "updateSchedule failed", e)
+            }
         }
     }
 
@@ -367,10 +490,23 @@ class GadgetManagerViewModel(
      * ERROR HANDLING
      * =============================== */
 
-    private fun handleError(error: ApiResult.Error) {
-        _apiStatus.value = ApiStatus.ERROR
-        _errorServerMessage.value = error.userMessageString
-        _errorServerMessageRes.value = error.userMessageKey
+    private fun handleError(error: ApiResult.Error, event: String) {
+        Log.e("GadgetManagerViewModel", "$event: ${error.devMessage}")
+
+        _apiStatus.value =
+            if (error.userMessageKey == R.string.Error_Internet_Connection) {
+                ApiStatus.ERROR
+            } else {
+                ApiStatus.DONE
+            }
+
+        if (!error.userMessageString.isNullOrBlank()) {
+            _errorServerMessage.value = error.userMessageString
+            _errorServerMessageRes.value = null
+        } else {
+            _errorServerMessageRes.value = error.userMessageKey
+            _errorServerMessage.value = null
+        }
     }
 
     /* ===============================

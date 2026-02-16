@@ -77,5 +77,11 @@
         <argument
             android:name="gadgetId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_gadgetManagerFragment_to_setGadgetLocationFragment"
+            app:destination="@id/setGadgetLocationFragment" />
+        <action
+            android:id="@+id/action_gadgetManagerFragment_to_gadgetLocationFragment"
+            app:destination="@id/gadgetLocationFragment" />
     </fragment>
 </navigation>
