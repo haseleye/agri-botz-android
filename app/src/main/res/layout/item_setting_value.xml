@@ -5,7 +5,7 @@
     <data>
         <variable
             name="startIcon"
-            type="Integer" />
+            type="android.graphics.drawable.Drawable" />
 
         <variable
             name="title"
@@ -38,10 +38,10 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:contentDescription="@null"
-            android:src='@{startIcon != null ? startIcon : com.example.agribotz.R.drawable.ic_check}'
+            android:src="@{startIcon}"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:tint="@null" />
 
         <TextView
             android:id="@+id/tvTitle"
