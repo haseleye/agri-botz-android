@@ -9,7 +9,7 @@
 
         <variable
             name="title"
-            type="Integer" />
+            type="String" />
 
         <variable
             name="subtitle"
@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text='@{title != null ? title : com.example.agribotz.R.string.app_name}'
+            android:text='@{title != null ? title : @string/no_label}'
             android:textSize="16sp"
             android:textStyle="normal"
             android:textColor="@color/colorOnBackground"
@@ -79,19 +79,17 @@
             app:visibleIf='@{subtitle != null &amp;&amp; !subtitle.isEmpty()}' />
 
         <!-- Switch -->
-        <com.google.android.material.materialswitch.MaterialSwitch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchControl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked='@{checked != null ? checked : false}'
             android:enabled='@{enabledState != null ? enabledState : true}'
             android:onCheckedChanged="@{onCheckedChanged}"
-
             android:showText="false"
             android:textOn=""
             android:textOff=""
             app:useMaterialThemeColors="false"
-
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

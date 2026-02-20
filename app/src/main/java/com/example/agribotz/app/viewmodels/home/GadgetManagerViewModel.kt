@@ -1,7 +1,6 @@
 package com.example.agribotz.app.viewmodels.home
 
 import android.util.Log
-import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
@@ -16,6 +15,7 @@ import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.ScheduleValue
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
+import com.example.agribotz.app.domain.VariableValue
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.ui.home.ScheduleUi
@@ -100,8 +100,12 @@ class GadgetManagerViewModel(
     private val _isDeepSleepOn = MutableLiveData(false)
     val isDeepSleepOn: LiveData<Boolean> = _isDeepSleepOn
 
+    val sleepModeText: LiveData<String> = _isDeepSleepOn.map {
+        if (it == true) "On" else "Off"
+    }
+
     val refreshRateText: LiveData<String> = _isDeepSleepOn.map {
-        refreshRateVar?.value?.let { hours -> "$hours hours" } ?: "Not set"
+        refreshRateVar?.value?.let { hours -> "Each $hours hours" } ?: "Each 0.0 hours"
     }
 
     val gmtText: LiveData<String> = _isDeepSleepOn.map {
@@ -269,7 +273,7 @@ class GadgetManagerViewModel(
                 manualModeVar = v
                 _isManualMode.value = v.value
             }
-            "deepSleep" -> {
+            "deepSleepMode" -> {
                 deepSleepVar = v
                 _isDeepSleepOn.value = v.value
             }
@@ -461,7 +465,7 @@ class GadgetManagerViewModel(
                 repository.updateVariable(
                     token,
                     v._id,
-                    v.copy(value = value)
+                    VariableValue.Bool(value)
                 )
             } catch (e: Exception) {
                 _eventTransError.value = R.string.Error_Transaction_Failed
@@ -477,7 +481,7 @@ class GadgetManagerViewModel(
                 repository.updateVariable(
                     token,
                     v._id,
-                    v.copy(value = value ?: ScheduleValue(frm = 0L, to = 0L, len = 0, msk = 0))
+                    VariableValue.ScheduleVal(value ?: ScheduleValue(frm = 0L, to = 0L, len = 0, msk = 0))
                 )
             } catch (e: Exception) {
                 _eventTransError.value = R.string.Error_Transaction_Failed
@@ -485,6 +489,7 @@ class GadgetManagerViewModel(
             }
         }
     }
+
 
     /* ===============================
      * ERROR HANDLING

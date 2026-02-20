@@ -81,11 +81,17 @@
     <string name="Water_Valve_Status">حالة محبس المياه</string>
     <string name="Water_Valve2_Status">حالة محبس المياه 2</string>
     <string name="Gadget_Manager">مدير الجهاز</string>
-    <string name="Manual_Irrigation">الري اليدوي</string>
+    <string name="Manual_Irrigation">التحكم اليدوي</string>
     <string name="Edit_Settings">تعديل الإعدادات</string>
     <string name="Delete_Settings">حذف الإعدادات</string>
     <string name="Deep_Sleep">وضعية السكون</string>
     <string name="Refresh_Rate">معدل الأستيقاظ</string>
     <string name="GMT_Zone">منطقة توقيت جرينتش</string>
     <string name="Restart">إعادة التشغيل</string>
+    <string name="Water_Valve_Scheduler1">الجدول الزمني الأول</string>
+    <string name="Water_Valve_Scheduler5">الجدول الزمني الخامس</string>
+    <string name="Water_Valve_Scheduler2">الجدول الزمني الثاني</string>
+    <string name="Water_Valve_Scheduler3">الجدول الزمني الثالث</string>
+    <string name="Water_Valve_Scheduler4">الجدول الزمني الرابع</string>
+    <string name="no_label">بدون عنوان</string>
 </resources>

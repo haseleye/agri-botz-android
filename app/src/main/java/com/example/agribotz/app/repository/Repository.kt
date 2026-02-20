@@ -1,10 +1,12 @@
 package com.example.agribotz.app.repository
 
+import android.util.Log
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ErrorResponse
 import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.Variable
+import com.example.agribotz.app.domain.VariableValue
 import com.example.agribotz.app.network.AddSiteRequest
 import com.example.agribotz.app.network.AddSiteResponse
 import com.example.agribotz.app.network.DeleteSiteRequest
@@ -435,8 +437,17 @@ class Repository {
         }
     }
 
-    suspend fun updateVariable(token: String, variableId: String, value: Variable): ApiResult<UpdateVariableResponse> {
+    suspend fun updateVariable(token: String, variableId: String, variableValue: VariableValue): ApiResult<UpdateVariableResponse> {
         return try {
+
+            val value: Any = when (variableValue) {
+                is VariableValue.Bool -> variableValue.value
+                is VariableValue.IntVal -> variableValue.value
+                is VariableValue.FloatVal -> variableValue.value
+                is VariableValue.StringVal -> variableValue.value
+                is VariableValue.ScheduleVal -> variableValue.value
+            }
+
             val response = NetworkApi.services.updateVariableAsync(token, UpdateVariableRequest(variableId, value))
 
             if (response.isSuccessful) {
@@ -446,14 +457,12 @@ class Repository {
                     devMessage = "Empty response body",
                     userMessageKey = R.string.Error_Something_Wrong
                 )
-            }
-            else {
+            } else {
                 val errorJson = response.errorBody()?.string()
                 val parsedError = errorJson?.let {
                     try {
                         errorAdapter.fromJson(it)?.error
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         null
                     }
                 }
@@ -461,17 +470,15 @@ class Repository {
                 ApiResult.Error(
                     devMessage = parsedError ?: "HTTP ${response.code()} ${response.message()}",
                     userMessageKey = R.string.Error_Something_Wrong,
-                    userMessageString = parsedError?.takeIf { it.isNotBlank() } // only use real backend messages
+                    userMessageString = parsedError?.takeIf { it.isNotBlank() }
                 )
             }
-        }
-        catch (e: java.io.IOException) {
+        } catch (e: java.io.IOException) {
             ApiResult.Error(
                 devMessage = "Network error: ${e.localizedMessage}",
                 userMessageKey = R.string.Error_Internet_Connection
             )
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             ApiResult.Error(
                 devMessage = "Unexpected error: ${e.localizedMessage}",
                 userMessageKey = R.string.Error_Something_Wrong

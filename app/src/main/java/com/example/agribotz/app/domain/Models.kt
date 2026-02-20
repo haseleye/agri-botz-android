@@ -170,3 +170,21 @@ sealed class Variable {
     ): Variable()
 }
 
+sealed class VariableValue {
+    @JsonClass(generateAdapter = true)
+    data class Bool(val value: Boolean) : VariableValue()
+
+    @JsonClass(generateAdapter = true)
+    data class IntVal(val value: Int) : VariableValue()
+
+    @JsonClass(generateAdapter = true)
+    data class FloatVal(val value: Float) : VariableValue()
+
+    @JsonClass(generateAdapter = true)
+    data class StringVal(val value: String) : VariableValue()
+
+    @JsonClass(generateAdapter = true)
+    data class ScheduleVal(val value: ScheduleValue) : VariableValue()
+}
+
+

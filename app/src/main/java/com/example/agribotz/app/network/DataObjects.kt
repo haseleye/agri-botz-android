@@ -5,6 +5,8 @@ import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.Site
 import com.example.agribotz.app.domain.User
 import com.example.agribotz.app.domain.Variable
+import com.example.agribotz.app.domain.VariableValue
+import com.squareup.moshi.JsonClass
 
 data class LoginRequest(
     val mobileNumber: String,
@@ -123,9 +125,10 @@ data class GadgetGpsResponse(
     val message: Any?
 )
 
+@JsonClass(generateAdapter = true)
 data class UpdateVariableRequest(
     val variableId: String,
-    val value: Variable
+    val value: Any
 )
 
 data class UpdateVariableResponse(

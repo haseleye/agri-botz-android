@@ -107,7 +107,7 @@
                             <include
                                 layout="@layout/item_setting_switch"
                                 app:startIcon="@{@drawable/solenoidx_state_on}"
-                                app:title="@string/Water_Valve_Status"
+                                app:title="@{@string/Water_Valve_Status}"
                                 app:subtitle="@{viewModel.valveStateText}"
                                 app:checked="@{viewModel.isValveOpen}"
                                 app:enabledState="@{viewModel.canToggleValve}"
@@ -120,7 +120,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/manual_irrigation}"
-                                app:title="@string/Manual_Irrigation"
+                                app:title="@{@string/Manual_Irrigation}"
                                 app:subtitle="@{viewModel.manualModeText}"
                                 app:checked="@{viewModel.isManualMode}"
                                 app:enabledState="@{true}"
@@ -133,6 +133,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/solenoidx_scheduler1}"
+                                app:title="@{@string/Water_Valve_Scheduler1}"
                                 app:schedule="@{viewModel.schedules[0]}"
                                 app:onEdit="@{() -> viewModel.onEditSchedule(0)}"
                                 app:onDelete="@{() -> viewModel.onDeleteSchedule(0)}" />
@@ -143,6 +144,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/solenoidx_scheduler2}"
+                                app:title="@{@string/Water_Valve_Scheduler2}"
                                 app:schedule="@{viewModel.schedules[1]}"
                                 app:onEdit="@{() -> viewModel.onEditSchedule(1)}"
                                 app:onDelete="@{() -> viewModel.onDeleteSchedule(1)}" />
@@ -153,6 +155,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/solenoidx_scheduler3}"
+                                app:title="@{@string/Water_Valve_Scheduler3}"
                                 app:schedule="@{viewModel.schedules[2]}"
                                 app:onEdit="@{() -> viewModel.onEditSchedule(2)}"
                                 app:onDelete="@{() -> viewModel.onDeleteSchedule(2)}" />
@@ -163,6 +166,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/solenoidx_scheduler4}"
+                                app:title="@{@string/Water_Valve_Scheduler4}"
                                 app:schedule="@{viewModel.schedules[3]}"
                                 app:onEdit="@{() -> viewModel.onEditSchedule(3)}"
                                 app:onDelete="@{() -> viewModel.onDeleteSchedule(3)}" />
@@ -173,6 +177,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/solenoidx_scheduler5}"
+                                app:title="@{@string/Water_Valve_Scheduler5}"
                                 app:schedule="@{viewModel.schedules[4]}"
                                 app:onEdit="@{() -> viewModel.onEditSchedule(4)}"
                                 app:onDelete="@{() -> viewModel.onDeleteSchedule(4)}" />
@@ -181,8 +186,8 @@
                             <include
                                 layout="@layout/item_setting_switch"
                                 app:startIcon="@{@drawable/deep_sleep_mode}"
-                                app:title="@string/Deep_Sleep"
-                                app:subtitle="@{null}"
+                                app:title="@{@string/Deep_Sleep}"
+                                app:subtitle="@{viewModel.sleepModeText}"
                                 app:checked="@{viewModel.isDeepSleepOn}"
                                 app:enabledState="@{true}"
                                 app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}" />
@@ -194,7 +199,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/daily_online_refreshes}"
-                                app:title="@string/Refresh_Rate"
+                                app:title="@{@string/Refresh_Rate}"
                                 app:value="@{viewModel.refreshRateText}"
                                 app:enabledState="@{viewModel.isDeepSleepOn}"
                                 app:onEdit="@{() -> viewModel.onEditRefreshRate()}" />
@@ -203,8 +208,8 @@
                             <include
                                 layout="@layout/item_setting_value"
                                 app:startIcon="@{@drawable/gmt_zone}"
-                                app:title="@string/GMT_Zone"
-                                app:value="@{viewModel.gmtText}"
+                                app:title="@{@string/GMT_Zone}"
+                                app:value='@{"GMT" + viewModel.gmtText}'
                                 app:enabledState="@{true}"
                                 app:onEdit="@{() -> viewModel.onEditGmt()}" />
 
