@@ -6,7 +6,6 @@ import androidx.lifecycle.*
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
-import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.repository.Repository
@@ -137,7 +136,8 @@ class SiteDetailsViewModel(
                         if (!result.userMessageString.isNullOrBlank()) {
                             _errorServerMessage.value = result.userMessageString
                             _errorServerMessageRes.value = null
-                        } else {
+                        }
+                        else {
                             _errorServerMessageRes.value = result.userMessageKey
                             _errorServerMessage.value = null
                         }

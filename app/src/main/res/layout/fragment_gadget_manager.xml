@@ -106,7 +106,7 @@
                             <!-- Valve State -->
                             <include
                                 layout="@layout/item_setting_switch"
-                                app:startIcon="@{@drawable/solenoidx_state_on}"
+                                app:startIcon="@{viewModel.isValveOpen ? @drawable/solenoidx_state_on : @drawable/solenoidx_state_off}"
                                 app:title="@{@string/Water_Valve_Status}"
                                 app:subtitle="@{viewModel.valveStateText}"
                                 app:checked="@{viewModel.isValveOpen}"

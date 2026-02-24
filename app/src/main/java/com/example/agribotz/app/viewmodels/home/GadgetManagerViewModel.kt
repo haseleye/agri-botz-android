@@ -121,7 +121,6 @@ class GadgetManagerViewModel(
     private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
     val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
 
-
     /* ===============================
      * INIT
      * =============================== */
@@ -137,16 +136,10 @@ class GadgetManagerViewModel(
     }
 
     private fun loadGadget() {
+        val token = _token ?: return
         viewModelScope.launch {
             try {
                 _apiStatus.value = ApiStatus.LOADING
-
-                val token = _token
-                if (token.isNullOrBlank()) {
-                    _apiStatus.value = ApiStatus.ERROR
-                    _errorServerMessage.value = "Missing access token"
-                    return@launch
-                }
 
                 when (val result = repository.gadgetInfo(token, gadgetId)) {
                     is ApiResult.Success -> {
@@ -306,24 +299,34 @@ class GadgetManagerViewModel(
      * =============================== */
 
     fun onValveToggleChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        onValveToggle(isChecked)
-    }
-
-    fun onValveToggle(isChecked: Boolean) {
-        valveStateVar?.let {
-            updateBoolean(it, isChecked)
+        if (!buttonView.isPressed) {
             _isValveOpen.value = isChecked
+            return
+        }
+
+        valveStateVar?.let {
+            updateBoolean(
+                buttonView = buttonView,
+                v = it,
+                value = isChecked,
+                onSuccess = { _isValveOpen.value = isChecked }
+            )
         }
     }
 
     fun onManualModeChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
-        onManualModeChanged(isChecked)
-    }
-
-    fun onManualModeChanged(isChecked: Boolean) {
-        manualModeVar?.let {
-            updateBoolean(it, isChecked)
+        if (!buttonView.isPressed) {
             _isManualMode.value = isChecked
+            return
+        }
+
+        manualModeVar?.let {
+            updateBoolean(
+                buttonView = buttonView,
+                v = it,
+                value = isChecked,
+                onSuccess = { _isManualMode.value = isChecked }
+            )
         }
     }
 
@@ -336,13 +339,18 @@ class GadgetManagerViewModel(
     }
 
     fun onDeepSleepChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
-        onDeepSleepChanged(isChecked)
-    }
-
-    fun onDeepSleepChanged(isChecked: Boolean) {
-        deepSleepVar?.let {
-            updateBoolean(it, isChecked)
+        if (!buttonView.isPressed) {
             _isDeepSleepOn.value = isChecked
+            return
+        }
+
+        deepSleepVar?.let {
+            updateBoolean(
+                buttonView = buttonView,
+                v = it,
+                value = isChecked,
+                onSuccess = { _isDeepSleepOn.value = isChecked }
+            )
         }
     }
 
@@ -458,18 +466,38 @@ class GadgetManagerViewModel(
      * UPDATE HELPERS
      * =============================== */
 
-    private fun updateBoolean(v: Variable.BooleanVar, value: Boolean) {
+    private fun updateBoolean(
+        buttonView: CompoundButton,
+        v: Variable.BooleanVar,
+        value: Boolean,
+        onSuccess: (() -> Unit)? = null
+    ) {
         val token = _token ?: return
+
+        buttonView.isEnabled = false
+
         viewModelScope.launch {
             try {
-                repository.updateVariable(
-                    token,
-                    v._id,
-                    VariableValue.Bool(value)
-                )
+                _apiStatus.value = ApiStatus.LOADING
+                when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))){
+                    is ApiResult.Success -> {
+                        _apiStatus.value = ApiStatus.DONE
+                        onSuccess?.invoke()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Changing Status failed")
+                        buttonView.isChecked = !value
+                    }
+                }
             } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("GadgetManagerViewModel", "updateBoolean failed", e)
+
+                buttonView.isChecked = !value
+            } finally {
+                buttonView.isEnabled = true
             }
         }
     }
@@ -513,35 +541,4 @@ class GadgetManagerViewModel(
             _errorServerMessage.value = null
         }
     }
-
-    /* ===============================
-     * SMALL HELPERS
-     * =============================== */
-
-    private fun variableName(v: Variable): String = when (v) {
-        is Variable.BooleanVar -> v.name
-        is Variable.IntegerVar -> v.name
-        is Variable.FloatVar -> v.name
-        is Variable.StringVar -> v.name
-        is Variable.ScheduleVar -> v.name
-    }
-
-    private fun variableTimeAgo(v: Variable): String? = when (v) {
-        is Variable.BooleanVar -> v.timeAgo
-        is Variable.IntegerVar -> v.timeAgo
-        is Variable.FloatVar -> v.timeAgo
-        is Variable.StringVar -> v.timeAgo
-        is Variable.ScheduleVar -> v.timeAgo
-    }
-
-    private fun findBool(gadget: Gadget, name: String): Boolean =
-        gadget.variables
-            .filterIsInstance<Variable.BooleanVar>()
-            .firstOrNull { it.name == name }
-            ?.value ?: false
-
-    private fun findTimeAgo(gadget: Gadget, name: String): String? =
-        gadget.variables
-            .firstOrNull { variableName(it) == name }
-            ?.let { variableTimeAgo(it) }
 }
