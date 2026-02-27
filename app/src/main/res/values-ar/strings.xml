@@ -25,7 +25,9 @@
     <string name="Valve_Open">مفتوح</string>
     <string name="Valve_Closed">مغلق</string>
     <string name="Water_Valves">محابس المياه</string>
-    <string name="Sensors">الحساسات</string>
+    <string name="Sensors">أجهزة الاستشعار</string>
+    <string name="On">يعمل</string>
+    <string name="Off">لا يعمل</string>
     <string name="Not_Set">غير محدد</string>
     <string name="Add_Site">أضف موقع جديد</string>
     <string name="Delete_Site">إزالة الموقع</string>
@@ -82,6 +84,12 @@
     <string name="Water_Valve2_Status">حالة محبس المياه 2</string>
     <string name="Gadget_Manager">مدير الجهاز</string>
     <string name="Manual_Irrigation">التحكم اليدوي</string>
+    <string name="Starting_On">يبدأ في</string>
+    <string name="Duration">يستمر لمدة</string>
+    <string name="Repeat_Every">يتكرر كل</string>
+    <string name="Thursday_Short">خ</string>
+    <string name="Friday_Short">ج</string>
+    <string name="End_Recurrence">ينتهي في</string>
     <string name="Edit_Settings">تعديل الإعدادات</string>
     <string name="Delete_Settings">حذف الإعدادات</string>
     <string name="Deep_Sleep">وضعية السكون</string>
@@ -94,4 +102,9 @@
     <string name="Water_Valve_Scheduler3">الجدول الزمني الثالث</string>
     <string name="Water_Valve_Scheduler4">الجدول الزمني الرابع</string>
     <string name="no_label">بدون عنوان</string>
+    <string name="Saturday_Short">س</string>
+    <string name="Sunday_Short">ح</string>
+    <string name="Monday_Short">أ</string>
+    <string name="Tuesday_Short">ث</string>
+    <string name="Wednesday_Short">أ</string>
 </resources>

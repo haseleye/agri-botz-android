@@ -13,24 +13,16 @@ import java.util.Locale
 data class SiteUi(
     val id: String,
     val name: String,
-
-    // Creation state
     val createdAt: String?,
     val createdAgo: String?,
-
-    // Activation state
     val isActive: Boolean,
     val activatedAt: String?,
     val deactivatedAt: String?,
     val activatedAgo: String?,
     val deactivatedAgo: String?,
-
-    // Termination state
     val isTerminated: Boolean,
     val terminatedAt: String?,
     val terminatedAgo: String?,
-
-    // Hardware info
     val numberOfGadgets: Int
 ) {
     val createdAtFormatted: String?
@@ -81,37 +73,25 @@ data class GadgetCardUi(
     val name: String,
     val hasGps: Boolean,
     val gps: GPS?,
-
-    // Online state
     val isOnline: Boolean,
     val onlineAt: String?,
     val offlineAt: String?,
     val onlineTimeAgo: String?,
     val offlineTimeAgo: String?,
-
-    // Activation state
     val isActive: Boolean,
     val activatedAt: String?,
     val deactivatedAt: String?,
     val activeTimeAgo: String?,
     val inactiveTimeAgo: String?,
-
-    // Termination state
     val isTerminated: Boolean,
     val terminatedAt: String?,
     val terminatedTimeAgo: String?,
-
-    // Hardware info
     val numberOfValves: Int,
     val numberOfSensors: Int
 ) {
 
     val canOpenMap: Boolean
         get() = hasGps && gps != null
-
-    /* ==============================
-     * Formatted dates (for drill-down)
-     * ============================== */
 
     val onlineAtFormatted: String?
         get() = onlineAt?.toDisplayDate()
@@ -128,15 +108,6 @@ data class GadgetCardUi(
     val terminatedAtFormatted: String?
         get() = terminatedAt?.toDisplayDate()
 
-    /* ==============================
-     * ONLINE / OFFLINE (SECONDARY)
-     * ============================== */
-
-    /**
-     * Online/Offline is shown ONLY if:
-     * - Not terminated
-     * - Active
-     */
     val showOnlineState: Boolean
         get() = !isTerminated && isActive
 
@@ -176,6 +147,12 @@ data class GadgetCardUi(
         }
 }
 
+data class WeekDayChipUi(
+    val key: String,      // "sun", "mon", ...
+    val label: String,    // "S", "M", ...
+    val isSelected: Boolean
+)
+
 data class ScheduleUi(
     val index: Int,
     val isSet: Boolean,
@@ -189,25 +166,117 @@ data class ScheduleUi(
     val durationSec: Int,
     val durationText: String,    // e.g. 2m 30s
 
-    // Recurrence
-    val repeatLabel: String,     // e.g. Does not repeat / Day / Week / Month / Year
-    val daysMask: Int,
-    val selectedDaysShort: List<String>, // e.g. ["M","W","S"] for weekly chips
-    val dayOfMonth: Int?,        // for monthly/yearly
-    val monthShort: String?,     // for yearly
+    // Recurrence (raw / logic)
+    val repeatLabel: String,     // e.g. Does not repeat / Every day / Every week ...
+    val daysMask: Long,
+    val selectedDaysShort: List<String>,
+    val selectedDayKeys: Set<String>,
+    val dayOfMonth: Int?,
+    val monthShort: String?,
 
     // End recurrence
-    val endEpochSec: Long,       // 0 = never
+    val endEpochSec: Long,
     val hasEndRecurrence: Boolean,
-    val endDateText: String?,    // e.g. 30/06/2026
-    val endTimeText: String?,    // e.g. 16:00
+    val endDateText: String?,
+    val endTimeText: String?,
 
     // Row state
     val enabled: Boolean,
 
-    // Ready-to-render convenience summary for simple rows
-    val summaryLine: String      // e.g. "12:00 • Week on Mon, Wed, Sat • 2m 30s"
-)
+    // Backward-compatible summary
+    val summaryLine: String
+) {
+    // ---------- display helpers for the UI ----------
+    val titleText: String
+        get() = when (index) {
+            1 -> "First Schedule"
+            2 -> "Second Schedule"
+            3 -> "Third Schedule"
+            4 -> "Fourth Schedule"
+            5 -> "Fifth Schedule"
+            else -> "Schedule $index"
+        }
+
+    val showNotSetOnly: Boolean
+        get() = !isSet
+
+    val startingOnValueText: String
+        get() = if (!isSet) "Not Set" else "$startDateText at $startTimeText"
+
+    val showRepeatEveryRow: Boolean
+        get() = isSet && repeatLabel != "Does not repeat"
+
+    val repeatEveryValueText: String
+        get() = when {
+            !isSet -> ""
+
+            repeatLabel == "Every week" -> "Week on"
+
+            repeatLabel == "Every month" -> {
+                val day = dayOfMonth
+                if (day != null && day > 0) {
+                    "${day.toOrdinal()} of the month"
+                } else {
+                    "Month"
+                }
+            }
+
+            repeatLabel == "Every year" -> {
+                val day = dayOfMonth
+                val month = monthShort
+                if (day != null && day > 0 && !month.isNullOrBlank()) {
+                    "${day.toOrdinal()} of $month"
+                } else {
+                    "Year"
+                }
+            }
+
+            repeatLabel == "Every day" -> "Day"
+            repeatLabel == "Every hour" -> "Hour"
+
+            else -> repeatLabel.removePrefix("Every ").replaceFirstChar { it.uppercaseChar() }
+        }
+
+    fun Int.toOrdinal(): String {
+        if (this % 100 in 11..13) return "${this}th"
+
+        return when (this % 10) {
+            1 -> "${this}st"
+            2 -> "${this}nd"
+            3 -> "${this}rd"
+            else -> "${this}th"
+        }
+    }
+
+    val showWeeklyChips: Boolean
+        get() = isSet && repeatLabel == "Every week"
+
+    val weeklyChips: List<WeekDayChipUi>
+        get() {
+            val ordered = listOf(
+                "sun" to "S",
+                "mon" to "M",
+                "tue" to "T",
+                "wed" to "W",
+                "thu" to "T",
+                "fri" to "F",
+                "sat" to "S"
+            )
+            return ordered.map { (key, label) ->
+                WeekDayChipUi(
+                    key = key,
+                    label = label,
+                    isSelected = selectedDayKeys.contains(key)
+                )
+            }
+        }
+
+    val showEndRecurrenceRow: Boolean
+        get() = isSet && hasEndRecurrence && !endDateText.isNullOrBlank() && !endTimeText.isNullOrBlank()
+
+    val endRecurrenceValueText: String
+        get() = if (showEndRecurrenceRow) "$endDateText at $endTimeText" else ""
+}
 
 fun mapScheduleToUi(
     variable: Variable.ScheduleVar,
@@ -228,6 +297,7 @@ fun mapScheduleToUi(
             repeatLabel = "Does not repeat",
             daysMask = 0,
             selectedDaysShort = emptyList(),
+            selectedDayKeys = emptySet(),
             dayOfMonth = null,
             monthShort = null,
             endEpochSec = 0L,
@@ -245,6 +315,12 @@ fun mapScheduleToUi(
 
     val parsed = parseScheduleMask(v.msk.toLong())
     val repeatLabel = repeatLabelFromParsed(parsed)
+
+    val selectedDayKeys = parsed.selectedDays
+        ?.map { it.lowercase(Locale.US) }
+        ?.toSet()
+        ?: emptySet()
+
     val selectedDays = selectedDaysShortFromParsed(parsed)
 
     val hasEnd = v.to > 0L
@@ -269,6 +345,7 @@ fun mapScheduleToUi(
         repeatLabel = repeatLabel,
         daysMask = v.msk,
         selectedDaysShort = selectedDays,
+        selectedDayKeys = selectedDayKeys,
         dayOfMonth = parsed.dayOfMonth,
         monthShort = parsed.month?.replaceFirstChar { it.uppercaseChar() },
         endEpochSec = v.to,
@@ -348,7 +425,6 @@ fun buildSummaryLine(
 
     return "$startTimeText • $recurrencePart • $durationText"
 }
-
 
 data class ValveUi(
     val id: String,

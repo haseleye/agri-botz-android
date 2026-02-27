@@ -108,7 +108,7 @@
                                 layout="@layout/item_setting_switch"
                                 app:startIcon="@{viewModel.isValveOpen ? @drawable/solenoidx_state_on : @drawable/solenoidx_state_off}"
                                 app:title="@{@string/Water_Valve_Status}"
-                                app:subtitle="@{viewModel.valveStateText}"
+                                app:subtitle='@{viewModel.valveStateText == "Open" ? @string/Valve_Open : @string/Valve_Closed}'
                                 app:checked="@{viewModel.isValveOpen}"
                                 app:enabledState="@{viewModel.canToggleValve}"
                                 app:onCheckedChanged="@{viewModel::onValveToggleChanged}" />
@@ -121,7 +121,7 @@
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/manual_irrigation}"
                                 app:title="@{@string/Manual_Irrigation}"
-                                app:subtitle="@{viewModel.manualModeText}"
+                                app:subtitle='@{viewModel.manualModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isManualMode}"
                                 app:enabledState="@{true}"
                                 app:onCheckedChanged="@{viewModel::onManualModeChangedListener}" />
@@ -187,7 +187,7 @@
                                 layout="@layout/item_setting_switch"
                                 app:startIcon="@{@drawable/deep_sleep_mode}"
                                 app:title="@{@string/Deep_Sleep}"
-                                app:subtitle="@{viewModel.sleepModeText}"
+                                app:subtitle='@{viewModel.sleepModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isDeepSleepOn}"
                                 app:enabledState="@{true}"
                                 app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}" />

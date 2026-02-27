@@ -42,78 +42,291 @@
             android:layout_height="28dp"
             android:contentDescription="@null"
             android:src="@{startIcon}"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="@null" />
 
-        <!-- Title -->
-        <TextView
-            android:id="@+id/tvSummary"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text='@{title != null ? title : @string/no_label}'
-            android:textSize="14sp"
-            android:textColor="@color/colorOnBackground"
-            app:layout_constraintStart_toEndOf="@id/ivStartIcon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnEdit" />
-
-        <!-- Details -->
-        <TextView
-            android:id="@+id/tvDetails1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:text='@{schedule != null ? schedule.summaryLine : "Schedule"}'
-            android:textSize="12sp"
-            android:textColor="@color/colorOnBackground"
-            android:alpha="0.75"
-            app:layout_constraintStart_toEndOf="@id/ivStartIcon"
-            app:layout_constraintTop_toBottomOf="@id/tvSummary"
-            app:layout_constraintEnd_toStartOf="@id/btnEdit" />
-
-        <TextView
-            android:id="@+id/tvDetails2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"
-            android:alpha="0.75"
-            android:text='@{schedule != null &amp;&amp; schedule.isSet ? ("Start: " + schedule.startDateText + " " + schedule.startTimeText + (schedule.hasEndRecurrence ? ("  •  End: " + schedule.endDateText + " " + schedule.endTimeText) : "")) : null}'
-            android:textColor="@color/colorOnBackground"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/btnEdit"
-            app:layout_constraintStart_toEndOf="@id/ivStartIcon"
-            app:layout_constraintTop_toBottomOf="@id/tvDetails1" />
+        <!-- Right actions -->
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="2dp"
+            android:clickable="true"
+            android:contentDescription="@string/Delete_Settings"
+            android:focusable="true"
+            android:onClick="@{onDelete}"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/btnEdit"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_edit"
-            android:contentDescription="@string/Edit_Settings"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="2dp"
             android:clickable="true"
+            android:contentDescription="@string/Edit_Settings"
             android:focusable="true"
             android:onClick="@{onEdit}"
-            android:enabled='@{schedule != null}'
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_edit"
             app:layout_constraintEnd_toStartOf="@id/btnDelete"
-            android:layout_marginEnd="12dp" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/btnDelete"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="@string/Delete_Settings"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="@{onDelete}"
-            android:enabled='@{schedule != null}'
+        <!-- Content container -->
+        <LinearLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/ivStartIcon"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/btnEdit"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{title != null ? title : (schedule != null ? schedule.titleText : @string/no_label)}'
+                android:textColor="@color/colorOnBackground"
+                android:textSize="14sp"
+                android:textStyle="normal" />
+
+            <!-- NOT SET row -->
+            <TextView
+                android:id="@+id/tvNotSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text='@{schedule != null &amp;&amp; schedule.showNotSetOnly ? @string/Not_Set : ""}'
+                android:textColor="@color/colorOnBackground"
+                android:textSize="12sp"
+                android:alpha="0.75"
+                app:visibleIf='@{schedule != null &amp;&amp; schedule.showNotSetOnly}' />
+
+            <!-- Start row -->
+            <LinearLayout
+                android:id="@+id/rowStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:visibleIf='@{schedule != null &amp;&amp; !schedule.showNotSetOnly}'>
+
+                <TextView
+                    android:id="@+id/tvStartLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Starting_On"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:alpha="0.85" />
+
+                <TextView
+                    android:id="@+id/tvStartValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text='@{schedule != null ? schedule.startingOnValueText : ""}'
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Duration row -->
+            <LinearLayout
+                android:id="@+id/rowDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:visibleIf='@{schedule != null &amp;&amp; !schedule.showNotSetOnly}'>
+
+                <TextView
+                    android:id="@+id/tvDurationLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Duration"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:alpha="0.85" />
+
+                <TextView
+                    android:id="@+id/tvDurationValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="28dp"
+                    android:text='@{schedule != null ? schedule.durationText : ""}'
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Repeat every row -->
+            <LinearLayout
+                android:id="@+id/rowRepeat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:visibleIf='@{schedule != null &amp;&amp; schedule.showRepeatEveryRow}'>
+
+                <TextView
+                    android:id="@+id/tvRepeatLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Repeat_Every"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:alpha="0.85" />
+
+                <TextView
+                    android:id="@+id/tvRepeatValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:text='@{schedule != null ? schedule.repeatEveryValueText : ""}'
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Weekly chips row -->
+            <!-- Weekly chips row -->
+            <LinearLayout
+                android:id="@+id/rowWeekChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal"
+                app:visibleIf='@{schedule != null &amp;&amp; schedule.showWeeklyChips}'>
+
+                <TextView
+                    android:id="@+id/chipSun"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Sunday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("sun")}' />
+
+                <TextView
+                    android:id="@+id/chipMon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Monday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("mon")}' />
+
+                <TextView
+                    android:id="@+id/chipTue"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Tuesday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("tue")}' />
+
+                <TextView
+                    android:id="@+id/chipWed"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Wednesday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("wed")}' />
+
+                <TextView
+                    android:id="@+id/chipThu"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Thursday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("thu")}' />
+
+                <TextView
+                    android:id="@+id/chipFri"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Friday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("fri")}' />
+
+                <TextView
+                    android:id="@+id/chipSat"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_chip_unselected"
+                    android:gravity="center"
+                    android:text="@string/Saturday_Short"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:dayChipSelected='@{schedule != null &amp;&amp; schedule.selectedDayKeys.contains("sat")}' />
+            </LinearLayout>
+
+
+            <!-- End recurrence row -->
+            <LinearLayout
+                android:id="@+id/rowEndRecurrence"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                app:visibleIf='@{schedule != null &amp;&amp; schedule.showEndRecurrenceRow}'>
+
+                <TextView
+                    android:id="@+id/tvEndRecurrenceLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/End_Recurrence"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:alpha="0.85" />
+
+                <TextView
+                    android:id="@+id/tvEndRecurrenceValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text='@{schedule != null ? schedule.endRecurrenceValueText : ""}'
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

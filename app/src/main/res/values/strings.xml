@@ -26,6 +26,8 @@
     <string name="Settings">Settings</string>
     <string name="Valve_Open">Open</string>
     <string name="Valve_Closed">Closed</string>
+    <string name="On">On</string>
+    <string name="Off">Off</string>
     <string name="Not_Set">Not set</string>
     <string name="Add_Site">Add new site</string>
     <string name="Delete_Site">Delete site</string>
@@ -86,6 +88,17 @@
     <string name="Water_Valve_Scheduler3">Third Schedule</string>
     <string name="Water_Valve_Scheduler4">Fourth Schedule</string>
     <string name="Water_Valve_Scheduler5">Fifth Schedule</string>
+    <string name="Starting_On">Starting on</string>
+    <string name="Duration">Duration</string>
+    <string name="Repeat_Every">Repeat every</string>
+    <string name="Saturday_Short">S</string>
+    <string name="Sunday_Short">S</string>
+    <string name="Monday_Short">M</string>
+    <string name="Tuesday_Short">T</string>
+    <string name="Wednesday_Short">W</string>
+    <string name="Thursday_Short">T</string>
+    <string name="Friday_Short">F</string>
+    <string name="End_Recurrence">End recurrence</string>
     <string name="Edit_Settings">Edit Settings</string>
     <string name="Delete_Settings">Delete Settings</string>
     <string name="Deep_Sleep">Deep Sleep Mode</string>

@@ -99,7 +99,7 @@ data class ScheduleValue(
     val frm: Long,
     val to: Long,
     val len: Int,
-    val msk: Int
+    val msk: Long
 )
 
 data class ScheduleResult(

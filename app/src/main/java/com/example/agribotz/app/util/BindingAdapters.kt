@@ -3,6 +3,7 @@ package com.example.agribotz.app.util
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.example.agribotz.R
@@ -85,6 +86,30 @@ fun View.fadeVisible(visible: Boolean) {
         animate().alpha(0f).setDuration(duration).withEndAction {
             this.visibility = View.GONE
         }.start()
+    }
+}
+
+object ScheduleBindingAdapters {
+    @JvmStatic
+    @BindingAdapter("dayChipSelected")
+    fun setDayChipSelected(view: TextView, isSelected: Boolean?) {
+        val selected = isSelected == true
+        val context = view.context
+
+        val bgRes = if (selected) {
+            R.drawable.bg_chip_selected
+        } else {
+            R.drawable.bg_chip_unselected
+        }
+        view.setBackgroundResource(bgRes)
+
+        // Text color
+        val textColor = if (selected) {
+            ContextCompat.getColor(context, android.R.color.white)
+        } else {
+            ContextCompat.getColor(context, R.color.colorPrimary)
+        }
+        view.setTextColor(textColor)
     }
 }
 

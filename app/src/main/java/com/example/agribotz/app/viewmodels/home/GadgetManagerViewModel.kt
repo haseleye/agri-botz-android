@@ -244,6 +244,7 @@ class GadgetManagerViewModel(
                     repeatLabel = "Does not repeat",
                     daysMask = 0,
                     selectedDaysShort = emptyList(),
+                    selectedDayKeys = emptySet(),
                     dayOfMonth = null,
                     monthShort = null,
                     endEpochSec = 0L,
