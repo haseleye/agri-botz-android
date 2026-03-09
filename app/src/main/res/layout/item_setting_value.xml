@@ -57,6 +57,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnEdit" />
 
+        <!-- Sub Title -->
         <TextView
             android:id="@+id/tvValue"
             android:layout_width="0dp"
@@ -64,6 +65,9 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="2dp"
             android:text='@{value != null ? value : ""}'
+            android:textDirection="locale"
+            android:textAlignment="viewStart"
+            android:gravity="start"
             android:textSize="14sp"
             android:textColor="@color/colorOnBackground"
             android:alpha="0.8"
@@ -74,8 +78,8 @@
 
         <ImageView
             android:id="@+id/btnEdit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_edit"
             android:contentDescription="@string/Edit_Settings"
             android:clickable="true"

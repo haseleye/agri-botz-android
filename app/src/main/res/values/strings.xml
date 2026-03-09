@@ -99,6 +99,11 @@
     <string name="Thursday_Short">T</string>
     <string name="Friday_Short">F</string>
     <string name="End_Recurrence">End recurrence</string>
+    <string name="Repeat_Every_Hour_Value">Hour</string>
+    <string name="Repeat_Every_Day_Value">Day</string>
+    <string name="Repeat_Every_Week_Value">Week on</string>
+    <string name="Repeat_Every_Month_Value">%1$s of the month</string>
+    <string name="Repeat_Every_Year_Value">%1$s of %2$s</string>
     <string name="Edit_Settings">Edit Settings</string>
     <string name="Delete_Settings">Delete Settings</string>
     <string name="Deep_Sleep">Deep Sleep Mode</string>
@@ -106,4 +111,83 @@
     <string name="GMT_Zone">GMT Zone</string>
     <string name="Restart">Restart</string>
     <string name="no_label">No Label</string>
+    <string name="Duration_Hours_Minutes_Value">%1$d h %2$d m</string>
+    <string name="Duration_Hours_Value">%1$d h</string>
+    <string name="Duration_Minutes_Seconds_Value">%1$d m %2$d s</string>
+    <string name="Duration_Minutes_Value">%1$d m</string>
+    <string name="Duration_Seconds_Value">%1$d s</string>
+    <string name="Schedule_Date_At_Time">%1$s at %2$s</string>
+    <string name="Refresh_Rate_Value">Each %1$.1f hours</string>
+    <string name="Hours">Hours</string>
+    <string name="Minutes">Minutes</string>
+    <string name="Seconds">Seconds</string>
+    <string name="Hour">Hour</string>
+    <string name="Day">Day</string>
+    <string name="Month">Month</string>
+    <string name="Never_Ends">Never</string>
+    <string name="Ends_On">Ends on</string>
+
+    <string-array name="schedule_repeat_modes">
+        <item>@string/Repeat_Mode_None</item>
+        <item>@string/Repeat_Mode_Hour</item>
+        <item>@string/Repeat_Mode_Day</item>
+        <item>@string/Repeat_Mode_Week</item>
+        <item>@string/Repeat_Mode_Month</item>
+        <item>@string/Repeat_Mode_Year</item>
+    </string-array>
+    <string name="Repeat_Mode_None">Does not repeat</string>
+    <string name="Repeat_Mode_Hour">Hour</string>
+    <string name="Repeat_Mode_Day">Day</string>
+    <string name="Repeat_Mode_Week">Week</string>
+    <string name="Repeat_Mode_Month">Month</string>
+    <string name="Repeat_Mode_Year">Year</string>
+
+    <string-array name="months_list">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>May</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Aug</item>
+        <item>Sep</item>
+        <item>Oct</item>
+        <item>Nov</item>
+        <item>Dec</item>
+    </string-array>
+
+    <string-array name="month_day_ordinals">
+        <item>1st</item>
+        <item>2nd</item>
+        <item>3rd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+        <item>11th</item>
+        <item>12th</item>
+        <item>13th</item>
+        <item>14th</item>
+        <item>15th</item>
+        <item>16th</item>
+        <item>17th</item>
+        <item>18th</item>
+        <item>19th</item>
+        <item>20th</item>
+        <item>21st</item>
+        <item>22nd</item>
+        <item>23rd</item>
+        <item>24th</item>
+        <item>25th</item>
+        <item>26th</item>
+        <item>27th</item>
+        <item>28th</item>
+        <item>29th</item>
+        <item>30th</item>
+        <item>31st</item>
+    </string-array>
 </resources>

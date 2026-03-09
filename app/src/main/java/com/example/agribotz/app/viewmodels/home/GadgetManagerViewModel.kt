@@ -65,6 +65,7 @@ class GadgetManagerViewModel(
     private var valveStateVar: Variable.BooleanVar? = null
     private var manualModeVar: Variable.BooleanVar? = null
     private val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
+    private var restartVar: Variable.BooleanVar? = null
 
     private val _isValveOpen = MutableLiveData(false)
     val isValveOpen: LiveData<Boolean> = _isValveOpen
@@ -104,8 +105,8 @@ class GadgetManagerViewModel(
         if (it == true) "On" else "Off"
     }
 
-    val refreshRateText: LiveData<String> = _isDeepSleepOn.map {
-        refreshRateVar?.value?.let { hours -> "Each $hours hours" } ?: "Each 0.0 hours"
+    val refreshRateHours: LiveData<Float> = _isDeepSleepOn.map {
+        refreshRateVar?.value ?: 0f
     }
 
     val gmtText: LiveData<String> = _isDeepSleepOn.map {
@@ -120,6 +121,9 @@ class GadgetManagerViewModel(
 
     private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
     val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
+
+    private val _openEditScheduleDialog = MutableLiveData<Int?>()
+    val openEditScheduleDialog: LiveData<Int?> = _openEditScheduleDialog
 
     /* ===============================
      * INIT
@@ -216,6 +220,7 @@ class GadgetManagerViewModel(
         // reset parsed holders before re-parse
         valveStateVar = null
         manualModeVar = null
+        restartVar = null
         refreshRateVar = null
         gmtVar = null
         deepSleepVar = null
@@ -270,6 +275,9 @@ class GadgetManagerViewModel(
             "deepSleepMode" -> {
                 deepSleepVar = v
                 _isDeepSleepOn.value = v.value
+            }
+            "espRestart" -> {
+                restartVar = v
             }
         }
     }
@@ -332,7 +340,11 @@ class GadgetManagerViewModel(
     }
 
     fun onEditSchedule(index: Int) {
-        // TODO: open schedule editor dialog
+        _openEditScheduleDialog.value = index
+    }
+
+    fun onEditScheduleDialogConsumed() {
+        _openEditScheduleDialog.value = null
     }
 
     fun onDeleteSchedule(index: Int) {
@@ -364,7 +376,13 @@ class GadgetManagerViewModel(
     }
 
     fun onRestartClicked() {
-        // TODO: restart gadget command
+        restartVar?.let {
+            updateBoolean(
+                v = it,
+                value = true,
+                onSuccess = { loadGadget() }
+            )
+        }
     }
 
     fun onRenameGadget() {
@@ -502,6 +520,35 @@ class GadgetManagerViewModel(
             }
         }
     }
+
+    private fun updateBoolean(
+        v: Variable.BooleanVar,
+        value: Boolean,
+        onSuccess: (() -> Unit)? = null
+    ) {
+        val token = _token ?: return
+
+        viewModelScope.launch {
+            try {
+                _apiStatus.value = ApiStatus.LOADING
+                when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))) {
+                    is ApiResult.Success -> {
+                        _apiStatus.value = ApiStatus.DONE
+                        onSuccess?.invoke()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Changing Status failed")
+                    }
+                }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "updateBoolean failed", e)
+            }
+        }
+    }
+
 
     private fun updateSchedule(v: Variable.ScheduleVar, value: ScheduleValue?) {
         val token = _token ?: return

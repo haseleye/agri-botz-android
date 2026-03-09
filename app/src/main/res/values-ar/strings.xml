@@ -26,8 +26,8 @@
     <string name="Valve_Closed">مغلق</string>
     <string name="Water_Valves">محابس المياه</string>
     <string name="Sensors">أجهزة الاستشعار</string>
-    <string name="On">يعمل</string>
-    <string name="Off">لا يعمل</string>
+    <string name="On">مفعل</string>
+    <string name="Off">غير مفعل</string>
     <string name="Not_Set">غير محدد</string>
     <string name="Add_Site">أضف موقع جديد</string>
     <string name="Delete_Site">إزالة الموقع</string>
@@ -107,4 +107,88 @@
     <string name="Monday_Short">أ</string>
     <string name="Tuesday_Short">ث</string>
     <string name="Wednesday_Short">أ</string>
+    <string name="Repeat_Every_Hour_Value">ساعة</string>
+    <string name="Repeat_Every_Day_Value">يوم</string>
+    <string name="Repeat_Every_Week_Value">أسبوع في يوم</string>
+    <string name="Repeat_Every_Month_Value">%1$s من كل شهر</string>
+    <string name="Repeat_Every_Year_Value">%1$s من %2$s</string>
+    <string name="Duration_Hours_Minutes_Value">%1$d ساعة %2$d دقيقة</string>
+    <string name="Duration_Hours_Value">%1$d ساعة</string>
+    <string name="Duration_Minutes_Seconds_Value">%1$d دقيقة %2$d ثانية</string>
+    <string name="Duration_Minutes_Value">%1$d دقيقة</string>
+    <string name="Duration_Seconds_Value">%1$d ثانية</string>
+    <string name="Schedule_Date_At_Time">%1$s في الساعة %2$s</string>
+    <string name="Refresh_Rate_Value">كل %1$.1f ساعة</string>
+    <string name="Hours">الساعات</string>
+    <string name="Minutes">الدقائق</string>
+    <string name="Seconds">الثواني</string>
+    <string name="Month">شهر</string>
+    <string name="Never_Ends">لا ينتهي</string>
+    <string name="Ends_On">تاريخ الانتهاء</string>
+    <string name="Hour">ساعة</string>
+    <string name="Day">يوم</string>
+
+    <string-array name="schedule_repeat_modes">
+        <item>@string/Repeat_Mode_None</item>
+        <item>@string/Repeat_Mode_Hour</item>
+        <item>@string/Repeat_Mode_Day</item>
+        <item>@string/Repeat_Mode_Week</item>
+        <item>@string/Repeat_Mode_Month</item>
+        <item>@string/Repeat_Mode_Year</item>
+    </string-array>
+    <string name="Repeat_Mode_None">لا تتكرر</string>
+    <string name="Repeat_Mode_Hour">ساعة</string>
+    <string name="Repeat_Mode_Day">يوم</string>
+    <string name="Repeat_Mode_Week">أسبوع</string>
+    <string name="Repeat_Mode_Month">شهر</string>
+    <string name="Repeat_Mode_Year">سنة</string>
+
+    <string-array name="months_list">
+        <item>يناير</item>
+        <item>فبراير</item>
+        <item>مارس</item>
+        <item>أبريل</item>
+        <item>مايو</item>
+        <item>يونيو</item>
+        <item>يوليو</item>
+        <item>أغسطس</item>
+        <item>سبتمبر</item>
+        <item>أكتوبر</item>
+        <item>نوفمبر</item>
+        <item>ديسمبر</item>
+    </string-array>
+
+    <string-array name="month_day_ordinals">
+        <item>الأول</item>
+        <item>الثاني</item>
+        <item>الثالث</item>
+        <item>الرابع</item>
+        <item>الخامس</item>
+        <item>السادس</item>
+        <item>السابع</item>
+        <item>الثامن</item>
+        <item>التاسع</item>
+        <item>العاشر</item>
+        <item>الحادي عشر</item>
+        <item>الثاني عشر</item>
+        <item>الثالث عشر</item>
+        <item>الرابع عشر</item>
+        <item>الخامس عشر</item>
+        <item>السادس عشر</item>
+        <item>السابع عشر</item>
+        <item>الثامن عشر</item>
+        <item>التاسع عشر</item>
+        <item>العشرون</item>
+        <item>الحادي والعشرون</item>
+        <item>الثاني والعشرون</item>
+        <item>الثالث والعشرون</item>
+        <item>الرابع والعشرون</item>
+        <item>الخامس والعشرون</item>
+        <item>السادس والعشرون</item>
+        <item>السابع والعشرون</item>
+        <item>الثامن والعشرون</item>
+        <item>التاسع والعشرون</item>
+        <item>الثلاثون</item>
+        <item>الحادي والثلاثون</item>
+    </string-array>
 </resources>

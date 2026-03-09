@@ -110,7 +110,7 @@
                                 app:title="@{@string/Water_Valve_Status}"
                                 app:subtitle='@{viewModel.valveStateText == "Open" ? @string/Valve_Open : @string/Valve_Closed}'
                                 app:checked="@{viewModel.isValveOpen}"
-                                app:enabledState="@{viewModel.canToggleValve}"
+                                app:enabledState="@{viewModel.canToggleValve &amp;&amp; viewModel.isOnline}"
                                 app:onCheckedChanged="@{viewModel::onValveToggleChanged}" />
 
                             <!-- Manual Irrigation -->
@@ -200,7 +200,7 @@
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/daily_online_refreshes}"
                                 app:title="@{@string/Refresh_Rate}"
-                                app:value="@{viewModel.refreshRateText}"
+                                app:value='@{@string/Refresh_Rate_Value(viewModel.refreshRateHours)}'
                                 app:enabledState="@{viewModel.isDeepSleepOn}"
                                 app:onEdit="@{() -> viewModel.onEditRefreshRate()}" />
 
@@ -218,12 +218,13 @@
                         <!-- RESTART -->
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btn_restart"
+                            style="@style/WideButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="24dp"
                             android:text="@string/Restart"
-                            app:enabledState="@{viewModel.isOnline}"
+                            android:enabled="@{viewModel.isOnline}"
                             android:onClick="@{() -> viewModel.onRestartClicked()}" />
 
                     </LinearLayout>

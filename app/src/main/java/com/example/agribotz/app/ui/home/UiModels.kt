@@ -1,12 +1,14 @@
 package com.example.agribotz.app.ui.home
 
+import android.os.Parcelable
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.GPS
-import com.example.agribotz.app.domain.Site
-import com.example.agribotz.app.util.toDisplayDate
-import com.example.agribotz.app.util.parseScheduleMask
 import com.example.agribotz.app.domain.ScheduleResult
+import com.example.agribotz.app.domain.Site
 import com.example.agribotz.app.domain.Variable
+import com.example.agribotz.app.util.parseScheduleMask
+import com.example.agribotz.app.util.toDisplayDate
+import kotlinx.parcelize.Parcelize
 import java.util.Calendar
 import java.util.Locale
 
@@ -147,12 +149,7 @@ data class GadgetCardUi(
         }
 }
 
-data class WeekDayChipUi(
-    val key: String,      // "sun", "mon", ...
-    val label: String,    // "S", "M", ...
-    val isSelected: Boolean
-)
-
+@Parcelize
 data class ScheduleUi(
     val index: Int,
     val isSet: Boolean,
@@ -185,7 +182,7 @@ data class ScheduleUi(
 
     // Backward-compatible summary
     val summaryLine: String
-) {
+) : Parcelable {
     // ---------- display helpers for the UI ----------
     val titleText: String
         get() = when (index) {
@@ -200,44 +197,50 @@ data class ScheduleUi(
     val showNotSetOnly: Boolean
         get() = !isSet
 
-    val startingOnValueText: String
-        get() = if (!isSet) "Not Set" else "$startDateText at $startTimeText"
-
     val showRepeatEveryRow: Boolean
         get() = isSet && repeatLabel != "Does not repeat"
+
+    val repeatDayDisplayText: String
+        get() {
+            val day = dayOfMonth ?: return ""
+            val isArabicLocale = Locale.getDefault().language == "ar"
+            return if (isArabicLocale) {
+                day.toString()
+            } else {
+                day.toOrdinalEn()
+            }
+        }
+
+    val repeatMonthDisplayText: String
+        get() = monthShort ?: ""
+
+    val isRepeatEveryHour: Boolean
+        get() = isSet && repeatLabel == "Every hour"
+
+    val isRepeatEveryDay: Boolean
+        get() = isSet && repeatLabel == "Every day"
+
+    val isRepeatEveryWeek: Boolean
+        get() = isSet && repeatLabel == "Every week"
+
+    val isRepeatEveryMonth: Boolean
+        get() = isSet && repeatLabel == "Every month"
+
+    val isRepeatEveryYear: Boolean
+        get() = isSet && repeatLabel == "Every year"
 
     val repeatEveryValueText: String
         get() = when {
             !isSet -> ""
-
             repeatLabel == "Every week" -> "Week on"
-
-            repeatLabel == "Every month" -> {
-                val day = dayOfMonth
-                if (day != null && day > 0) {
-                    "${day.toOrdinal()} of the month"
-                } else {
-                    "Month"
-                }
-            }
-
-            repeatLabel == "Every year" -> {
-                val day = dayOfMonth
-                val month = monthShort
-                if (day != null && day > 0 && !month.isNullOrBlank()) {
-                    "${day.toOrdinal()} of $month"
-                } else {
-                    "Year"
-                }
-            }
-
             repeatLabel == "Every day" -> "Day"
             repeatLabel == "Every hour" -> "Hour"
-
+            repeatLabel == "Every month" -> ""
+            repeatLabel == "Every year" -> ""
             else -> repeatLabel.removePrefix("Every ").replaceFirstChar { it.uppercaseChar() }
         }
 
-    fun Int.toOrdinal(): String {
+    private fun Int.toOrdinalEn(): String {
         if (this % 100 in 11..13) return "${this}th"
 
         return when (this % 10) {
@@ -251,31 +254,32 @@ data class ScheduleUi(
     val showWeeklyChips: Boolean
         get() = isSet && repeatLabel == "Every week"
 
-    val weeklyChips: List<WeekDayChipUi>
-        get() {
-            val ordered = listOf(
-                "sun" to "S",
-                "mon" to "M",
-                "tue" to "T",
-                "wed" to "W",
-                "thu" to "T",
-                "fri" to "F",
-                "sat" to "S"
-            )
-            return ordered.map { (key, label) ->
-                WeekDayChipUi(
-                    key = key,
-                    label = label,
-                    isSelected = selectedDayKeys.contains(key)
-                )
-            }
-        }
-
     val showEndRecurrenceRow: Boolean
         get() = isSet && hasEndRecurrence && !endDateText.isNullOrBlank() && !endTimeText.isNullOrBlank()
 
-    val endRecurrenceValueText: String
-        get() = if (showEndRecurrenceRow) "$endDateText at $endTimeText" else ""
+    val durationHours: Int
+        get() = durationSec / 3600
+
+    val durationMinutes: Int
+        get() = (durationSec % 3600) / 60
+
+    val durationSeconds: Int
+        get() = durationSec % 60
+
+    val isDurationHoursAndMinutes: Boolean
+        get() = durationHours > 0 && durationMinutes > 0
+
+    val isDurationHoursOnly: Boolean
+        get() = durationHours > 0 && durationMinutes == 0
+
+    val isDurationMinutesAndSeconds: Boolean
+        get() = durationHours == 0 && durationMinutes > 0 && durationSeconds > 0
+
+    val isDurationMinutesOnly: Boolean
+        get() = durationHours == 0 && durationMinutes > 0 && durationSeconds == 0
+
+    val isDurationSecondsOnly: Boolean
+        get() = durationHours == 0 && durationMinutes == 0
 }
 
 fun mapScheduleToUi(
@@ -347,7 +351,7 @@ fun mapScheduleToUi(
         selectedDaysShort = selectedDays,
         selectedDayKeys = selectedDayKeys,
         dayOfMonth = parsed.dayOfMonth,
-        monthShort = parsed.month?.replaceFirstChar { it.uppercaseChar() },
+        monthShort = parsed.month,
         endEpochSec = v.to,
         hasEndRecurrence = hasEnd,
         endDateText = endDateText,

@@ -4,6 +4,7 @@ import com.example.agribotz.app.domain.ScheduleResult
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
+import java.text.DateFormatSymbols
 
 data class ValveKey(val index: Int, val slot: Int?) // slot null for state/manual
 
@@ -39,7 +40,7 @@ fun parseScheduleMask(mask: Long): ScheduleResult {
     val scheduleType = ((mask shr 26) and 0xF).toInt()
 
     val daysOfWeek = listOf("sun", "mon", "tue", "wed", "thu", "fri", "sat")
-    val monthsOfYear = listOf("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
+    val localizedMonths = DateFormatSymbols(Locale.getDefault()).shortMonths
 
     return when (scheduleType) {
         0 -> ScheduleResult("does not repeat")
@@ -68,7 +69,16 @@ fun parseScheduleMask(mask: Long): ScheduleResult {
         4 -> { // Yearly
             val dayOfMonth = (mask and 0xFF).toInt()
             val monthIndex = ((mask shr 8) and 0xFF).toInt()
-            val monthString = if (monthIndex in 0..11) monthsOfYear[monthIndex] else null
+
+            val monthString = if (monthIndex in 0..11) {
+                localizedMonths[monthIndex]
+                    ?.replace(".", "")
+                    ?.trim()
+                    ?.takeIf { it.isNotEmpty() }
+            } else {
+                null
+            }
+
             ScheduleResult("year", dayOfMonth = dayOfMonth, month = monthString)
         }
 

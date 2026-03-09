@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Disabled + Checked (muted ON) -->
+    <item
+        android:state_enabled="false"
+        android:state_checked="true"
+        android:color="#7FAF7F" />
+
+    <!-- Disabled + Unchecked (muted OFF) -->
+    <item
+        android:state_enabled="false"
+        android:state_checked="false"
+        android:color="#B0B0B0" />
+
+    <!-- Enabled + Checked -->
+    <item
+        android:state_checked="true"
+        android:color="@color/colorPrimary" />
+
+    <!-- Enabled + Unchecked -->
+    <item android:color="#7A7A7A" />
+
+</selector>

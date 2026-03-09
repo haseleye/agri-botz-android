@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Disabled + Checked (muted ON track) -->
+    <item
+        android:state_enabled="false"
+        android:state_checked="true"
+        android:color="#CFE6CF" />
+
+    <!-- Disabled + Unchecked (muted OFF track) -->
+    <item
+        android:state_enabled="false"
+        android:state_checked="false"
+        android:color="#E0E0E0" />
+
+    <!-- Enabled + Checked (soft primary) -->
+    <item
+        android:state_checked="true"
+        android:color="#804CAF50" />
+
+    <!-- Enabled + Unchecked -->
+    <item android:color="#CFCFCF" />
+
+</selector>

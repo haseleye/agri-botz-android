@@ -49,8 +49,8 @@
         <!-- Right actions -->
         <ImageView
             android:id="@+id/btnDelete"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginTop="2dp"
             android:clickable="true"
             android:contentDescription="@string/Delete_Settings"
@@ -62,8 +62,8 @@
 
         <ImageView
             android:id="@+id/btnEdit"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginEnd="14dp"
             android:layout_marginTop="2dp"
             android:clickable="true"
@@ -131,7 +131,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text='@{schedule != null ? schedule.startingOnValueText : ""}'
+                    android:text='@{schedule == null ? "" : @string/Schedule_Date_At_Time(schedule.startDateText, schedule.startTimeText)}'
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -160,7 +160,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="28dp"
-                    android:text='@{schedule != null ? schedule.durationText : ""}'
+                    android:text='@{schedule == null ? "" : (schedule.isDurationHoursAndMinutes ? @string/Duration_Hours_Minutes_Value(schedule.durationHours, schedule.durationMinutes) : (schedule.isDurationHoursOnly ? @string/Duration_Hours_Value(schedule.durationHours) : (schedule.isDurationMinutesAndSeconds ? @string/Duration_Minutes_Seconds_Value(schedule.durationMinutes, schedule.durationSeconds) : (schedule.isDurationMinutesOnly ? @string/Duration_Minutes_Value(schedule.durationMinutes) : @string/Duration_Seconds_Value(schedule.durationSeconds)))))}'
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -189,13 +189,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="14dp"
-                    android:text='@{schedule != null ? schedule.repeatEveryValueText : ""}'
+                    android:text='@{schedule == null ? "" : (schedule.isRepeatEveryMonth ? @string/Repeat_Every_Month_Value(schedule.repeatDayDisplayText) : (schedule.isRepeatEveryYear ? @string/Repeat_Every_Year_Value(schedule.repeatDayDisplayText, schedule.repeatMonthDisplayText) : (schedule.isRepeatEveryWeek ? @string/Repeat_Every_Week_Value : (schedule.isRepeatEveryDay ? @string/Repeat_Every_Day_Value : (schedule.isRepeatEveryHour ? @string/Repeat_Every_Hour_Value : schedule.repeatEveryValueText)))))}'
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Weekly chips row -->
             <!-- Weekly chips row -->
             <LinearLayout
                 android:id="@+id/rowWeekChips"
@@ -320,7 +319,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:text='@{schedule != null ? schedule.endRecurrenceValueText : ""}'
+                    android:text='@{schedule == null ? "" : @string/Schedule_Date_At_Time(schedule.endDateText, schedule.endTimeText)}'
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />

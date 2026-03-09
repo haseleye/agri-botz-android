@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/gadgetManagerFragment"
-        android:name="com.example.agribotz.app.view.home.GadgetManagerFragment"
+        android:name="com.example.agribotz.app.ui.home.GadgetManagerFragment"
         android:label="GadgetManagerFragment"
         tools:layout="@layout/fragment_gadget_manager" >
         <argument
@@ -83,5 +83,22 @@
         <action
             android:id="@+id/action_gadgetManagerFragment_to_gadgetLocationFragment"
             app:destination="@id/gadgetLocationFragment" />
+        <action
+            android:id="@+id/action_gadgetManagerFragment_to_editScheduleDialogFragment"
+            app:destination="@id/editScheduleDialogFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/editScheduleDialogFragment"
+        android:name="com.example.agribotz.app.ui.home.EditScheduleDialogFragment"
+        android:label="EditScheduleDialogFragment"
+        tools:layout="@layout/dialog_edit_schedule">
+
+        <argument
+            android:name="scheduleIndex"
+            app:argType="integer" />
+        <argument
+            android:name="schedule"
+            app:argType="com.example.agribotz.app.ui.home.ScheduleUi" />
+    </dialog>
+
 </navigation>

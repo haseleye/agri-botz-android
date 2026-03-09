@@ -1,9 +1,11 @@
-package com.example.agribotz.app.view.home
+package com.example.agribotz.app.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.agribotz.R
@@ -77,6 +79,7 @@ class GadgetManagerFragment : Fragment() {
         observeRenameDialog()
         observeNavigateToMap()
         observeNavigateToSetLocation()
+        observeEditSchedule()
     }
 
     private fun observeApiStatus() {
@@ -117,7 +120,7 @@ class GadgetManagerFragment : Fragment() {
                     statusDate
                 }
 
-                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                AlertDialog.Builder(requireContext())
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok, null)
                     .show()
@@ -145,17 +148,40 @@ class GadgetManagerFragment : Fragment() {
         }
     }
 
+    private fun observeEditSchedule() {
+        viewModel.openEditScheduleDialog.observe(viewLifecycleOwner) { index ->
+            if (index == null) return@observe
+
+            val schedule = viewModel.schedules.value?.getOrNull(index)
+            if (schedule != null) {
+                openEditScheduleDialog(index, schedule)
+            }
+
+            viewModel.onEditScheduleDialogConsumed()
+        }
+    }
+
+    private fun openEditScheduleDialog(scheduleIndex: Int, schedule: ScheduleUi) {
+        val dialog = EditScheduleDialogFragment().apply {
+            arguments = Bundle().apply {
+                putInt("scheduleIndex", scheduleIndex)
+                putParcelable("schedule", schedule)
+            }
+        }
+        dialog.show(childFragmentManager, "edit_schedule_dialog")
+    }
+
     private fun setupDefaultTab() {
         binding.gadgetTabs.getTabAt(2)?.select()   // Settings
     }
 
-    private fun showRenameGadgetDialog(gadget: com.example.agribotz.app.ui.home.GadgetCardUi) {
-        val editText = android.widget.EditText(requireContext()).apply {
+    private fun showRenameGadgetDialog(gadget: GadgetCardUi) {
+        val editText = EditText(requireContext()).apply {
             hint = getString(R.string.Enter_Gadget_Name)
             setText(gadget.name)
         }
 
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.Rename_Gadget))
             .setView(editText)
             .setPositiveButton(R.string.Rename) { _, _ ->
