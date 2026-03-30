@@ -37,7 +37,6 @@ class GadgetManagerFragment : Fragment() {
         val gadgetId = GadgetManagerFragmentArgs.fromBundle(requireArguments()).gadgetId
 
         val factory = GadgetManagerViewModelFactory(
-            app = app,
             prefManager = prefManager,
             gadgetId = gadgetId
         )
@@ -153,19 +152,21 @@ class GadgetManagerFragment : Fragment() {
             if (index == null) return@observe
 
             val schedule = viewModel.schedules.value?.getOrNull(index)
+            val variableId = viewModel.scheduleVars.getOrNull(index)?._id
             if (schedule != null) {
-                openEditScheduleDialog(index, schedule)
+                openEditScheduleDialog(index, schedule, variableId)
             }
 
             viewModel.onEditScheduleDialogConsumed()
         }
     }
 
-    private fun openEditScheduleDialog(scheduleIndex: Int, schedule: ScheduleUi) {
+    private fun openEditScheduleDialog(scheduleIndex: Int, schedule: ScheduleUi, variableId: String?) {
         val dialog = EditScheduleDialogFragment().apply {
             arguments = Bundle().apply {
                 putInt("scheduleIndex", scheduleIndex)
                 putParcelable("schedule", schedule)
+                putString("variableId", variableId)
             }
         }
         dialog.show(childFragmentManager, "edit_schedule_dialog")

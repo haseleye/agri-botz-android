@@ -102,6 +102,16 @@ data class ScheduleValue(
     val msk: Long
 )
 
+data class ScheduleValues(
+    val frm: Long,
+    val to: Long,
+    val len: Int,
+    val repeatEvery: String,
+    val selectedDays: List<String>?,
+    val dayOfMonth: Int?,
+    val month: String?
+)
+
 data class ScheduleResult(
     val repeatEvery: String,
     val selectedDays: List<String>? = null,
@@ -184,7 +194,7 @@ sealed class VariableValue {
     data class StringVal(val value: String) : VariableValue()
 
     @JsonClass(generateAdapter = true)
-    data class ScheduleVal(val value: ScheduleValue) : VariableValue()
+    data class ScheduleVal(val value: ScheduleValues) : VariableValue()
 }
 
 

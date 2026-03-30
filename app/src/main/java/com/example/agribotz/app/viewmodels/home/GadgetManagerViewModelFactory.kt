@@ -7,7 +7,6 @@ import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.util.PreferencesManager
 
 class GadgetManagerViewModelFactory(
-    private val app: Application,
     private val prefManager: PreferencesManager,
     private val gadgetId: String
 ) : ViewModelProvider.Factory {

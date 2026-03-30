@@ -99,6 +99,9 @@
         <argument
             android:name="schedule"
             app:argType="com.example.agribotz.app.ui.home.ScheduleUi" />
+        <argument
+            android:name="variableId"
+            app:argType="string" />
     </dialog>
 
 </navigation>

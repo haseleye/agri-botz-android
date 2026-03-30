@@ -12,12 +12,15 @@ import android.widget.Filter
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.agribotz.R
+import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.domain.ScheduleRepeatMode
+import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.viewmodels.home.EditScheduleViewModel
 import com.example.agribotz.app.viewmodels.home.EditScheduleViewModelFactory
 import com.example.agribotz.databinding.DialogEditScheduleBinding
+import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 import java.util.Locale
 
@@ -25,13 +28,12 @@ class EditScheduleDialogFragment : DialogFragment() {
 
     private var scheduleIndex: Int = -1
     private var schedule: ScheduleUi? = null
+    private var variableId: String? = null
 
     private var _binding: DialogEditScheduleBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: EditScheduleViewModel by viewModels {
-        EditScheduleViewModelFactory(schedule)
-    }
+    private lateinit var viewModel: EditScheduleViewModel
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -51,6 +53,8 @@ class EditScheduleDialogFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         scheduleIndex = requireArguments().getInt("scheduleIndex")
+        variableId = requireArguments().getString("variableId")
+
         schedule = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable("schedule", ScheduleUi::class.java)
         } else {
@@ -65,8 +69,23 @@ class EditScheduleDialogFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DialogEditScheduleBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        val app = requireActivity().application
+        val prefManager = PreferencesManager(app)
+
+        val factory = EditScheduleViewModelFactory(
+            prefManager = prefManager,
+            schedule = schedule
+        )
+
+        viewModel = ViewModelProvider(this, factory)[EditScheduleViewModel::class.java]
+        binding.viewModel = viewModel
+
+        variableId?.let { viewModel.setVariableId(it) }
+
+        setupObservers()
+
         return binding.root
     }
 
@@ -79,6 +98,19 @@ class EditScheduleDialogFragment : DialogFragment() {
         setupEndRecurrence()
         setupDropdownClicks()
         setupActions()
+
+         viewModel.dismissDialog.observe(viewLifecycleOwner) { shouldDismiss ->
+             if (shouldDismiss == true) {
+                 dismiss()
+                 viewModel.onDismissConsumed()
+             }
+         }
+    }
+
+    fun setupObservers() {
+        observeApiStatus()
+        observeServerErrors()
+        observeTransactionError()
     }
 
     private fun setupDropdowns() {
@@ -341,9 +373,8 @@ class EditScheduleDialogFragment : DialogFragment() {
         binding.btnCancel.setOnClickListener { dismiss() }
 
         binding.btnSave.setOnClickListener {
-            // TODO:
-            // Build the final ScheduleValue / payload here,
-            // then send it back to GadgetManager screen using FragmentResult or callback.
+            // call VM save when you add it
+            // viewModel.save()
             dismiss()
         }
     }
@@ -382,6 +413,40 @@ class EditScheduleDialogFragment : DialogFragment() {
             calendar.get(Calendar.MINUTE),
             true
         ).show()
+    }
+
+    private fun observeApiStatus() {
+        viewModel.apiStatus.observe(viewLifecycleOwner) { status ->
+            if (status == ApiStatus.ERROR) {
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.Error_Internet_Connection),
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+    private fun observeServerErrors() {
+        viewModel.errorServerMessage.observe(viewLifecycleOwner) { msg ->
+            if (!msg.isNullOrBlank()) {
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        viewModel.errorServerMessageRes.observe(viewLifecycleOwner) { resId ->
+            if (resId != null && resId != 0) {
+                Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun observeTransactionError() {
+        viewModel.eventTransError.observe(viewLifecycleOwner) { resId ->
+            if (resId != null && resId != 0) {
+                Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_LONG).show()
+                viewModel.onTransErrorCompleted()
+            }
+        }
     }
 
     override fun onDestroyView() {

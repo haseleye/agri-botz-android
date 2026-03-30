@@ -9,358 +9,323 @@
             type="com.example.agribotz.app.viewmodels.home.EditScheduleViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:background="@drawable/bg_dialog_rounded" >
+        android:background="@drawable/bg_dialog_rounded">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
-
-            <!-- Starting on -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Starting_On"
-                android:textColor="@color/colorOnBackground"
-                android:textSize="16sp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStartDate"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:boxBackgroundColor="@color/colorBackground"
-                app:endIconDrawable="@drawable/ic_calendar"
-                app:endIconTint="@null"
-                app:endIconMode="custom">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etStartDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:focusable="false"
-                    android:inputType="none"
-                    android:text="@{viewModel.startDate}" />
-            </com.google.android.material.textfield.TextInputLayout>
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_outlined_box"
-                android:gravity="center_vertical"
-                android:minHeight="56dp"
-                android:orientation="horizontal"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp">
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <TextView
-                    android:id="@+id/tvStartTime"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@{viewModel.startTime}"
-                    android:textColor="@color/colorOnBackground"
-                    android:textSize="16sp" />
-
+                <!-- Starting on -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.timeZone}"
+                    android:text="@string/Starting_On"
                     android:textColor="@color/colorOnBackground"
-                    android:textSize="14sp"
-                    android:alpha="0.7" />
-            </LinearLayout>
+                    android:textSize="16sp" />
 
-            <!-- Duration -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/Duration"
-                android:textColor="@color/colorOnBackground"
-                android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actDurationHours"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_outlined_box"
-                        android:dropDownHeight="wrap_content"
-                        android:inputType="none"
-                        android:padding="14dp"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:drawablePadding="8dp"
-                        android:text="@{viewModel.durationHours}"
-                        tools:ignore="LabelFor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="@string/Hours"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="11sp"
-                        android:alpha="0.6" />
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="8dp"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actDurationMinutes"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_outlined_box"
-                        android:dropDownHeight="wrap_content"
-                        android:inputType="none"
-                        android:padding="14dp"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:drawablePadding="8dp"
-                        android:text="@{viewModel.durationMinutes}"
-                        tools:ignore="LabelFor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="@string/Minutes"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="11sp"
-                        android:alpha="0.6" />
-                </LinearLayout>
-
-                <Space
-                    android:layout_width="8dp"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actDurationSeconds"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_outlined_box"
-                        android:dropDownHeight="wrap_content"
-                        android:inputType="none"
-                        android:padding="14dp"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:drawablePadding="8dp"
-                        android:text="@{viewModel.durationSeconds}"
-                        tools:ignore="LabelFor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="@string/Seconds"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="11sp"
-                        android:alpha="0.6" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Repeat every -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/Repeat_Every"
-                android:textColor="@color/colorOnBackground"
-                android:textSize="16sp" />
-
-            <AutoCompleteTextView
-                android:id="@+id/actRepeatMode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_outlined_box"
-                android:dropDownHeight="wrap_content"
-                android:inputType="none"
-                android:padding="14dp"
-                android:drawableEnd="@drawable/ic_arrow_down"
-                android:drawablePadding="8dp"
-                android:text="@{viewModel.repeatModeLabel}"
-                tools:ignore="LabelFor" />
-
-            <!-- Week selector -->
-            <LinearLayout
-                android:id="@+id/rowWeekChips"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:visibleIf='@{viewModel.showWeekSelector}'>
-
-                <TextView
-                    android:id="@+id/chipSun"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Sunday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipMon"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Monday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipTue"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Tuesday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipWed"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Wednesday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipThu"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Thursday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipFri"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Friday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/chipSat"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:gravity="center"
-                    android:text="@string/Saturday_Short"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Month selector -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical"
-                app:visibleIf='@{viewModel.showMonthSelector}'>
-
-                <AutoCompleteTextView
-                    android:id="@+id/actMonthDay"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilStartDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:boxBackgroundColor="@color/colorBackground"
+                    app:endIconDrawable="@drawable/ic_calendar"
+                    app:endIconTint="@null"
+                    app:endIconMode="custom">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etStartDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:inputType="none"
+                        android:text="@{viewModel.startDate}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_outlined_box"
+                    android:gravity="center_vertical"
+                    android:minHeight="56dp"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+
+                    <TextView
+                        android:id="@+id/tvStartTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@{viewModel.startTime}"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.timeZone}"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="14sp"
+                        android:alpha="0.7" />
+                </LinearLayout>
+
+                <!-- Duration -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/Duration"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actDurationHours"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_outlined_box"
+                            android:dropDownHeight="wrap_content"
+                            android:inputType="none"
+                            android:padding="14dp"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:drawablePadding="8dp"
+                            android:text="@{viewModel.durationHours}"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/Hours"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="11sp"
+                            android:alpha="0.6" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actDurationMinutes"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_outlined_box"
+                            android:dropDownHeight="wrap_content"
+                            android:inputType="none"
+                            android:padding="14dp"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:drawablePadding="8dp"
+                            android:text="@{viewModel.durationMinutes}"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/Minutes"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="11sp"
+                            android:alpha="0.6" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actDurationSeconds"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_outlined_box"
+                            android:dropDownHeight="wrap_content"
+                            android:inputType="none"
+                            android:padding="14dp"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:drawablePadding="8dp"
+                            android:text="@{viewModel.durationSeconds}"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/Seconds"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="11sp"
+                            android:alpha="0.6" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Repeat every -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/Repeat_Every"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="16sp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/actRepeatMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:background="@drawable/bg_outlined_box"
                     android:dropDownHeight="wrap_content"
                     android:inputType="none"
                     android:padding="14dp"
                     android:drawableEnd="@drawable/ic_arrow_down"
                     android:drawablePadding="8dp"
-                    android:text="@{viewModel.monthDay}"
+                    android:text="@{viewModel.repeatModeLabel}"
                     tools:ignore="LabelFor" />
 
-                <TextView
+                <!-- Week selector -->
+                <LinearLayout
+                    android:id="@+id/rowWeekChips"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="@string/Day"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorOnBackground"
-                    android:textSize="11sp"
-                    android:alpha="0.6" />
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    app:visibleIf='@{viewModel.showWeekSelector}'>
 
-            <!-- Year selectors -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                app:visibleIf='@{viewModel.showYearSelector}'>
+                    <TextView
+                        android:id="@+id/chipSun"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Sunday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
 
+                    <TextView
+                        android:id="@+id/chipMon"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Monday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/chipTue"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Tuesday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/chipWed"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Wednesday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/chipThu"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Thursday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/chipFri"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Friday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/chipSat"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_chip_unselected"
+                        android:gravity="center"
+                        android:text="@string/Saturday_Short"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Month selector -->
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical"
+                    app:visibleIf='@{viewModel.showMonthSelector}'>
 
                     <AutoCompleteTextView
-                        android:id="@+id/actYearDay"
+                        android:id="@+id/actMonthDay"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_outlined_box"
@@ -369,7 +334,7 @@
                         android:padding="14dp"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:drawablePadding="8dp"
-                        android:text="@{viewModel.yearDay}"
+                        android:text="@{viewModel.monthDay}"
                         tools:ignore="LabelFor" />
 
                     <TextView
@@ -384,154 +349,205 @@
                         android:alpha="0.6" />
                 </LinearLayout>
 
-                <Space
-                    android:layout_width="8dp"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actYearMonth"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_outlined_box"
-                        android:dropDownHeight="wrap_content"
-                        android:inputType="none"
-                        android:padding="14dp"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:drawablePadding="8dp"
-                        android:text="@{viewModel.yearMonth}"
-                        tools:ignore="LabelFor" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="@string/Month"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="11sp"
-                        android:alpha="0.6" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- End recurrence -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:visibleIf='@{viewModel.showEndRecurrenceSection}'>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:text="@string/End_Recurrence"
-                    android:textColor="@color/colorOnBackground"
-                    android:textSize="16sp" />
-
-                <RadioGroup
-                    android:id="@+id/rgEndRecurrence"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical" >
-
-                    <RadioButton
-                        android:id="@+id/rbNever"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Never_Ends"
-                        app:buttonTint="@color/colorPrimary" />
-
-                    <RadioButton
-                        android:id="@+id/rbOn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/Ends_On"
-                        app:buttonTint="@color/colorPrimary" />
-                </RadioGroup>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilEndDate"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:boxBackgroundColor="@color/colorBackground"
-                    app:endIconTint="@null"
-                    app:endIconDrawable="@drawable/ic_calendar"
-                    app:endIconMode="custom"
-                    app:visibleIf='@{viewModel.showEndDateTime}'>
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEndDate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:inputType="none"
-                        android:text="@{viewModel.endDate}" />
-                </com.google.android.material.textfield.TextInputLayout>
-
+                <!-- Year selectors -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_outlined_box"
-                    android:gravity="center_vertical"
-                    android:minHeight="56dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    app:visibleIf='@{viewModel.showEndDateTime}'>
+                    app:visibleIf='@{viewModel.showYearSelector}'>
 
-                    <TextView
-                        android:id="@+id/tvEndTime"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@{viewModel.endTime}"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actYearDay"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_outlined_box"
+                            android:dropDownHeight="wrap_content"
+                            android:inputType="none"
+                            android:padding="14dp"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:drawablePadding="8dp"
+                            android:text="@{viewModel.yearDay}"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/Day"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="11sp"
+                            android:alpha="0.6" />
+                    </LinearLayout>
+
+                    <Space
+                        android:layout_width="8dp"
+                        android:layout_height="1dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actYearMonth"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_outlined_box"
+                            android:dropDownHeight="wrap_content"
+                            android:inputType="none"
+                            android:padding="14dp"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:drawablePadding="8dp"
+                            android:text="@{viewModel.yearMonth}"
+                            tools:ignore="LabelFor" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@string/Month"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="11sp"
+                            android:alpha="0.6" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- End recurrence -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:visibleIf='@{viewModel.showEndRecurrenceSection}'>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.timeZone}"
+                        android:layout_marginTop="24dp"
+                        android:text="@string/End_Recurrence"
                         android:textColor="@color/colorOnBackground"
-                        android:textSize="14sp"
-                        android:alpha="0.7" />
+                        android:textSize="16sp" />
+
+                    <RadioGroup
+                        android:id="@+id/rgEndRecurrence"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/rbNever"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Never_Ends"
+                            app:buttonTint="@color/colorPrimary" />
+
+                        <RadioButton
+                            android:id="@+id/rbOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/Ends_On"
+                            app:buttonTint="@color/colorPrimary" />
+                    </RadioGroup>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilEndDate"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:boxBackgroundColor="@color/colorBackground"
+                        app:endIconTint="@null"
+                        app:endIconDrawable="@drawable/ic_calendar"
+                        app:endIconMode="custom"
+                        app:visibleIf='@{viewModel.showEndDateTime}'>
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etEndDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:inputType="none"
+                            android:text="@{viewModel.endDate}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_outlined_box"
+                        android:gravity="center_vertical"
+                        android:minHeight="56dp"
+                        android:orientation="horizontal"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        app:visibleIf='@{viewModel.showEndDateTime}'>
+
+                        <TextView
+                            android:id="@+id/tvEndTime"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@{viewModel.endTime}"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{viewModel.timeZone}"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="14sp"
+                            android:alpha="0.7" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Actions -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:gravity="end"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCancel"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/Cancel" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSave"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/Save"
+                        android:onClick="@{() -> viewModel.saveSchedule()}" />
                 </LinearLayout>
             </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
-            <!-- Actions -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="end"
-                android:orientation="horizontal">
+        <!-- Custom loader -->
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/loading_animation"
+            app:visibleIf='@{viewModel.apiStatus == com.example.agribotz.app.domain.ApiStatus.LOADING}' />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCancel"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Cancel" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSave"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/Save" />
-            </LinearLayout>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </FrameLayout>
 </layout>

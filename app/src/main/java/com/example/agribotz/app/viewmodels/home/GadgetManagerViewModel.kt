@@ -23,6 +23,7 @@ import com.example.agribotz.app.ui.home.mapScheduleToUi
 import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.util.asValveKey
 import kotlinx.coroutines.launch
+import com.example.agribotz.app.domain.ScheduleValues
 
 class GadgetManagerViewModel(
     private val repository: Repository,
@@ -64,7 +65,7 @@ class GadgetManagerViewModel(
 
     private var valveStateVar: Variable.BooleanVar? = null
     private var manualModeVar: Variable.BooleanVar? = null
-    private val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
+    val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
     private var restartVar: Variable.BooleanVar? = null
 
     private val _isValveOpen = MutableLiveData(false)
@@ -348,7 +349,7 @@ class GadgetManagerViewModel(
     }
 
     fun onDeleteSchedule(index: Int) {
-        scheduleVars.getOrNull(index)?.let { updateSchedule(it, null) }
+        // Todo: Delete this schedule
     }
 
     fun onDeepSleepChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
@@ -548,24 +549,6 @@ class GadgetManagerViewModel(
             }
         }
     }
-
-
-    private fun updateSchedule(v: Variable.ScheduleVar, value: ScheduleValue?) {
-        val token = _token ?: return
-        viewModelScope.launch {
-            try {
-                repository.updateVariable(
-                    token,
-                    v._id,
-                    VariableValue.ScheduleVal(value ?: ScheduleValue(frm = 0L, to = 0L, len = 0, msk = 0))
-                )
-            } catch (e: Exception) {
-                _eventTransError.value = R.string.Error_Transaction_Failed
-                Log.e("GadgetManagerViewModel", "updateSchedule failed", e)
-            }
-        }
-    }
-
 
     /* ===============================
      * ERROR HANDLING
