@@ -12,7 +12,6 @@ import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.domain.Gadget
-import com.example.agribotz.app.domain.ScheduleValue
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.domain.VariableValue
@@ -23,7 +22,6 @@ import com.example.agribotz.app.ui.home.mapScheduleToUi
 import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.util.asValveKey
 import kotlinx.coroutines.launch
-import com.example.agribotz.app.domain.ScheduleValues
 
 class GadgetManagerViewModel(
     private val repository: Repository,
@@ -190,6 +188,7 @@ class GadgetManagerViewModel(
         _gadgetHeader.value = GadgetCardUi(
             id = gadget.id,
             name = gadget.name,
+            serialNumber = gadget.serialNumber,
             hasGps = gadget.gps != null,
             gps = gadget.gps,
 

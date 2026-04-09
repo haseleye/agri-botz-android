@@ -29,6 +29,7 @@ data class GPS(
 data class Gadget(
     val id: String,
     val name: String,
+    val serialNumber: String,
     val gps: GPS? = null,
     val numberOfValves: Int?,
     val numberOfSensors: Int?,

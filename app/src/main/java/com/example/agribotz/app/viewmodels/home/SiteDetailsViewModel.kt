@@ -89,6 +89,7 @@ class SiteDetailsViewModel(
                             GadgetCardUi(
                                 id = gadget.id,
                                 name = gadget.name,
+                                serialNumber = gadget.serialNumber,
 
                                 // GPS
                                 hasGps = gadget.gps != null,

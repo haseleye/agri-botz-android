@@ -73,6 +73,7 @@ fun SiteUi.toDomain(): Site {
 data class GadgetCardUi(
     val id: String,
     val name: String,
+    val serialNumber: String,
     val hasGps: Boolean,
     val gps: GPS?,
     val isOnline: Boolean,
