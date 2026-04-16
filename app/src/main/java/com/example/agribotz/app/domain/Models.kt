@@ -174,7 +174,7 @@ sealed class Variable {
         val name: String,
         val label: String,
         @field:Json(name = "type") val type: String,
-        val value: ScheduleValue,
+        val value: ScheduleValue?,
         val updatedAt: String?,
         val timeAgo: String,
         val category: String

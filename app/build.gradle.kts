@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.moshi.adapters)
+    // Google Code Scanner
+    implementation(libs.play.services.code.scanner)
 
     implementation(libs.androidx.fragment)
     implementation(libs.play.services.maps)

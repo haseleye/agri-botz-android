@@ -52,7 +52,20 @@ class SiteDetailsViewModel(
     private val _navigateToSetLocation = MutableLiveData<SetLocationNav?>()
     val navigateToSetLocation: LiveData<SetLocationNav?> = _navigateToSetLocation
 
+    private val _isFilterActive = MutableLiveData(false)
+    val isFilterActive: LiveData<Boolean> = _isFilterActive
+
     private var _token: String? = null
+
+    private enum class GadgetFilterType {
+        NONE,
+        NAME,
+        SERIAL_NUMBER
+    }
+
+    private var allGadgets: List<GadgetCardUi> = emptyList()
+    private var currentFilterType = GadgetFilterType.NONE
+    private var currentFilterText = ""
 
     init {
         _token = prefManager.getAccessToken()
@@ -68,7 +81,7 @@ class SiteDetailsViewModel(
                         val msg = result.data.message
                         _siteName.value = msg.siteInfo.name
 
-                        _gadgets.value = msg.gadgets.map { gadget ->
+                        allGadgets = msg.gadgets.map { gadget ->
 
                             val isOnlineVar = gadget.variables
                                 .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" }
@@ -120,8 +133,8 @@ class SiteDetailsViewModel(
                             )
                         }
 
+                        applyCurrentFilter()
                         _status.value = ApiStatus.DONE
-                        _showEmptyStateIcon.value = _gadgets.value?.isEmpty()
                     }
 
                     is ApiResult.Error -> {
@@ -152,6 +165,50 @@ class SiteDetailsViewModel(
         }
     }
 
+    fun onFilterByName(query: String) {
+        currentFilterType = GadgetFilterType.NAME
+        currentFilterText = query.trim()
+        applyCurrentFilter()
+    }
+
+    fun onFilterBySerialNumber(serialNumber: String) {
+        currentFilterType = GadgetFilterType.SERIAL_NUMBER
+        currentFilterText = serialNumber.trim()
+        applyCurrentFilter()
+    }
+
+    fun onClearFilter() {
+        currentFilterType = GadgetFilterType.NONE
+        currentFilterText = ""
+        applyCurrentFilter()
+    }
+
+    private fun applyCurrentFilter() {
+        val query = currentFilterText.trim()
+
+        _gadgets.value = when {
+            currentFilterType == GadgetFilterType.NONE || query.isBlank() -> allGadgets
+
+            currentFilterType == GadgetFilterType.NAME -> {
+                allGadgets.filter {
+                    it.name.contains(query, ignoreCase = true)
+                }
+            }
+
+            currentFilterType == GadgetFilterType.SERIAL_NUMBER -> {
+                allGadgets.filter {
+                    it.serialNumber.equals(query, ignoreCase = true)
+                }
+            }
+
+            else -> allGadgets
+        }
+
+        _showEmptyStateIcon.value = _gadgets.value.isNullOrEmpty()
+        _isFilterActive.value =
+            currentFilterType != GadgetFilterType.NONE && query.isNotBlank()
+    }
+
     fun onGadgetClicked(gadgetId: String) {
         _navigateToGadget.value = gadgetId
     }
@@ -173,7 +230,6 @@ class SiteDetailsViewModel(
                     is ApiResult.Error -> {
                         Log.e("SiteDetailsViewModel", "Renaming gadget failed: ${result.devMessage}")
 
-                        // Show the "no connection" icon only for connectivity problems
                         if (result.userMessageKey == R.string.Error_Internet_Connection) {
                             _status.value = ApiStatus.ERROR
                         }

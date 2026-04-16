@@ -134,5 +134,5 @@ data class UpdateVariableRequest(
 data class UpdateVariableResponse(
     val status: String,
     val error: String,
-    val message: String?
+    val message: Any
 )

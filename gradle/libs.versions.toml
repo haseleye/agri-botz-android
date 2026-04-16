@@ -13,6 +13,7 @@ lifecycle = "2.6.1"
 moshiAdapters = "1.15.2"
 navigation = "2.7.7"
 okhttp = "5.1.0"
+playServicesCodeScanner = "16.1.0"
 retrofit = "2.11.0"
 safeArgs = "2.7.7"
 moshi = "1.15.2"
@@ -46,6 +47,7 @@ androidx-navigation-fragment = { group = "androidx.navigation", name = "navigati
 androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
 moshi-adapters = { module = "com.squareup.moshi:moshi-adapters", version.ref = "moshiAdapters" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+play-services-code-scanner = { module = "com.google.android.gms:play-services-code-scanner", version.ref = "playServicesCodeScanner" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 # Moshi

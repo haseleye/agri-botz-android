@@ -610,4 +610,17 @@
         <item>المحيط الهادئ/ويك</item>
         <item>المحيط الهادئ/واليس</item>
     </string-array>
+
+    <string name="Filter">تصفية</string>
+    <string name="Filter_Gadgets">تصفية البطاقات</string>
+    <string name="Filter_By_Name">تصفية بالاسم</string>
+    <string name="Filter_By_Serial_Number">تصفية بالرقم التسلسلي</string>
+    <string name="Clear_Filter">مسح التصفية</string>
+    <string name="Enter_Gadget_Name_Filter">أدخل الاسم بالكامل أو جزءًا منه</string>
+    <string name="Enter_Serial_Number">أدخل الرقم التسلسلي</string>
+    <string name="Apply">تطبيق</string>
+    <string name="Scan_QR">مسح QR</string>
+    <string name="QR_Scan_Failed">فشل مسح رمز QR</string>
+    <string name="Invalid_QR_Code">رمز QR غير صالح</string>
+
 </resources>

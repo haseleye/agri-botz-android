@@ -237,8 +237,12 @@ class GadgetManagerViewModel(
         }
 
         _schedules.value = (0 until 5).map { index ->
-            scheduleVars[index]?.let { mapScheduleToUi(it, index + 1) }
-                ?: ScheduleUi(
+            val scheduleVar = scheduleVars[index]
+
+            if (scheduleVar?.value != null) {
+                mapScheduleToUi(scheduleVar, index + 1)
+            } else {
+                ScheduleUi(
                     index = index + 1,
                     isSet = false,
                     startEpochSec = 0L,
@@ -259,6 +263,7 @@ class GadgetManagerViewModel(
                     enabled = false,
                     summaryLine = "Not Set"
                 )
+            }
         }
     }
 

@@ -290,7 +290,7 @@ fun mapScheduleToUi(
     val v = variable.value
 
     // Not set / cleared
-    if (v.len <= 0 || v.frm <= 0L) {
+    if (v?.len!! <= 0 || v.frm <= 0L) {
         return ScheduleUi(
             index = index,
             isSet = false,
