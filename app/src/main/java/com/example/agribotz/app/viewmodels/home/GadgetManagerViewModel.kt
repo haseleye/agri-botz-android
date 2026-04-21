@@ -15,6 +15,8 @@ import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.domain.VariableValue
+import com.example.agribotz.app.network.GadgetVariableEventsClient
+import com.example.agribotz.app.network.VariableUpdateEvent
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.ui.home.ScheduleUi
@@ -65,12 +67,20 @@ class GadgetManagerViewModel(
     private var manualModeVar: Variable.BooleanVar? = null
     val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
     private var restartVar: Variable.BooleanVar? = null
+    private var onlineStateVar: Variable.BooleanVar? = null
+
+    private val variableEventsClient = GadgetVariableEventsClient()
+    private var shouldListenToVariableEvents = false
+    private var connectedVariableIdsKey: String? = null
 
     private val _isValveOpen = MutableLiveData(false)
     val isValveOpen: LiveData<Boolean> = _isValveOpen
 
     private val _isManualMode = MutableLiveData(false)
     val isManualMode: LiveData<Boolean> = _isManualMode
+
+    private val _isManualModeEnabled = MutableLiveData(false)
+    val isManualModeEnabled: LiveData<Boolean> = _isManualModeEnabled
 
     val canToggleValve: LiveData<Boolean> = _isManualMode.map { it == true }
 
@@ -94,7 +104,7 @@ class GadgetManagerViewModel(
      * =============================== */
 
     private var refreshRateVar: Variable.FloatVar? = null
-    private var gmtVar: Variable.StringVar? = null
+    var gmtVar: Variable.StringVar? = null
     private var deepSleepVar: Variable.BooleanVar? = null
 
     private val _isDeepSleepOn = MutableLiveData(false)
@@ -108,9 +118,8 @@ class GadgetManagerViewModel(
         refreshRateVar?.value ?: 0f
     }
 
-    val gmtText: LiveData<String> = _isDeepSleepOn.map {
-        gmtVar?.value ?: "GMT+00:00"
-    }
+    private val _gmtText = MutableLiveData("GMT+00:00")
+    val gmtText: LiveData<String> = _gmtText
 
     private val _openRenameDialog = MutableLiveData<GadgetCardUi?>()
     val openRenameDialog: LiveData<GadgetCardUi?> = _openRenameDialog
@@ -123,6 +132,9 @@ class GadgetManagerViewModel(
 
     private val _openEditScheduleDialog = MutableLiveData<Int?>()
     val openEditScheduleDialog: LiveData<Int?> = _openEditScheduleDialog
+
+    private val _openEditGmtDialog = MutableLiveData<Pair<String, String>?>()
+    val openEditGmtDialog: LiveData<Pair<String, String>?> = _openEditGmtDialog
 
     /* ===============================
      * INIT
@@ -163,17 +175,108 @@ class GadgetManagerViewModel(
     }
 
     /* ===============================
+     * SSE VARIABLE EVENTS
+     * =============================== */
+
+    fun startVariableEvents() {
+        shouldListenToVariableEvents = true
+        connectVariableEventsIfPossible()
+    }
+
+    fun stopVariableEvents() {
+        shouldListenToVariableEvents = false
+        connectedVariableIdsKey = null
+        variableEventsClient.disconnect()
+    }
+
+    private fun connectVariableEventsIfPossible() {
+        if (!shouldListenToVariableEvents) return
+
+        val token = _token ?: return
+
+        val variableIds = listOfNotNull(
+            onlineStateVar?._id,
+            valveStateVar?._id
+        )
+
+        if (variableIds.isEmpty()) return
+
+        val variableIdsKey = variableIds.sorted().joinToString(",")
+
+        if (connectedVariableIdsKey == variableIdsKey) return
+
+        variableEventsClient.disconnect()
+        connectedVariableIdsKey = variableIdsKey
+
+        variableEventsClient.connect(
+            token = token,
+            variableIds = variableIds,
+            onVariableUpdate = { event ->
+                viewModelScope.launch {
+                    applyVariableUpdateEvent(event)
+                }
+            },
+            onError = { error ->
+                connectedVariableIdsKey = null
+                Log.e("GadgetManagerViewModel", "Variable events connection failed", error)
+            }
+        )
+    }
+
+    private fun applyVariableUpdateEvent(event: VariableUpdateEvent) {
+        when {
+            event.variableId == valveStateVar?._id || event.variableName == "solenoid1State" -> {
+                valveStateVar = valveStateVar?.copy(
+                    value = event.value,
+                    updatedAt = event.updatedAt,
+                    timeAgo = null
+                )
+
+                _isValveOpen.value = event.value
+            }
+
+            event.variableId == onlineStateVar?._id || event.variableName == "isOnline" -> {
+                onlineStateVar = onlineStateVar?.copy(
+                    value = event.value,
+                    updatedAt = event.updatedAt,
+                    timeAgo = null
+                )
+
+                applyOnlineUpdate(
+                    isOnline = event.value,
+                    updatedAt = event.updatedAt
+                )
+            }
+        }
+    }
+
+    private fun applyOnlineUpdate(isOnline: Boolean, updatedAt: String?) {
+        val current = _gadgetHeader.value ?: return
+
+        _gadgetHeader.value = current.copy(
+            isOnline = isOnline,
+            onlineAt = if (isOnline) updatedAt else null,
+            offlineAt = if (!isOnline) updatedAt else null,
+            onlineTimeAgo = if (isOnline) "Online now" else null,
+            offlineTimeAgo = if (!isOnline) "Offline now" else null
+        )
+    }
+
+    /* ===============================
      * PARSING
      * =============================== */
 
     private fun parseGadget(gadget: Gadget) {
         parseHeader(gadget)
         parseVariables(gadget.variables)
+        connectVariableEventsIfPossible()
     }
 
     private fun parseHeader(gadget: Gadget) {
         val isOnlineVar = gadget.variables
             .firstOrNull { it is Variable.BooleanVar && it.name == "isOnline" } as Variable.BooleanVar?
+
+        onlineStateVar = isOnlineVar
 
         val isActiveVar = gadget.variables
             .firstOrNull { it is Variable.BooleanVar && it.name == "isActive" } as Variable.BooleanVar?
@@ -265,6 +368,8 @@ class GadgetManagerViewModel(
                 )
             }
         }
+
+        _isManualModeEnabled.value = scheduleVars.any { it?.value != null }
     }
 
     private fun handleBoolean(v: Variable.BooleanVar) {
@@ -305,6 +410,7 @@ class GadgetManagerViewModel(
     private fun handleString(v: Variable.StringVar) {
         if (v.name == "gmtZone") {
             gmtVar = v
+            _gmtText.value = v.value
         }
     }
 
@@ -334,12 +440,28 @@ class GadgetManagerViewModel(
             return
         }
 
-        manualModeVar?.let {
+        manualModeVar?.let { manualVar ->
             updateBoolean(
                 buttonView = buttonView,
-                v = it,
+                v = manualVar,
                 value = isChecked,
-                onSuccess = { _isManualMode.value = isChecked }
+                onSuccess = {
+                    _isManualMode.value = isChecked
+
+                    if (!isChecked) {
+                        if (_isValveOpen.value == true) {
+                            valveStateVar?.let { valveVar ->
+                                updateBoolean(
+                                    v = valveVar,
+                                    value = false,
+                                    onSuccess = { _isValveOpen.value = false }
+                                )
+                            }
+                        } else {
+                            _isValveOpen.value = false
+                        }
+                    }
+                }
             )
         }
     }
@@ -377,7 +499,13 @@ class GadgetManagerViewModel(
     }
 
     fun onEditGmt() {
-        // TODO: open GMT picker dialog
+        gmtVar?.let {
+            _openEditGmtDialog.value = Pair(it._id, it.value)
+        }
+    }
+
+    fun onEditGmtDialogConsumed() {
+        _openEditGmtDialog.value = null
     }
 
     fun onRestartClicked() {
@@ -575,5 +703,10 @@ class GadgetManagerViewModel(
             _errorServerMessageRes.value = error.userMessageKey
             _errorServerMessage.value = null
         }
+    }
+
+    override fun onCleared() {
+        variableEventsClient.disconnect()
+        super.onCleared()
     }
 }

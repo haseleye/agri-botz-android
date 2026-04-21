@@ -71,6 +71,7 @@ dependencies {
     // OkHttp (for networking + logging)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+    implementation(libs.okhttp.sse)
     // Moshi
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)

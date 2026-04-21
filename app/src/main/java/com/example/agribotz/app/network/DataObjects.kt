@@ -136,3 +136,12 @@ data class UpdateVariableResponse(
     val error: String,
     val message: Any
 )
+
+@JsonClass(generateAdapter = true)
+data class VariableUpdateEvent(
+    val variableId: String,
+    val variableName: String,
+    val value: Boolean,
+    val updatedAt: String?,
+    val deviceId: String?
+)

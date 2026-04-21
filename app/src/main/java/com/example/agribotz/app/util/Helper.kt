@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 import java.text.DateFormatSymbols
+import android.content.Context
+import android.content.res.Configuration
+import com.example.agribotz.R
 
 data class ValveKey(val index: Int, val slot: Int?) // slot null for state/manual
 
@@ -85,3 +88,41 @@ fun parseScheduleMask(mask: Long): ScheduleResult {
         else -> ScheduleResult("unknown")
     }
 }
+
+object GmtZoneLocalizer {
+
+    @JvmStatic
+    fun localize(context: Context, backendValue: String?): String {
+        val cleanBackendValue = backendValue?.trim().orEmpty()
+
+        if (cleanBackendValue.isBlank()) {
+            return ""
+        }
+
+        val displayTimeZones = context.resources
+            .getStringArray(R.array.gmt_cities_list)
+            .toList()
+
+        val englishConfiguration = Configuration(context.resources.configuration).apply {
+            setLocale(Locale.ENGLISH)
+        }
+
+        val englishResources = context
+            .createConfigurationContext(englishConfiguration)
+            .resources
+
+        val backendTimeZones = englishResources
+            .getStringArray(R.array.gmt_cities_list)
+            .toList()
+
+        val index = backendTimeZones.indexOf(cleanBackendValue)
+
+        return if (index in displayTimeZones.indices) {
+            displayTimeZones[index]
+        } else {
+            cleanBackendValue
+        }
+    }
+}
+
+

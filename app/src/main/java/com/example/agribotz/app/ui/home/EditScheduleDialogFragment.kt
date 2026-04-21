@@ -29,6 +29,7 @@ class EditScheduleDialogFragment : DialogFragment() {
     private var scheduleIndex: Int = -1
     private var schedule: ScheduleUi? = null
     private var variableId: String? = null
+    private var currentGmt: String? = null
 
     private var _binding: DialogEditScheduleBinding? = null
     private val binding get() = _binding!!
@@ -54,6 +55,7 @@ class EditScheduleDialogFragment : DialogFragment() {
 
         scheduleIndex = requireArguments().getInt("scheduleIndex")
         variableId = requireArguments().getString("variableId")
+        currentGmt = requireArguments().getString("currentGmt")
 
         schedule = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable("schedule", ScheduleUi::class.java)
@@ -83,6 +85,7 @@ class EditScheduleDialogFragment : DialogFragment() {
         binding.viewModel = viewModel
 
         variableId?.let { viewModel.setVariableId(it) }
+        viewModel.setTimeZone(currentGmt)
 
         setupObservers()
 
@@ -99,12 +102,16 @@ class EditScheduleDialogFragment : DialogFragment() {
         setupDropdownClicks()
         setupActions()
 
-         viewModel.dismissDialog.observe(viewLifecycleOwner) { shouldDismiss ->
-             if (shouldDismiss == true) {
-                 dismiss()
-                 viewModel.onDismissConsumed()
-             }
-         }
+        viewModel.dismissDialog.observe(viewLifecycleOwner) { shouldDismiss ->
+            if (shouldDismiss == true) {
+                parentFragmentManager.setFragmentResult(
+                    "edit_schedule_result",
+                    Bundle()
+                )
+                dismiss()
+                viewModel.onDismissConsumed()
+            }
+        }
     }
 
     fun setupObservers() {
@@ -417,6 +424,12 @@ class EditScheduleDialogFragment : DialogFragment() {
 
     private fun observeApiStatus() {
         viewModel.apiStatus.observe(viewLifecycleOwner) { status ->
+
+            val isLoading = status == ApiStatus.LOADING
+
+            binding.btnSave.isEnabled = !isLoading
+            binding.btnCancel.isEnabled = !isLoading
+
             if (status == ApiStatus.ERROR) {
                 Snackbar.make(
                     binding.root,
@@ -426,6 +439,7 @@ class EditScheduleDialogFragment : DialogFragment() {
             }
         }
     }
+
     private fun observeServerErrors() {
         viewModel.errorServerMessage.observe(viewLifecycleOwner) { msg ->
             if (!msg.isNullOrBlank()) {

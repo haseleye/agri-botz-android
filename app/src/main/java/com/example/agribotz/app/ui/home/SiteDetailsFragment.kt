@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.agribotz.R
 import com.example.agribotz.app.repository.Repository
-import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.viewholders.home.SiteDetailsAdapter
 import com.example.agribotz.app.viewmodels.home.SiteDetailsViewModel
@@ -96,8 +95,6 @@ class SiteDetailsFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = false
             viewModel.onLoad()
         }
-
-        viewModel.onLoad()
 
         return binding.root
     }
@@ -355,6 +352,11 @@ class SiteDetailsFragment : Fragment() {
             }
             .setNegativeButton(R.string.Cancel, null)
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onLoad()
     }
 
     override fun onDestroyView() {

@@ -19,6 +19,10 @@ import androidx.navigation.fragment.findNavController
 
 class GadgetManagerFragment : Fragment() {
 
+    private companion object {
+        const val EDIT_SCHEDULE_RESULT_KEY = "edit_schedule_result"
+    }
+
     private var _binding: FragmentGadgetManagerBinding? = null
     private val binding get() = _binding!!
 
@@ -49,8 +53,6 @@ class GadgetManagerFragment : Fragment() {
         setupObservers()
         setupDefaultTab()
 
-        viewModel.onLoad()
-
         return binding.root
     }
 
@@ -79,6 +81,9 @@ class GadgetManagerFragment : Fragment() {
         observeNavigateToMap()
         observeNavigateToSetLocation()
         observeEditSchedule()
+        observeEditScheduleResult()
+        observeEditGmt()
+        observeEditGmtResult()
     }
 
     private fun observeApiStatus() {
@@ -167,6 +172,7 @@ class GadgetManagerFragment : Fragment() {
                 putInt("scheduleIndex", scheduleIndex)
                 putParcelable("schedule", schedule)
                 putString("variableId", variableId)
+                putString("currentGmt", viewModel.gmtText.value)
             }
         }
         dialog.show(childFragmentManager, "edit_schedule_dialog")
@@ -251,6 +257,58 @@ class GadgetManagerFragment : Fragment() {
                 viewModel.onSetGpsNavigated()
             }
         }
+    }
+
+    private fun observeEditScheduleResult() {
+        childFragmentManager.setFragmentResultListener(
+            EDIT_SCHEDULE_RESULT_KEY,
+            viewLifecycleOwner
+        ) { _, _ ->
+            viewModel.onLoad()
+        }
+    }
+
+    private fun observeEditGmt() {
+        viewModel.openEditGmtDialog.observe(viewLifecycleOwner) { payload ->
+            payload?.let { (variableId, currentGmt) ->
+                openEditGmtDialog(variableId, currentGmt)
+                viewModel.onEditGmtDialogConsumed()
+            }
+        }
+    }
+
+    private fun openEditGmtDialog(variableId: String, currentGmt: String) {
+        val dialog = EditGmtDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("variableId", variableId)
+                putString("currentGmt", currentGmt)
+            }
+        }
+        dialog.show(childFragmentManager, "edit_gmt_dialog")
+    }
+
+    private fun observeEditGmtResult() {
+        childFragmentManager.setFragmentResultListener(
+            "edit_gmt_result",
+            viewLifecycleOwner
+        ) { _, _ ->
+            viewModel.onLoad()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startVariableEvents()
+    }
+
+    override fun onStop() {
+        viewModel.stopVariableEvents()
+        super.onStop()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onLoad()
     }
 
     override fun onDestroyView() {

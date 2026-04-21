@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.agribotz.app.util.GmtZoneLocalizer" />
+
         <variable
             name="viewModel"
             type="com.example.agribotz.app.viewmodels.home.EditScheduleViewModel" />
@@ -76,7 +78,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.timeZone}"
+                        android:text="@{GmtZoneLocalizer.localize(context, viewModel.timeZone)}"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="14sp"
                         android:alpha="0.7" />
@@ -506,7 +508,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{viewModel.timeZone}"
+                            android:text="@{GmtZoneLocalizer.localize(context, viewModel.timeZone)}"
                             android:textColor="@color/colorOnBackground"
                             android:textSize="14sp"
                             android:alpha="0.7" />

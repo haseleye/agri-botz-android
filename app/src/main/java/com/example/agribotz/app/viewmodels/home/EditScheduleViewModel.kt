@@ -78,8 +78,12 @@ class EditScheduleViewModel(
     )
     val startTime: LiveData<String> = _startTime
 
-    private val _timeZone = MutableLiveData("Cairo")
-    val timeZone: LiveData<String> = _timeZone
+    private val _timeZone = MutableLiveData<String?>()
+    val timeZone: LiveData<String?> = _timeZone
+
+    fun setTimeZone(value: String?) {
+        _timeZone.value = value
+    }
 
     private val _durationHours = MutableLiveData(defaultHours())
     val durationHours: LiveData<String> = _durationHours
@@ -91,7 +95,7 @@ class EditScheduleViewModel(
     val durationSeconds: LiveData<String> = _durationSeconds
 
     private val _repeatMode = MutableLiveData(ScheduleRepeatMode.fromScheduleUi(schedule))
-    private val _repeatModeBackend: LiveData<String> = _repeatMode.map { it.label }
+    // private val _repeatModeBackend: LiveData<String> = _repeatMode.map { it.label }
 
     private val _repeatModeLabel = MutableLiveData(ScheduleRepeatMode.fromScheduleUi(schedule).label)
     val repeatModeLabel: LiveData<String> = _repeatModeLabel
@@ -217,7 +221,7 @@ class EditScheduleViewModel(
         val len = (h * 3600) + (m * 60) + s
 
         // repeatEvery
-        val repeatEvery = _repeatModeBackend.value ?: ScheduleRepeatMode.NONE.label
+        val repeatEvery = _repeatMode.value?.label ?: ScheduleRepeatMode.NONE.label
 
         // to
         val to = when {

@@ -21,7 +21,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-private const val BASE_URL = "https://dev.agribotz.com:3001/"
+const val BASE_URL = "https://dev.agribotz.com:3001/"
 
 private val moshi = Moshi.Builder()
     .add(CustomDateAdapter)

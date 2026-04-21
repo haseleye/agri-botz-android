@@ -622,4 +622,33 @@
     <string name="QR_Scan_Failed">QR scan failed</string>
     <string name="Invalid_QR_Code">Invalid QR code</string>
 
+    <string name="Invalid_GMT_Zone">Please select a valid GMT zone</string>
+
+    <string-array name="wakeup_refresh_list">
+        <item>Each 1 hour</item>
+        <item>Each 2 hours</item>
+        <item>Each 3 hours</item>
+        <item>Each 4 hours</item>
+        <item>Each 5 hours</item>
+        <item>Each 6 hours</item>
+        <item>Each 7 hours</item>
+        <item>Each 8 hours</item>
+        <item>Each 9 hours</item>
+        <item>Each 10 hours</item>
+        <item>Each 11 hours</item>
+        <item>Each 12 hours</item>
+        <item>Each 13 hours</item>
+        <item>Each 14 hours</item>
+        <item>Each 15 hours</item>
+        <item>Each 16 hours</item>
+        <item>Each 17 hours</item>
+        <item>Each 18 hours</item>
+        <item>Each 19 hours</item>
+        <item>Each 20 hours</item>
+        <item>Each 21 hours</item>
+        <item>Each 22 hours</item>
+        <item>Each 23 hours</item>
+        <item>Each 24 hours</item>
+    </string-array>
+
 </resources>

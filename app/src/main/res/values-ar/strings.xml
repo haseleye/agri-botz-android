@@ -622,5 +622,33 @@
     <string name="Scan_QR">مسح QR</string>
     <string name="QR_Scan_Failed">فشل مسح رمز QR</string>
     <string name="Invalid_QR_Code">رمز QR غير صالح</string>
+    <string name="Invalid_GMT_Zone">برجاء اختيار منطقة توقيت صحيحة</string>
+
+    <string-array name="wakeup_refresh_list">
+        <item>كل ساعة</item>
+        <item>كل ساعتين</item>
+        <item>كل 3 ساعات</item>
+        <item>كل 4 ساعات</item>
+        <item>كل 5 ساعات</item>
+        <item>كل 6 ساعات</item>
+        <item>كل 7 ساعات</item>
+        <item>كل 8 ساعات</item>
+        <item>كل 9 ساعات</item>
+        <item>كل 10 ساعات</item>
+        <item>كل 11 ساعة</item>
+        <item>كل 12 ساعة</item>
+        <item>كل 13 ساعة</item>
+        <item>كل 14 ساعة</item>
+        <item>كل 15 ساعة</item>
+        <item>كل 16 ساعة</item>
+        <item>كل 17 ساعة</item>
+        <item>كل 18 ساعة</item>
+        <item>كل 19 ساعة</item>
+        <item>كل 20 ساعة</item>
+        <item>كل 21 ساعة</item>
+        <item>كل 22 ساعة</item>
+        <item>كل 23 ساعة</item>
+        <item>كل 24 ساعة</item>
+    </string-array>
 
 </resources>

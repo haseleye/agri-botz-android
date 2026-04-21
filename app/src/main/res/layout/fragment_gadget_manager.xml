@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.agribotz.app.util.GmtZoneLocalizer" />
+
         <variable
             name="viewModel"
             type="com.example.agribotz.app.viewmodels.home.GadgetManagerViewModel" />
@@ -123,7 +125,7 @@
                                 app:title="@{@string/Manual_Irrigation}"
                                 app:subtitle='@{viewModel.manualModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isManualMode}"
-                                app:enabledState="@{true}"
+                                app:enabledState="@{viewModel.isManualModeEnabled}"
                                 app:onCheckedChanged="@{viewModel::onManualModeChangedListener}" />
 
                             <!-- Schedules -->
@@ -209,7 +211,7 @@
                                 layout="@layout/item_setting_value"
                                 app:startIcon="@{@drawable/gmt_zone}"
                                 app:title="@{@string/GMT_Zone}"
-                                app:value='@{"GMT" + viewModel.gmtText}'
+                                app:value='@{GmtZoneLocalizer.localize(context, viewModel.gmtText)}'
                                 app:enabledState="@{true}"
                                 app:onEdit="@{() -> viewModel.onEditGmt()}" />
 
