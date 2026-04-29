@@ -84,6 +84,9 @@ class GadgetManagerFragment : Fragment() {
         observeEditScheduleResult()
         observeEditGmt()
         observeEditGmtResult()
+        observeEditWakeupRate()
+        observeEditWakeupRateResult()
+        observeDeleteScheduleConfirmation()
     }
 
     private fun observeApiStatus() {
@@ -293,6 +296,50 @@ class GadgetManagerFragment : Fragment() {
             viewLifecycleOwner
         ) { _, _ ->
             viewModel.onLoad()
+        }
+    }
+
+    private fun observeEditWakeupRate() {
+        viewModel.openEditWakeupRateDialog.observe(viewLifecycleOwner) { payload ->
+            payload?.let { (variableId, currentWakeupRate) ->
+                openEditWakeupRateDialog(variableId, currentWakeupRate)
+                viewModel.onEditWakeupRateDialogConsumed()
+            }
+        }
+    }
+
+    private fun openEditWakeupRateDialog(variableId: String, currentWakeupRate: Float) {
+        val dialog = EditWakeupRateDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("variableId", variableId)
+                putFloat("currentWakeupRate", currentWakeupRate)
+            }
+        }
+        dialog.show(childFragmentManager, "edit_wakeup_rate_dialog")
+    }
+
+    private fun observeEditWakeupRateResult() {
+        childFragmentManager.setFragmentResultListener(
+            "edit_wakeup_rate_result",
+            viewLifecycleOwner
+        ) { _, _ ->
+            viewModel.onLoad()
+        }
+    }
+
+    private fun observeDeleteScheduleConfirmation() {
+        viewModel.confirmDeleteScheduleDialog.observe(viewLifecycleOwner) { index ->
+            if (index == null) return@observe
+
+            AlertDialog.Builder(requireContext())
+                .setMessage(getString(R.string.Delete_Schedule_Confirmation))
+                .setPositiveButton(R.string.Yes) { _, _ ->
+                    viewModel.deleteSchedule(index)
+                }
+                .setNegativeButton(R.string.No, null)
+                .show()
+
+            viewModel.onDeleteScheduleDialogConsumed()
         }
     }
 

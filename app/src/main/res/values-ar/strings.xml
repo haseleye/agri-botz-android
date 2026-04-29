@@ -651,4 +651,7 @@
         <item>كل 24 ساعة</item>
     </string-array>
 
+    <string name="Invalid_Wakeup_Rate">برجاء اختيار معدل استيقاظ صحيح</string>
+    <string name="Delete_Schedule_Confirmation">هل أنت متأكد أنك تريد حذف هذا الجدول الزمني؟</string>
+
 </resources>

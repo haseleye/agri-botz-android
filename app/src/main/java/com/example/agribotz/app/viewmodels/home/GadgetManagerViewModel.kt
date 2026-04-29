@@ -82,6 +82,9 @@ class GadgetManagerViewModel(
     private val _isManualModeEnabled = MutableLiveData(false)
     val isManualModeEnabled: LiveData<Boolean> = _isManualModeEnabled
 
+    private val _confirmDeleteScheduleDialog = MutableLiveData<Int?>()
+    val confirmDeleteScheduleDialog: LiveData<Int?> = _confirmDeleteScheduleDialog
+
     val canToggleValve: LiveData<Boolean> = _isManualMode.map { it == true }
 
     val valveStateText: LiveData<String> = _isValveOpen.map {
@@ -114,9 +117,8 @@ class GadgetManagerViewModel(
         if (it == true) "On" else "Off"
     }
 
-    val refreshRateHours: LiveData<Float> = _isDeepSleepOn.map {
-        refreshRateVar?.value ?: 0f
-    }
+    private val _refreshRateHours = MutableLiveData(0f)
+    val refreshRateHours: LiveData<Float> = _refreshRateHours
 
     private val _gmtText = MutableLiveData("GMT+00:00")
     val gmtText: LiveData<String> = _gmtText
@@ -132,6 +134,9 @@ class GadgetManagerViewModel(
 
     private val _openEditScheduleDialog = MutableLiveData<Int?>()
     val openEditScheduleDialog: LiveData<Int?> = _openEditScheduleDialog
+
+    private val _openEditWakeupRateDialog = MutableLiveData<Pair<String, Float>?>()
+    val openEditWakeupRateDialog: LiveData<Pair<String, Float>?> = _openEditWakeupRateDialog
 
     private val _openEditGmtDialog = MutableLiveData<Pair<String, String>?>()
     val openEditGmtDialog: LiveData<Pair<String, String>?> = _openEditGmtDialog
@@ -404,6 +409,7 @@ class GadgetManagerViewModel(
     private fun handleFloat(v: Variable.FloatVar) {
         if (v.name == "dailyOnlineRefreshes") {
             refreshRateVar = v
+            _refreshRateHours.value = v.value
         }
     }
 
@@ -475,7 +481,46 @@ class GadgetManagerViewModel(
     }
 
     fun onDeleteSchedule(index: Int) {
-        // Todo: Delete this schedule
+        _confirmDeleteScheduleDialog.value = index
+    }
+
+    fun onDeleteScheduleDialogConsumed() {
+        _confirmDeleteScheduleDialog.value = null
+    }
+
+    fun deleteSchedule(index: Int) {
+        val token = _token
+        if (token.isNullOrBlank()) {
+            _apiStatus.value = ApiStatus.ERROR
+            _errorServerMessage.value = "Missing access token"
+            return
+        }
+
+        val scheduleVar = scheduleVars.getOrNull(index) ?: return
+
+        viewModelScope.launch {
+            try {
+                _apiStatus.value = ApiStatus.LOADING
+
+                when (val result = repository.updateVariable(
+                    token,
+                    scheduleVar._id,
+                    VariableValue.ScheduleVal(null)
+                )) {
+                    is ApiResult.Success -> {
+                        loadGadget()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Deleting schedule failed")
+                    }
+                }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "deleteSchedule failed", e)
+            }
+        }
     }
 
     fun onDeepSleepChangedListener(buttonView: CompoundButton, isChecked: Boolean) {
@@ -495,7 +540,13 @@ class GadgetManagerViewModel(
     }
 
     fun onEditRefreshRate() {
-        // TODO: open refresh rate picker dialog
+        refreshRateVar?.let {
+            _openEditWakeupRateDialog.value = Pair(it._id, it.value)
+        }
+    }
+
+    fun onEditWakeupRateDialogConsumed() {
+        _openEditWakeupRateDialog.value = null
     }
 
     fun onEditGmt() {

@@ -4,6 +4,7 @@
 
     <data>
         <import type="com.example.agribotz.app.util.GmtZoneLocalizer" />
+        <import type="com.example.agribotz.app.util.WakeupRefreshLocalizer" />
 
         <variable
             name="viewModel"
@@ -191,7 +192,7 @@
                                 app:title="@{@string/Deep_Sleep}"
                                 app:subtitle='@{viewModel.sleepModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isDeepSleepOn}"
-                                app:enabledState="@{true}"
+                                app:enabledState="@{!viewModel.canToggleValve}"
                                 app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}" />
 
                             <!-- Refresh Rate -->
@@ -202,7 +203,7 @@
                                 android:layout_marginStart="32dp"
                                 app:startIcon="@{@drawable/daily_online_refreshes}"
                                 app:title="@{@string/Refresh_Rate}"
-                                app:value='@{@string/Refresh_Rate_Value(viewModel.refreshRateHours)}'
+                                app:value='@{WakeupRefreshLocalizer.localize(context, viewModel.refreshRateHours)}'
                                 app:enabledState="@{viewModel.isDeepSleepOn}"
                                 app:onEdit="@{() -> viewModel.onEditRefreshRate()}" />
 

@@ -195,7 +195,7 @@ sealed class VariableValue {
     data class StringVal(val value: String) : VariableValue()
 
     @JsonClass(generateAdapter = true)
-    data class ScheduleVal(val value: ScheduleValues) : VariableValue()
+    data class ScheduleVal(val value: ScheduleValues?) : VariableValue()
 }
 
 

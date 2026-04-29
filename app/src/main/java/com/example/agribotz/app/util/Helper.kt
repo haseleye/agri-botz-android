@@ -125,4 +125,19 @@ object GmtZoneLocalizer {
     }
 }
 
+object WakeupRefreshLocalizer {
 
+    @JvmStatic
+    fun localize(context: Context, value: Float?): String {
+        val hours = value?.toInt() ?: return context.getString(R.string.Not_Set)
+
+        val items = context.resources.getStringArray(R.array.wakeup_refresh_list)
+        val index = hours - 1
+
+        return if (index in items.indices) {
+            items[index]
+        } else {
+            context.getString(R.string.Not_Set)
+        }
+    }
+}

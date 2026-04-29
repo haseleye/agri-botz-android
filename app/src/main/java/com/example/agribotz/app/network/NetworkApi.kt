@@ -26,10 +26,17 @@ const val BASE_URL = "https://dev.agribotz.com:3001/"
 private val moshi = Moshi.Builder()
     .add(CustomDateAdapter)
     .add(VariablePolymorphicAdapter.factory)
+    .add { type, annotations, moshi ->
+        if (annotations.isEmpty() && type == UpdateVariableRequest::class.java) {
+            UpdateVariableRequestJsonAdapter(moshi)
+        } else {
+            null
+        }
+    }
     .addLast(KotlinJsonAdapterFactory())
     .build()
 
-val logging =  HttpLoggingInterceptor()
+val logging = HttpLoggingInterceptor()
     .setLevel(HttpLoggingInterceptor.Level.BODY)
 
 val httpClient = OkHttpClient.Builder()

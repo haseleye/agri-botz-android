@@ -128,7 +128,7 @@ data class GadgetGpsResponse(
 @JsonClass(generateAdapter = true)
 data class UpdateVariableRequest(
     val variableId: String,
-    val value: Any
+    val value: Any?
 )
 
 data class UpdateVariableResponse(

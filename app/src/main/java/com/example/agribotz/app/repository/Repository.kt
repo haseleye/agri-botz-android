@@ -440,7 +440,7 @@ class Repository {
     suspend fun updateVariable(token: String, variableId: String, variableValue: VariableValue): ApiResult<UpdateVariableResponse> {
         return try {
 
-            val value: Any = when (variableValue) {
+            val value: Any? = when (variableValue) {
                 is VariableValue.Bool -> variableValue.value
                 is VariableValue.IntVal -> variableValue.value
                 is VariableValue.FloatVal -> variableValue.value
