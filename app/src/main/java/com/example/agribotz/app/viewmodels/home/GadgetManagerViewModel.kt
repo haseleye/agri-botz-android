@@ -452,21 +452,7 @@ class GadgetManagerViewModel(
                 v = manualVar,
                 value = isChecked,
                 onSuccess = {
-                    _isManualMode.value = isChecked
-
-                    if (!isChecked) {
-                        if (_isValveOpen.value == true) {
-                            valveStateVar?.let { valveVar ->
-                                updateBoolean(
-                                    v = valveVar,
-                                    value = false,
-                                    onSuccess = { _isValveOpen.value = false }
-                                )
-                            }
-                        } else {
-                            _isValveOpen.value = false
-                        }
-                    }
+                    handleManualModeChangedSuccess(isChecked)
                 }
             )
         }
@@ -497,6 +483,8 @@ class GadgetManagerViewModel(
         }
 
         val scheduleVar = scheduleVars.getOrNull(index) ?: return
+        val isDeletingLastSetSchedule =
+            scheduleVar.value != null && scheduleVars.count { it?.value != null } == 1
 
         viewModelScope.launch {
             try {
@@ -508,7 +496,37 @@ class GadgetManagerViewModel(
                     VariableValue.ScheduleVal(null)
                 )) {
                     is ApiResult.Success -> {
-                        loadGadget()
+                        if (isDeletingLastSetSchedule) {
+                            val manualVar = manualModeVar
+
+                            if (manualVar != null) {
+                                when (val manualResult = repository.updateVariable(
+                                    token,
+                                    manualVar._id,
+                                    VariableValue.Bool(true)
+                                )) {
+                                    is ApiResult.Success -> {
+                                        handleManualModeChangedSuccess(true) {
+                                            loadGadget()
+                                        }
+                                    }
+
+                                    is ApiResult.Error -> {
+                                        handleError(
+                                            manualResult,
+                                            "Enabling Manual Control after deleting last schedule failed"
+                                        )
+                                        loadGadget()
+                                    }
+                                }
+                            } else {
+                                handleManualModeChangedSuccess(true) {
+                                    loadGadget()
+                                }
+                            }
+                        } else {
+                            loadGadget()
+                        }
                     }
 
                     is ApiResult.Error -> {
@@ -620,8 +638,7 @@ class GadgetManagerViewModel(
                 gadgetName = gadget.name,
                 gps = gadget.gps
             )
-        }
-        else {
+        } else {
             _navigateToSetLocation.value =
                 SetLocationNav(
                     gadgetId = gadget.id,
@@ -682,7 +699,7 @@ class GadgetManagerViewModel(
         viewModelScope.launch {
             try {
                 _apiStatus.value = ApiStatus.LOADING
-                when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))){
+                when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))) {
                     is ApiResult.Success -> {
                         _apiStatus.value = ApiStatus.DONE
                         onSuccess?.invoke()
@@ -730,6 +747,45 @@ class GadgetManagerViewModel(
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("GadgetManagerViewModel", "updateBoolean failed", e)
             }
+        }
+    }
+
+    private fun handleManualModeChangedSuccess(
+        isChecked: Boolean,
+        onCompleted: (() -> Unit)? = null
+    ) {
+        _isManualMode.value = isChecked
+
+        fun continueAfterValve() {
+            if (isChecked && _isDeepSleepOn.value == true) {
+                deepSleepVar?.let { deepSleep ->
+                    updateBoolean(
+                        v = deepSleep,
+                        value = false,
+                        onSuccess = {
+                            _isDeepSleepOn.value = false
+                            onCompleted?.invoke()
+                        }
+                    )
+                } ?: onCompleted?.invoke()
+            } else {
+                onCompleted?.invoke()
+            }
+        }
+
+        if (_isValveOpen.value == true) {
+            valveStateVar?.let { valveVar ->
+                updateBoolean(
+                    v = valveVar,
+                    value = false,
+                    onSuccess = {
+                        _isValveOpen.value = false
+                        continueAfterValve()
+                    }
+                )
+            } ?: continueAfterValve()
+        } else {
+            continueAfterValve()
         }
     }
 

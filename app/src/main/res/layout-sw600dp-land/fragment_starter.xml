@@ -12,7 +12,8 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
         android:paddingTop="32dp"
-        android:paddingBottom="32dp">
+        android:paddingBottom="32dp"
+        android:fitsSystemWindows="true" >
 
         <!-- Image on left, take 50% -->
         <ImageView

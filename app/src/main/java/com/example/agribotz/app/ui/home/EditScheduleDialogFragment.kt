@@ -427,7 +427,6 @@ class EditScheduleDialogFragment : DialogFragment() {
 
             val isLoading = status == ApiStatus.LOADING
 
-            binding.btnSave.isEnabled = !isLoading
             binding.btnCancel.isEnabled = !isLoading
 
             if (status == ApiStatus.ERROR) {

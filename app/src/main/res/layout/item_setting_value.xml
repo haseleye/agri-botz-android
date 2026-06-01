@@ -82,10 +82,11 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_edit"
             android:contentDescription="@string/Edit_Settings"
-            android:clickable="true"
-            android:focusable="true"
+            android:clickable='@{enabledState != null ? enabledState : true}'
+            android:focusable='@{enabledState != null ? enabledState : true}'
             android:onClick="@{onEdit}"
             android:enabled='@{enabledState != null ? enabledState : true}'
+            android:alpha='@{enabledState != null ? (enabledState ? 1f : 0.35f) : 1f}'
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

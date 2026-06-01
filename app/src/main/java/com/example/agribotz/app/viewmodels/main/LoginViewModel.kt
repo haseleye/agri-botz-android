@@ -7,7 +7,6 @@ import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.util.PreferencesManager
-import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 

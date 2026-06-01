@@ -11,7 +11,8 @@
         android:paddingStart="0dp"
         android:paddingEnd="12dp"
         android:paddingTop="24dp"
-        android:paddingBottom="24dp" >
+        android:paddingBottom="24dp"
+        android:fitsSystemWindows="true" >
 
         <!-- Image on left -->
         <ImageView

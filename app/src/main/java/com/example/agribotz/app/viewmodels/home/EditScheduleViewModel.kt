@@ -3,6 +3,7 @@ package com.example.agribotz.app.viewmodels.home
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
@@ -94,6 +95,9 @@ class EditScheduleViewModel(
     private val _durationSeconds = MutableLiveData(defaultSeconds())
     val durationSeconds: LiveData<String> = _durationSeconds
 
+    private val _isSaveEnabled = MediatorLiveData<Boolean>()
+    val isSaveEnabled: LiveData<Boolean> = _isSaveEnabled
+
     private val _repeatMode = MutableLiveData(ScheduleRepeatMode.fromScheduleUi(schedule))
     // private val _repeatModeBackend: LiveData<String> = _repeatMode.map { it.label }
 
@@ -132,6 +136,15 @@ class EditScheduleViewModel(
     val showMonthSelector: LiveData<Boolean> = _repeatMode.map { it == ScheduleRepeatMode.MONTH }
     val showYearSelector: LiveData<Boolean> = _repeatMode.map { it == ScheduleRepeatMode.YEAR }
 
+    init {
+        _isSaveEnabled.addSource(_apiStatus) { updateSaveEnabled() }
+        _isSaveEnabled.addSource(_durationHours) { updateSaveEnabled() }
+        _isSaveEnabled.addSource(_durationMinutes) { updateSaveEnabled() }
+        _isSaveEnabled.addSource(_durationSeconds) { updateSaveEnabled() }
+
+        updateSaveEnabled()
+    }
+
     fun setStartDate(value: String) { _startDate.value = value }
     fun setStartTime(value: String) { _startTime.value = value }
     fun setDurationHours(value: String) { _durationHours.value = value }
@@ -155,6 +168,17 @@ class EditScheduleViewModel(
     fun setYearMonth(value: String, localizedValue: String) {
         _yearMonthBackend.value = value
         _yearMonth.value = localizedValue
+    }
+
+    private fun updateSaveEnabled() {
+        val hours = _durationHours.value?.toIntOrNull() ?: 0
+        val minutes = _durationMinutes.value?.toIntOrNull() ?: 0
+        val seconds = _durationSeconds.value?.toIntOrNull() ?: 0
+
+        val hasNonZeroDuration = hours != 0 || minutes != 0 || seconds != 0
+        val isLoading = _apiStatus.value == ApiStatus.LOADING
+
+        _isSaveEnabled.value = hasNonZeroDuration && !isLoading
     }
 
     fun toggleWeekDay(key: String) {

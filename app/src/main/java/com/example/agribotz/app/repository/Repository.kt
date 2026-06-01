@@ -1,11 +1,9 @@
 package com.example.agribotz.app.repository
 
-import android.util.Log
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ErrorResponse
 import com.example.agribotz.app.domain.GPS
-import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.domain.VariableValue
 import com.example.agribotz.app.network.AddSiteRequest
 import com.example.agribotz.app.network.AddSiteResponse
@@ -39,7 +37,6 @@ class Repository {
         .build()
 
     private val errorAdapter: JsonAdapter<ErrorResponse> = moshi.adapter(ErrorResponse::class.java)
-
 
     suspend fun login(mobileNumber: String, password: String): ApiResult<LoginResponse> {
         return try {
