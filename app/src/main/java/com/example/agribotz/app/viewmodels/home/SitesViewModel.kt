@@ -19,6 +19,12 @@ class SitesViewModel(private val repository: Repository, private val prefManager
     private val _sites = MutableLiveData<List<SiteUi>>(emptyList())
     val sites: LiveData<List<SiteUi>> = _sites
 
+    private val _profilePhoto = MutableLiveData<String>()
+    val profilePhoto: LiveData<String> = _profilePhoto
+
+    private val _firstName = MutableLiveData<String>()
+    val firstName: LiveData<String> = _firstName
+
     private val _navigateToSite = MutableLiveData<String?>()
     val navigateToSite: LiveData<String?> = _navigateToSite
 
@@ -58,6 +64,10 @@ class SitesViewModel(private val repository: Repository, private val prefManager
                 numberOfGadgets = it.numberOfGadgets
             )
         }
+
+        _profilePhoto.value = prefManager.getUser()?.profilePhoto
+
+        _firstName.value = prefManager.getUser()?.firstName
 
         _token = prefManager.getAccessToken()
     }

@@ -1,5 +1,6 @@
 package com.example.agribotz.app.ui.home
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,14 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.agribotz.R
 import com.example.agribotz.app.repository.Repository
+import com.example.agribotz.app.ui.main.MainActivity
 import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.viewholders.home.SitesAdapter
 import com.example.agribotz.app.viewmodels.home.SitesViewModel
@@ -25,7 +29,6 @@ import kotlin.getValue
 class SitesFragment : Fragment() {
     private var _binding: FragmentSitesBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: SitesViewModel by viewModels {
         SitesViewModelFactory(Repository(), PreferencesManager(requireContext()))
     }
@@ -67,6 +70,11 @@ class SitesFragment : Fragment() {
             }
         })
 
+        // Setup click listener to show the dropdown menu
+        binding.ivProfile.setOnClickListener { view ->
+            showProfileMenu(view)
+        }
+
         viewModel.sites.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
@@ -93,6 +101,22 @@ class SitesFragment : Fragment() {
                 val action = SitesFragmentDirections.actionSitesFragmentToSiteDetailsFragment(siteId)
                 findNavController().navigate(action)
                 viewModel.onNavigated()
+            }
+        }
+
+        // Observe profile photo changes
+        viewModel.profilePhoto.observe(viewLifecycleOwner) {profilePhoto ->
+            profilePhoto.let {
+                Glide.with(this)
+                    .load(profilePhoto)
+                    .into(binding.ivProfile)
+            }
+        }
+
+        // Observe first name changes
+        viewModel.firstName.observe(viewLifecycleOwner) {firstName ->
+            firstName.let {
+                binding.tvWelcome.text = getString(R.string.Welcome_User, firstName)
             }
         }
 
@@ -128,6 +152,42 @@ class SitesFragment : Fragment() {
                 viewModel.onStatusDetailsShown()
             }
         }
+    }
+
+    private fun showProfileMenu(anchorView: View) {
+        val popupMenu = PopupMenu(requireContext(), anchorView)
+        popupMenu.menuInflater.inflate(R.menu.menu_profile, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_profile -> {
+                    // Do nothing for now
+                    true
+                }
+                R.id.action_logout -> {
+                    performLogout()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
+    }
+
+    private fun performLogout() {
+        // Clear SharedPreferences
+        PreferencesManager(requireContext()).clearAll()
+
+        /// Route back to MainActivity and pass a flag to open Login
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("NAVIGATE_TO_LOGIN", true)
+        }
+        startActivity(intent)
+
+        // Kill the current Activity
+        requireActivity().finish()
     }
 
     private fun showAddSiteDialog() {

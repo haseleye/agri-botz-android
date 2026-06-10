@@ -126,6 +126,9 @@
     <string name="Month">Month</string>
     <string name="Never_Ends">Never</string>
     <string name="Ends_On">Ends on</string>
+    <string name="Personal_Profile">Personal Profile</string>
+    <string name="Logout">Logout</string>
+    <string name="Welcome_User">Welcome, %1$s!</string>
 
     <string-array name="schedule_repeat_modes">
         <item>@string/Repeat_Mode_None</item>

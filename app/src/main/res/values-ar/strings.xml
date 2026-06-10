@@ -127,6 +127,9 @@
     <string name="Ends_On">تاريخ الانتهاء</string>
     <string name="Hour">ساعة</string>
     <string name="Day">يوم</string>
+    <string name="Personal_Profile">الملف الشخصي</string>
+    <string name="Logout">تسجيل الخروج</string>
+    <string name="Welcome_User">مرحباً %1$s</string>
 
     <string-array name="schedule_repeat_modes">
         <item>@string/Repeat_Mode_None</item>

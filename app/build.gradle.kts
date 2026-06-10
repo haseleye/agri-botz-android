@@ -79,6 +79,9 @@ dependencies {
     // Google Code Scanner
     implementation(libs.play.services.code.scanner)
 
+    // Image Handling
+    implementation(libs.glide)
+
     implementation(libs.androidx.fragment)
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
