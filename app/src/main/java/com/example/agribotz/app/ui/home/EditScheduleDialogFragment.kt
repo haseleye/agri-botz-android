@@ -378,12 +378,6 @@ class EditScheduleDialogFragment : DialogFragment() {
 
     private fun setupActions() {
         binding.btnCancel.setOnClickListener { dismiss() }
-
-        binding.btnSave.setOnClickListener {
-            // call VM save when you add it
-            // viewModel.save()
-            dismiss()
-        }
     }
 
     private fun showDatePicker(onSelected: (String) -> Unit) {
