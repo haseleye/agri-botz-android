@@ -24,8 +24,14 @@ import java.util.Locale
 class EditScheduleViewModel(
     private val repository: Repository,
     private val prefManager: PreferencesManager,
-    private val schedule: ScheduleUi?
+    private val schedule: ScheduleUi?,
+    private val isSensorSchedule: Boolean = false
 ) : ViewModel() {
+
+    private companion object {
+        // Sensors schedules don't take a user-entered duration, this fixed value is always used
+        const val SENSOR_SCHEDULE_DURATION_SEC = 10
+    }
 
     /* ===============================
      * COMMON STATE
@@ -130,6 +136,7 @@ class EditScheduleViewModel(
     )
     val selectedWeekDays: LiveData<Set<String>> = _selectedWeekDays
 
+    val showDuration: Boolean = !isSensorSchedule
     val showEndRecurrenceSection: LiveData<Boolean> = _repeatMode.map { it != ScheduleRepeatMode.NONE }
     val showEndDateTime: LiveData<Boolean> = _endRecurrenceOn.map { it == true }
     val showWeekSelector: LiveData<Boolean> = _repeatMode.map { it == ScheduleRepeatMode.WEEK }
@@ -178,7 +185,7 @@ class EditScheduleViewModel(
         val hasNonZeroDuration = hours != 0 || minutes != 0 || seconds != 0
         val isLoading = _apiStatus.value == ApiStatus.LOADING
 
-        _isSaveEnabled.value = hasNonZeroDuration && !isLoading
+        _isSaveEnabled.value = (isSensorSchedule || hasNonZeroDuration) && !isLoading
     }
 
     fun toggleWeekDay(key: String) {
@@ -242,7 +249,7 @@ class EditScheduleViewModel(
         val h = _durationHours.value?.toIntOrNull() ?: 0
         val m = _durationMinutes.value?.toIntOrNull() ?: 0
         val s = _durationSeconds.value?.toIntOrNull() ?: 0
-        val len = (h * 3600) + (m * 60) + s
+        val len = if (isSensorSchedule) SENSOR_SCHEDULE_DURATION_SEC else (h * 3600) + (m * 60) + s
 
         // repeatEvery
         val repeatEvery = _repeatMode.value?.label ?: ScheduleRepeatMode.NONE.label

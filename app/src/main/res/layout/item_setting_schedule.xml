@@ -18,6 +18,10 @@
             type="ScheduleUi" />
 
         <variable
+            name="hideDuration"
+            type="boolean" />
+
+        <variable
             name="onEdit"
             type="android.view.View.OnClickListener" />
 
@@ -146,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:orientation="horizontal"
-                app:visibleIf='@{schedule != null &amp;&amp; !schedule.showNotSetOnly}'>
+                app:visibleIf='@{schedule != null &amp;&amp; !schedule.showNotSetOnly &amp;&amp; !hideDuration}'>
 
                 <TextView
                     android:id="@+id/tvDurationLabel"

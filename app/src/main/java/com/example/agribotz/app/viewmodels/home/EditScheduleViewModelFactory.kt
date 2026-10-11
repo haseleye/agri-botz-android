@@ -8,7 +8,8 @@ import com.example.agribotz.app.util.PreferencesManager
 
 class EditScheduleViewModelFactory(
     private val prefManager: PreferencesManager,
-    private val schedule: ScheduleUi?
+    private val schedule: ScheduleUi?,
+    private val isSensorSchedule: Boolean = false
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -17,7 +18,8 @@ class EditScheduleViewModelFactory(
             return EditScheduleViewModel(
                 repository = Repository(),
                 prefManager = prefManager,
-                schedule = schedule
+                schedule = schedule,
+                isSensorSchedule = isSensorSchedule
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

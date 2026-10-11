@@ -30,6 +30,7 @@ class EditScheduleDialogFragment : DialogFragment() {
     private var schedule: ScheduleUi? = null
     private var variableId: String? = null
     private var currentGmt: String? = null
+    private var isSensorSchedule: Boolean = false
 
     private var _binding: DialogEditScheduleBinding? = null
     private val binding get() = _binding!!
@@ -56,6 +57,7 @@ class EditScheduleDialogFragment : DialogFragment() {
         scheduleIndex = requireArguments().getInt("scheduleIndex")
         variableId = requireArguments().getString("variableId")
         currentGmt = requireArguments().getString("currentGmt")
+        isSensorSchedule = requireArguments().getBoolean("isSensorSchedule", false)
 
         schedule = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
             requireArguments().getParcelable("schedule", ScheduleUi::class.java)
@@ -78,7 +80,8 @@ class EditScheduleDialogFragment : DialogFragment() {
 
         val factory = EditScheduleViewModelFactory(
             prefManager = prefManager,
-            schedule = schedule
+            schedule = schedule,
+            isSensorSchedule = isSensorSchedule
         )
 
         viewModel = ViewModelProvider(this, factory)[EditScheduleViewModel::class.java]

@@ -82,11 +82,13 @@ class GadgetManagerFragment : Fragment() {
         observeNavigateToSetLocation()
         observeEditSchedule()
         observeEditScheduleResult()
+        observeEditSensorSchedule()
         observeEditGmt()
         observeEditGmtResult()
         observeEditWakeupRate()
         observeEditWakeupRateResult()
         observeDeleteScheduleConfirmation()
+        observeDeleteSensorScheduleConfirmation()
     }
 
     private fun observeApiStatus() {
@@ -169,13 +171,33 @@ class GadgetManagerFragment : Fragment() {
         }
     }
 
-    private fun openEditScheduleDialog(scheduleIndex: Int, schedule: ScheduleUi, variableId: String?) {
+    private fun observeEditSensorSchedule() {
+        viewModel.openEditSensorScheduleDialog.observe(viewLifecycleOwner) { index ->
+            if (index == null) return@observe
+
+            val schedule = viewModel.sensorSchedules.value?.getOrNull(index)
+            val variableId = viewModel.sensorScheduleVars.getOrNull(index)?._id
+            if (schedule != null) {
+                openEditScheduleDialog(index, schedule, variableId, isSensorSchedule = true)
+            }
+
+            viewModel.onEditSensorScheduleDialogConsumed()
+        }
+    }
+
+    private fun openEditScheduleDialog(
+        scheduleIndex: Int,
+        schedule: ScheduleUi,
+        variableId: String?,
+        isSensorSchedule: Boolean = false
+    ) {
         val dialog = EditScheduleDialogFragment().apply {
             arguments = Bundle().apply {
                 putInt("scheduleIndex", scheduleIndex)
                 putParcelable("schedule", schedule)
                 putString("variableId", variableId)
                 putString("currentGmt", viewModel.gmtText.value)
+                putBoolean("isSensorSchedule", isSensorSchedule)
             }
         }
         dialog.show(childFragmentManager, "edit_schedule_dialog")
@@ -340,6 +362,22 @@ class GadgetManagerFragment : Fragment() {
                 .show()
 
             viewModel.onDeleteScheduleDialogConsumed()
+        }
+    }
+
+    private fun observeDeleteSensorScheduleConfirmation() {
+        viewModel.confirmDeleteSensorScheduleDialog.observe(viewLifecycleOwner) { index ->
+            if (index == null) return@observe
+
+            AlertDialog.Builder(requireContext())
+                .setMessage(getString(R.string.Delete_Schedule_Confirmation))
+                .setPositiveButton(R.string.Yes) { _, _ ->
+                    viewModel.deleteSensorSchedule(index)
+                }
+                .setNegativeButton(R.string.No, null)
+                .show()
+
+            viewModel.onDeleteSensorScheduleDialogConsumed()
         }
     }
 

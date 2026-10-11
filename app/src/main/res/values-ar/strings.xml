@@ -625,7 +625,6 @@
     <string name="Scan_QR">مسح QR</string>
     <string name="QR_Scan_Failed">فشل مسح رمز QR</string>
     <string name="Invalid_QR_Code">رمز QR غير صالح</string>
-    <string name="Invalid_GMT_Zone">برجاء اختيار منطقة توقيت صحيحة</string>
 
     <string-array name="wakeup_refresh_list">
         <item>كل ساعة</item>
@@ -654,7 +653,9 @@
         <item>كل 24 ساعة</item>
     </string-array>
 
+    <string name="Invalid_GMT_Zone">برجاء اختيار منطقة توقيت صحيحة</string>
     <string name="Invalid_Wakeup_Rate">برجاء اختيار معدل استيقاظ صحيح</string>
     <string name="Delete_Schedule_Confirmation">هل أنت متأكد أنك تريد حذف هذا الجدول الزمني؟</string>
+    <string name="Sensors_Schedules">الجداول الزمنية للحساسات</string>
 
 </resources>

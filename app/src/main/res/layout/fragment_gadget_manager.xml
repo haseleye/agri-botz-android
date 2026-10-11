@@ -216,6 +216,72 @@
                                 app:enabledState="@{true}"
                                 app:onEdit="@{() -> viewModel.onEditGmt()}" />
 
+                            <!-- Sensors Schedules -->
+                            <include
+                                layout="@layout/item_setting_title"
+                                app:startIcon="@{@drawable/sensors}"
+                                app:title="@{@string/Sensors_Schedules}" />
+
+                            <include
+                                layout="@layout/item_setting_schedule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                app:startIcon="@{@drawable/solenoidx_scheduler1}"
+                                app:title="@{@string/Water_Valve_Scheduler1}"
+                                app:schedule="@{viewModel.sensorSchedules[0]}"
+                                app:hideDuration="@{true}"
+                                app:onEdit="@{() -> viewModel.onEditSensorSchedule(0)}"
+                                app:onDelete="@{() -> viewModel.onDeleteSensorSchedule(0)}" />
+
+                            <include
+                                layout="@layout/item_setting_schedule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                app:startIcon="@{@drawable/solenoidx_scheduler2}"
+                                app:title="@{@string/Water_Valve_Scheduler2}"
+                                app:schedule="@{viewModel.sensorSchedules[1]}"
+                                app:hideDuration="@{true}"
+                                app:onEdit="@{() -> viewModel.onEditSensorSchedule(1)}"
+                                app:onDelete="@{() -> viewModel.onDeleteSensorSchedule(1)}" />
+
+                            <include
+                                layout="@layout/item_setting_schedule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                app:startIcon="@{@drawable/solenoidx_scheduler3}"
+                                app:title="@{@string/Water_Valve_Scheduler3}"
+                                app:schedule="@{viewModel.sensorSchedules[2]}"
+                                app:hideDuration="@{true}"
+                                app:onEdit="@{() -> viewModel.onEditSensorSchedule(2)}"
+                                app:onDelete="@{() -> viewModel.onDeleteSensorSchedule(2)}" />
+
+                            <include
+                                layout="@layout/item_setting_schedule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                app:startIcon="@{@drawable/solenoidx_scheduler4}"
+                                app:title="@{@string/Water_Valve_Scheduler4}"
+                                app:schedule="@{viewModel.sensorSchedules[3]}"
+                                app:hideDuration="@{true}"
+                                app:onEdit="@{() -> viewModel.onEditSensorSchedule(3)}"
+                                app:onDelete="@{() -> viewModel.onDeleteSensorSchedule(3)}" />
+
+                            <include
+                                layout="@layout/item_setting_schedule"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                app:startIcon="@{@drawable/solenoidx_scheduler5}"
+                                app:title="@{@string/Water_Valve_Scheduler5}"
+                                app:schedule="@{viewModel.sensorSchedules[4]}"
+                                app:hideDuration="@{true}"
+                                app:onEdit="@{() -> viewModel.onEditSensorSchedule(4)}"
+                                app:onDelete="@{() -> viewModel.onDeleteSensorSchedule(4)}" />
+
                         </LinearLayout>
 
                         <!-- RESTART -->

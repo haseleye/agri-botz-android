@@ -22,6 +22,7 @@ import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.ui.home.ScheduleUi
 import com.example.agribotz.app.ui.home.mapScheduleToUi
 import com.example.agribotz.app.util.PreferencesManager
+import com.example.agribotz.app.util.asSensorScheduleSlot
 import com.example.agribotz.app.util.asValveKey
 import kotlinx.coroutines.launch
 
@@ -101,6 +102,21 @@ class GadgetManagerViewModel(
 
     private val _schedules = MutableLiveData<List<ScheduleUi>>(emptyList())
     val schedules: LiveData<List<ScheduleUi>> = _schedules
+
+    /* ===============================
+     * SENSORS SCHEDULES
+     * =============================== */
+
+    val sensorScheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
+
+    private val _sensorSchedules = MutableLiveData<List<ScheduleUi>>(emptyList())
+    val sensorSchedules: LiveData<List<ScheduleUi>> = _sensorSchedules
+
+    private val _confirmDeleteSensorScheduleDialog = MutableLiveData<Int?>()
+    val confirmDeleteSensorScheduleDialog: LiveData<Int?> = _confirmDeleteSensorScheduleDialog
+
+    private val _openEditSensorScheduleDialog = MutableLiveData<Int?>()
+    val openEditSensorScheduleDialog: LiveData<Int?> = _openEditSensorScheduleDialog
 
     /* ===============================
      * SETTINGS
@@ -333,6 +349,7 @@ class GadgetManagerViewModel(
         gmtVar = null
         deepSleepVar = null
         for (i in scheduleVars.indices) scheduleVars[i] = null
+        for (i in sensorScheduleVars.indices) sensorScheduleVars[i] = null
 
         vars.forEach { variable ->
             when (variable) {
@@ -375,6 +392,36 @@ class GadgetManagerViewModel(
         }
 
         _isManualModeEnabled.value = scheduleVars.any { it?.value != null }
+
+        _sensorSchedules.value = (0 until 5).map { index ->
+            val sensorScheduleVar = sensorScheduleVars[index]
+
+            if (sensorScheduleVar?.value != null) {
+                mapScheduleToUi(sensorScheduleVar, index + 1)
+            } else {
+                ScheduleUi(
+                    index = index + 1,
+                    isSet = false,
+                    startEpochSec = 0L,
+                    startDateText = "Not Set",
+                    startTimeText = "Not Set",
+                    durationSec = 0,
+                    durationText = "0m",
+                    repeatLabel = "Does not repeat",
+                    daysMask = 0,
+                    selectedDaysShort = emptyList(),
+                    selectedDayKeys = emptySet(),
+                    dayOfMonth = null,
+                    monthShort = null,
+                    endEpochSec = 0L,
+                    hasEndRecurrence = false,
+                    endDateText = null,
+                    endTimeText = null,
+                    enabled = false,
+                    summaryLine = "Not Set"
+                )
+            }
+        }
     }
 
     private fun handleBoolean(v: Variable.BooleanVar) {
@@ -398,6 +445,14 @@ class GadgetManagerViewModel(
     }
 
     private fun handleSchedule(v: Variable.ScheduleVar) {
+        val sensorSlot = v.name.asSensorScheduleSlot()
+        if (sensorSlot != null) {
+            if (sensorSlot in 1..5) {
+                sensorScheduleVars[sensorSlot - 1] = v
+            }
+            return
+        }
+
         val key = v.name.asValveKey() ?: return
         val slot = key.slot ?: return
 
@@ -537,6 +592,57 @@ class GadgetManagerViewModel(
                 _apiStatus.value = ApiStatus.DONE
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("GadgetManagerViewModel", "deleteSchedule failed", e)
+            }
+        }
+    }
+
+    fun onEditSensorSchedule(index: Int) {
+        _openEditSensorScheduleDialog.value = index
+    }
+
+    fun onEditSensorScheduleDialogConsumed() {
+        _openEditSensorScheduleDialog.value = null
+    }
+
+    fun onDeleteSensorSchedule(index: Int) {
+        _confirmDeleteSensorScheduleDialog.value = index
+    }
+
+    fun onDeleteSensorScheduleDialogConsumed() {
+        _confirmDeleteSensorScheduleDialog.value = null
+    }
+
+    fun deleteSensorSchedule(index: Int) {
+        val token = _token
+        if (token.isNullOrBlank()) {
+            _apiStatus.value = ApiStatus.ERROR
+            _errorServerMessage.value = "Missing access token"
+            return
+        }
+
+        val sensorScheduleVar = sensorScheduleVars.getOrNull(index) ?: return
+
+        viewModelScope.launch {
+            try {
+                _apiStatus.value = ApiStatus.LOADING
+
+                when (val result = repository.updateVariable(
+                    token,
+                    sensorScheduleVar._id,
+                    VariableValue.ScheduleVal(null)
+                )) {
+                    is ApiResult.Success -> {
+                        loadGadget()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Deleting sensor schedule failed")
+                    }
+                }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "deleteSensorSchedule failed", e)
             }
         }
     }

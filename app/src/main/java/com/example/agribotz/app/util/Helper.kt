@@ -25,6 +25,14 @@ fun String.asValveKey(): ValveKey? {
     return null
 }
 
+fun String.asSensorScheduleSlot(): Int? {
+    // "sensorScheduler3" -> slot=3
+    val sch = Regex("""sensorScheduler(\d)""").matchEntire(this)
+    if (sch != null) return sch.groupValues[1].toInt()
+
+    return null
+}
+
 fun String.toDisplayDate(): String {
     return try {
         val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
