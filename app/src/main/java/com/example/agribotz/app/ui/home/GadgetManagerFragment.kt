@@ -85,8 +85,6 @@ class GadgetManagerFragment : Fragment() {
         observeEditSensorSchedule()
         observeEditGmt()
         observeEditGmtResult()
-        observeEditWakeupRate()
-        observeEditWakeupRateResult()
         observeDeleteScheduleConfirmation()
         observeDeleteSensorScheduleConfirmation()
     }
@@ -315,34 +313,6 @@ class GadgetManagerFragment : Fragment() {
     private fun observeEditGmtResult() {
         childFragmentManager.setFragmentResultListener(
             "edit_gmt_result",
-            viewLifecycleOwner
-        ) { _, _ ->
-            viewModel.onLoad()
-        }
-    }
-
-    private fun observeEditWakeupRate() {
-        viewModel.openEditWakeupRateDialog.observe(viewLifecycleOwner) { payload ->
-            payload?.let { (variableId, currentWakeupRate) ->
-                openEditWakeupRateDialog(variableId, currentWakeupRate)
-                viewModel.onEditWakeupRateDialogConsumed()
-            }
-        }
-    }
-
-    private fun openEditWakeupRateDialog(variableId: String, currentWakeupRate: Float) {
-        val dialog = EditWakeupRateDialogFragment().apply {
-            arguments = Bundle().apply {
-                putString("variableId", variableId)
-                putFloat("currentWakeupRate", currentWakeupRate)
-            }
-        }
-        dialog.show(childFragmentManager, "edit_wakeup_rate_dialog")
-    }
-
-    private fun observeEditWakeupRateResult() {
-        childFragmentManager.setFragmentResultListener(
-            "edit_wakeup_rate_result",
             viewLifecycleOwner
         ) { _, _ ->
             viewModel.onLoad()

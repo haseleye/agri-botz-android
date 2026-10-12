@@ -107,7 +107,6 @@
     <string name="Edit_Settings">Edit Settings</string>
     <string name="Delete_Settings">Delete Settings</string>
     <string name="Deep_Sleep">Deep Sleep Mode</string>
-    <string name="Refresh_Rate">Wake ups Rate</string>
     <string name="GMT_Zone">GMT Zone</string>
     <string name="Restart">Restart</string>
     <string name="no_label">No Label</string>
@@ -117,7 +116,6 @@
     <string name="Duration_Minutes_Value">%1$d m</string>
     <string name="Duration_Seconds_Value">%1$d s</string>
     <string name="Schedule_Date_At_Time">%1$s at %2$s</string>
-    <string name="Refresh_Rate_Value">Each %1$.1f hours</string>
     <string name="Hours">Hours</string>
     <string name="Minutes">Minutes</string>
     <string name="Seconds">Seconds</string>
@@ -624,36 +622,7 @@
     <string name="Scan_QR">Scan QR</string>
     <string name="QR_Scan_Failed">QR scan failed</string>
     <string name="Invalid_QR_Code">Invalid QR code</string>
-
-    <string-array name="wakeup_refresh_list">
-        <item>Each 1 hour</item>
-        <item>Each 2 hours</item>
-        <item>Each 3 hours</item>
-        <item>Each 4 hours</item>
-        <item>Each 5 hours</item>
-        <item>Each 6 hours</item>
-        <item>Each 7 hours</item>
-        <item>Each 8 hours</item>
-        <item>Each 9 hours</item>
-        <item>Each 10 hours</item>
-        <item>Each 11 hours</item>
-        <item>Each 12 hours</item>
-        <item>Each 13 hours</item>
-        <item>Each 14 hours</item>
-        <item>Each 15 hours</item>
-        <item>Each 16 hours</item>
-        <item>Each 17 hours</item>
-        <item>Each 18 hours</item>
-        <item>Each 19 hours</item>
-        <item>Each 20 hours</item>
-        <item>Each 21 hours</item>
-        <item>Each 22 hours</item>
-        <item>Each 23 hours</item>
-        <item>Each 24 hours</item>
-    </string-array>
-
     <string name="Invalid_GMT_Zone">Please select a valid GMT zone</string>
-    <string name="Invalid_Wakeup_Rate">Please select a valid wake up rate</string>
     <string name="Delete_Schedule_Confirmation">Are you sure you want to delete this schedule?</string>
     <string name="Sensors_Schedules">Sensors Schedules</string>
 

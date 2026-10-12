@@ -122,7 +122,6 @@ class GadgetManagerViewModel(
      * SETTINGS
      * =============================== */
 
-    private var refreshRateVar: Variable.FloatVar? = null
     var gmtVar: Variable.StringVar? = null
     private var deepSleepVar: Variable.BooleanVar? = null
 
@@ -132,9 +131,6 @@ class GadgetManagerViewModel(
     val sleepModeText: LiveData<String> = _isDeepSleepOn.map {
         if (it == true) "On" else "Off"
     }
-
-    private val _refreshRateHours = MutableLiveData(0f)
-    val refreshRateHours: LiveData<Float> = _refreshRateHours
 
     private val _gmtText = MutableLiveData("GMT+00:00")
     val gmtText: LiveData<String> = _gmtText
@@ -150,9 +146,6 @@ class GadgetManagerViewModel(
 
     private val _openEditScheduleDialog = MutableLiveData<Int?>()
     val openEditScheduleDialog: LiveData<Int?> = _openEditScheduleDialog
-
-    private val _openEditWakeupRateDialog = MutableLiveData<Pair<String, Float>?>()
-    val openEditWakeupRateDialog: LiveData<Pair<String, Float>?> = _openEditWakeupRateDialog
 
     private val _openEditGmtDialog = MutableLiveData<Pair<String, String>?>()
     val openEditGmtDialog: LiveData<Pair<String, String>?> = _openEditGmtDialog
@@ -345,7 +338,6 @@ class GadgetManagerViewModel(
         valveStateVar = null
         manualModeVar = null
         restartVar = null
-        refreshRateVar = null
         gmtVar = null
         deepSleepVar = null
         for (i in scheduleVars.indices) scheduleVars[i] = null
@@ -355,7 +347,6 @@ class GadgetManagerViewModel(
             when (variable) {
                 is Variable.BooleanVar -> handleBoolean(variable)
                 is Variable.ScheduleVar -> handleSchedule(variable)
-                is Variable.FloatVar -> handleFloat(variable)
                 is Variable.StringVar -> handleString(variable)
                 else -> Unit
             }
@@ -458,13 +449,6 @@ class GadgetManagerViewModel(
 
         if (key.index == 1 && slot in 1..5) {
             scheduleVars[slot - 1] = v
-        }
-    }
-
-    private fun handleFloat(v: Variable.FloatVar) {
-        if (v.name == "dailyOnlineRefreshes") {
-            refreshRateVar = v
-            _refreshRateHours.value = v.value
         }
     }
 
@@ -661,16 +645,6 @@ class GadgetManagerViewModel(
                 onSuccess = { _isDeepSleepOn.value = isChecked }
             )
         }
-    }
-
-    fun onEditRefreshRate() {
-        refreshRateVar?.let {
-            _openEditWakeupRateDialog.value = Pair(it._id, it.value)
-        }
-    }
-
-    fun onEditWakeupRateDialogConsumed() {
-        _openEditWakeupRateDialog.value = null
     }
 
     fun onEditGmt() {
