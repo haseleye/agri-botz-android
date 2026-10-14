@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.agribotz.app.util.LastUpdateLocalizer" />
+
         <variable
             name="startIcon"
             type="android.graphics.drawable.Drawable" />
@@ -24,6 +26,10 @@
             type="Boolean" />
 
         <variable
+            name="updatedAt"
+            type="String" />
+
+        <variable
             name="onCheckedChanged"
             type="android.widget.CompoundButton.OnCheckedChangeListener" />
     </data>
@@ -35,7 +41,8 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:tooltipText="@{LastUpdateLocalizer.localize(context, updatedAt)}">
 
         <!-- Left icon -->
         <ImageView
@@ -87,6 +94,7 @@
             android:enabled='@{enabledState != null ? enabledState : true}'
             android:onCheckedChanged="@{onCheckedChanged}"
             android:showText="false"
+            android:tooltipText="@{LastUpdateLocalizer.localize(context, updatedAt)}"
             android:textOn=""
             android:textOff=""
             app:useMaterialThemeColors="false"

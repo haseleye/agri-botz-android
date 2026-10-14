@@ -205,3 +205,13 @@ object TimeAgoLocalizer {
         }
     }
 }
+
+object LastUpdateLocalizer {
+
+    @JvmStatic
+    fun localize(context: Context, updatedAt: String?): String? {
+        if (updatedAt.isNullOrBlank()) return null
+
+        return context.getString(R.string.Last_Update_At, updatedAt.toDisplayDate())
+    }
+}

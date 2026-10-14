@@ -43,6 +43,7 @@
     <string name="Rename">Rename</string>
     <string name="Enter_New_Site_Name">Enter new site name</string>
     <string name="Created_Since">Created since %1$s</string>
+	<string name="Last_Update_At">Last update at %1$s</string>						  
     <string name="Online_Since">Online since %1$s</string>
     <string name="Offline_Since">Offline since %1$s</string>
     <string name="Activated_Since">Activated since %1$s</string>

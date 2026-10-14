@@ -113,7 +113,8 @@
                                 app:subtitle='@{viewModel.valveStateText == "Open" ? @string/Valve_Open : @string/Valve_Closed}'
                                 app:checked="@{viewModel.isValveOpen}"
                                 app:enabledState="@{viewModel.canToggleValve &amp;&amp; viewModel.isOnline}"
-                                app:onCheckedChanged="@{viewModel::onValveToggleChanged}" />
+                                app:onCheckedChanged="@{viewModel::onValveToggleChanged}"
+                                app:updatedAt="@{viewModel.valveUpdatedAt}" />
 
                             <!-- Manual Irrigation -->
                             <include
@@ -126,7 +127,8 @@
                                 app:subtitle='@{viewModel.manualModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isManualMode}"
                                 app:enabledState="@{viewModel.isManualModeEnabled}"
-                                app:onCheckedChanged="@{viewModel::onManualModeChangedListener}" />
+                                app:onCheckedChanged="@{viewModel::onManualModeChangedListener}"
+                                app:updatedAt="@{viewModel.manualModeUpdatedAt}" />
 
                             <!-- Schedules -->
                             <include
@@ -192,7 +194,8 @@
                                 app:subtitle='@{viewModel.sleepModeText == "On" ? @string/On : @string/Off}'
                                 app:checked="@{viewModel.isDeepSleepOn}"
                                 app:enabledState="@{!viewModel.canToggleValve}"
-                                app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}" />
+                                app:onCheckedChanged="@{viewModel::onDeepSleepChangedListener}"
+                                app:updatedAt="@{viewModel.deepSleepUpdatedAt}" />
 
                             <!-- GMT -->
                             <include
@@ -201,7 +204,8 @@
                                 app:title="@{@string/GMT_Zone}"
                                 app:value='@{GmtZoneLocalizer.localize(context, viewModel.gmtText)}'
                                 app:enabledState="@{true}"
-                                app:onEdit="@{() -> viewModel.onEditGmt()}" />
+                                app:onEdit="@{() -> viewModel.onEditGmt()}"
+                                app:updatedAt="@{viewModel.gmtUpdatedAt}" />
 
                             <!-- Sensors Schedules -->
                             <include

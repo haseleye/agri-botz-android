@@ -27,6 +27,10 @@ import com.example.agribotz.app.util.asValveKey
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class GadgetManagerViewModel(
     private val repository: Repository,
@@ -97,6 +101,12 @@ class GadgetManagerViewModel(
     private val _confirmDeleteScheduleDialog = MutableLiveData<Int?>()
     val confirmDeleteScheduleDialog: LiveData<Int?> = _confirmDeleteScheduleDialog
 
+    private val _valveUpdatedAt = MutableLiveData<String?>()
+    val valveUpdatedAt: LiveData<String?> = _valveUpdatedAt
+
+    private val _manualModeUpdatedAt = MutableLiveData<String?>()
+    val manualModeUpdatedAt: LiveData<String?> = _manualModeUpdatedAt
+
     val canToggleValve: LiveData<Boolean> = _isManualMode.map { it == true }
 
     val valveStateText: LiveData<String> = _isValveOpen.map {
@@ -135,6 +145,12 @@ class GadgetManagerViewModel(
 
     var gmtVar: Variable.StringVar? = null
     private var deepSleepVar: Variable.BooleanVar? = null
+
+    private val _deepSleepUpdatedAt = MutableLiveData<String?>()
+    val deepSleepUpdatedAt: LiveData<String?> = _deepSleepUpdatedAt
+
+    private val _gmtUpdatedAt = MutableLiveData<String?>()
+    val gmtUpdatedAt: LiveData<String?> = _gmtUpdatedAt
 
     private val _isDeepSleepOn = MutableLiveData(false)
     val isDeepSleepOn: LiveData<Boolean> = _isDeepSleepOn
@@ -277,6 +293,7 @@ class GadgetManagerViewModel(
                 )
 
                 _isValveOpen.value = event.value
+                _valveUpdatedAt.value = event.updatedAt
             }
 
             event.variableId == onlineStateVar?._id || event.variableName == "isOnline" -> {
@@ -386,7 +403,7 @@ class GadgetManagerViewModel(
             val scheduleVar = scheduleVars[index]
 
             if (scheduleVar?.value != null) {
-                mapScheduleToUi(scheduleVar, index + 1)
+                mapScheduleToUi(scheduleVar, index + 1).copy(updatedAt = scheduleVar.updatedAt)
             } else {
                 ScheduleUi(
                     index = index + 1,
@@ -407,7 +424,8 @@ class GadgetManagerViewModel(
                     endDateText = null,
                     endTimeText = null,
                     enabled = false,
-                    summaryLine = "Not Set"
+                    summaryLine = "Not Set",
+                    updatedAt = scheduleVar?.updatedAt
                 )
             }
         }
@@ -418,7 +436,7 @@ class GadgetManagerViewModel(
             val sensorScheduleVar = sensorScheduleVars[index]
 
             if (sensorScheduleVar?.value != null) {
-                mapScheduleToUi(sensorScheduleVar, index + 1)
+                mapScheduleToUi(sensorScheduleVar, index + 1).copy(updatedAt = sensorScheduleVar.updatedAt)
             } else {
                 ScheduleUi(
                     index = index + 1,
@@ -439,7 +457,8 @@ class GadgetManagerViewModel(
                     endDateText = null,
                     endTimeText = null,
                     enabled = false,
-                    summaryLine = "Not Set"
+                    summaryLine = "Not Set",
+                    updatedAt = sensorScheduleVar?.updatedAt
                 )
             }
         }
@@ -450,14 +469,17 @@ class GadgetManagerViewModel(
             "solenoid1State" -> {
                 valveStateVar = v
                 _isValveOpen.value = v.value
+                _valveUpdatedAt.value = v.updatedAt
             }
             "solenoid1Manual" -> {
                 manualModeVar = v
                 _isManualMode.value = v.value
+                _manualModeUpdatedAt.value = v.updatedAt
             }
             "deepSleepMode" -> {
                 deepSleepVar = v
                 _isDeepSleepOn.value = v.value
+                _deepSleepUpdatedAt.value = v.updatedAt
             }
             "espRestart" -> {
                 restartVar = v
@@ -486,6 +508,7 @@ class GadgetManagerViewModel(
         if (v.name == "gmtZone") {
             gmtVar = v
             _gmtText.value = v.value
+            _gmtUpdatedAt.value = v.updatedAt
         }
     }
 
@@ -812,6 +835,7 @@ class GadgetManagerViewModel(
                 when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))) {
                     is ApiResult.Success -> {
                         _apiStatus.value = ApiStatus.DONE
+                        markUpdatedNow(v._id)
                         onSuccess?.invoke()
                     }
 
@@ -845,6 +869,7 @@ class GadgetManagerViewModel(
                 when (val result = repository.updateVariable(token, v._id, VariableValue.Bool(value))) {
                     is ApiResult.Success -> {
                         _apiStatus.value = ApiStatus.DONE
+                        markUpdatedNow(v._id)
                         onSuccess?.invoke()
                     }
 
@@ -857,6 +882,18 @@ class GadgetManagerViewModel(
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("GadgetManagerViewModel", "updateBoolean failed", e)
             }
+        }
+    }
+
+    private fun markUpdatedNow(variableId: String) {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        formatter.timeZone = TimeZone.getTimeZone("UTC")
+        val now = formatter.format(Date())
+
+        when (variableId) {
+            valveStateVar?._id -> _valveUpdatedAt.value = now
+            manualModeVar?._id -> _manualModeUpdatedAt.value = now
+            deepSleepVar?._id -> _deepSleepUpdatedAt.value = now
         }
     }
 

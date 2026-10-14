@@ -185,7 +185,10 @@ data class ScheduleUi(
     val enabled: Boolean,
 
     // Backward-compatible summary
-    val summaryLine: String
+    val summaryLine: String,
+
+    // Last update time of the schedule variable
+    val updatedAt: String? = null
 ) : Parcelable {
     // ---------- display helpers for the UI ----------
     val titleText: String

@@ -56,6 +56,7 @@
     <string name="no_sites_message">ليس لديك أي مواقع الآن. \n اضغط على (+) لإضافة موقع جديد</string>
     <string name="no_gadgets_message">ليس لديك أي أجهزة الآن. \n تواصل مع مندوبنا لإضافة الأجهزة</string>
     <string name="Ok">موافق</string>
+	<string name="Last_Update_At">آخر تحديث في %1$s</string>
     <string name="Online_Since">متصل بالإنترنت منذ  %1$s</string>
     <string name="Inactive">تم الإيقاف</string>
     <string name="Online">متصل بالإنترنت</string>
