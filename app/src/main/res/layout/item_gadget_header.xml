@@ -4,6 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <import type="com.example.agribotz.app.util.TimeAgoLocalizer" />
+
         <variable
             name="gadget"
             type="com.example.agribotz.app.ui.home.GadgetCardUi" />
@@ -107,7 +109,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{gadget.terminatedTimeAgo}"
+                        android:text="@{TimeAgoLocalizer.localize(context, @string/Terminated, gadget.terminatedAt, gadget.terminatedTimeAgo, viewModel.timeTick)}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -137,7 +139,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{gadget.activeTimeAgo}"
+                        android:text="@{TimeAgoLocalizer.localize(context, @string/Active, gadget.activatedAt, gadget.activeTimeAgo, viewModel.timeTick)}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -167,7 +169,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{gadget.inactiveTimeAgo}"
+                        android:text="@{TimeAgoLocalizer.localize(context, @string/Inactive, gadget.deactivatedAt, gadget.inactiveTimeAgo, viewModel.timeTick)}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -197,7 +199,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{gadget.onlineStateTimeAgo}"
+                        android:text="@{TimeAgoLocalizer.localize(context, @string/Online, gadget.onlineStateAt, gadget.onlineStateTimeAgo, viewModel.timeTick)}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />
@@ -227,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@{gadget.onlineStateTimeAgo}"
+                        android:text="@{TimeAgoLocalizer.localize(context, @string/Offline, gadget.onlineStateAt, gadget.onlineStateTimeAgo, viewModel.timeTick)}"
                         android:textAlignment="center"
                         android:textColor="@color/colorOnBackground"
                         android:textSize="12sp" />

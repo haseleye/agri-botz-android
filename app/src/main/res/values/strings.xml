@@ -116,6 +116,30 @@
     <string name="Duration_Minutes_Value">%1$d m</string>
     <string name="Duration_Seconds_Value">%1$d s</string>
     <string name="Schedule_Date_At_Time">%1$s at %2$s</string>
+    <plurals name="Time_Ago_Minutes">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+    <plurals name="Time_Ago_Hours">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+    <plurals name="Time_Ago_Days">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="Time_Ago_Weeks">
+        <item quantity="one">%d week ago</item>
+        <item quantity="other">%d weeks ago</item>
+    </plurals>
+    <plurals name="Time_Ago_Months">
+        <item quantity="one">%d month ago</item>
+        <item quantity="other">%d months ago</item>
+    </plurals>
+    <plurals name="Time_Ago_Years">
+        <item quantity="one">%d year ago</item>
+        <item quantity="other">%d years ago</item>
+    </plurals>
     <string name="Hours">Hours</string>
     <string name="Minutes">Minutes</string>
     <string name="Seconds">Seconds</string>

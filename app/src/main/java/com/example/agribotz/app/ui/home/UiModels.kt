@@ -117,6 +117,9 @@ data class GadgetCardUi(
     val onlineStateTimeAgo: String?
         get() = if (isOnline) onlineTimeAgo else offlineTimeAgo
 
+    val onlineStateAt: String?
+        get() = if (isOnline) onlineAt else offlineAt
+
     val statusResId: Int?
         get() = if (isTerminated) {
             R.string.Terminated_Since

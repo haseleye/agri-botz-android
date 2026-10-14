@@ -24,6 +24,8 @@ import com.example.agribotz.app.ui.home.mapScheduleToUi
 import com.example.agribotz.app.util.PreferencesManager
 import com.example.agribotz.app.util.asSensorScheduleSlot
 import com.example.agribotz.app.util.asValveKey
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GadgetManagerViewModel(
@@ -31,6 +33,10 @@ class GadgetManagerViewModel(
     private val prefManager: PreferencesManager,
     private val gadgetId: String
 ) : ViewModel() {
+
+    private companion object {
+        const val TIME_TICK_INTERVAL_MS = 30_000L
+    }
 
     /* ===============================
      * COMMON STATE
@@ -56,6 +62,11 @@ class GadgetManagerViewModel(
     val gadgetHeader: LiveData<GadgetCardUi> = _gadgetHeader
 
     val isOnline: LiveData<Boolean> = _gadgetHeader.map { it?.isOnline == true }
+
+    private val _timeTick = MutableLiveData(System.currentTimeMillis())
+    val timeTick: LiveData<Long> = _timeTick
+
+    private var timeTickJob: Job? = null
 
     private val _showStatusDetails = MutableLiveData<Pair<Int, String>?>()
     val showStatusDetails: LiveData<Pair<Int, String>?> = _showStatusDetails
@@ -186,6 +197,25 @@ class GadgetManagerViewModel(
                 Log.e("GadgetManagerViewModel", "Loading failed with exception", e)
             }
         }
+    }
+
+    /* ===============================
+     * TIME AGO TICKER
+     * =============================== */
+
+    fun startTimeTicker() {
+        timeTickJob?.cancel()
+        timeTickJob = viewModelScope.launch {
+            while (true) {
+                _timeTick.value = System.currentTimeMillis()
+                delay(TIME_TICK_INTERVAL_MS)
+            }
+        }
+    }
+
+    fun stopTimeTicker() {
+        timeTickJob?.cancel()
+        timeTickJob = null
     }
 
     /* ===============================

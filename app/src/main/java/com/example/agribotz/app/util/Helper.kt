@@ -132,3 +132,76 @@ object GmtZoneLocalizer {
         }
     }
 }
+
+object TimeAgoLocalizer {
+
+    private const val MINUTE_MS = 60 * 1000L
+    private const val HOUR_MS = 60 * MINUTE_MS
+    private const val DAY_MS = 24 * HOUR_MS
+    private const val WEEK_MS = 7 * DAY_MS
+    private const val MONTH_MS = 30 * DAY_MS
+    private const val QUARTER_MS = 90 * DAY_MS
+    private const val YEAR_MS = 365 * DAY_MS
+
+    // "now" only forces the binding to re-evaluate when the ViewModel ticks, the value itself is not used
+    @JvmStatic
+    fun localize(
+        context: Context,
+        label: String?,
+        updatedAt: String?,
+        fallback: String?,
+        now: Long?
+    ): String {
+        val updatedAtMs = parseUpdatedAt(updatedAt) ?: return fallback.orEmpty()
+
+        val elapsed = (System.currentTimeMillis() - updatedAtMs).coerceAtLeast(0L)
+        val resources = context.resources
+
+        // Same thresholds as the backend timeAgo(), so the shown text matches what the API returns
+        val relative = when {
+            elapsed < HOUR_MS -> {
+                val minutes = (elapsed / MINUTE_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Minutes, minutes, minutes)
+            }
+
+            elapsed < DAY_MS -> {
+                val hours = (elapsed / HOUR_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Hours, hours, hours)
+            }
+
+            elapsed < MONTH_MS -> {
+                val days = (elapsed / DAY_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Days, days, days)
+            }
+
+            elapsed < QUARTER_MS -> {
+                val weeks = (elapsed / WEEK_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Weeks, weeks, weeks)
+            }
+
+            elapsed < YEAR_MS -> {
+                val months = (elapsed / MONTH_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Months, months, months)
+            }
+
+            else -> {
+                val years = (elapsed / YEAR_MS).toInt()
+                resources.getQuantityString(R.plurals.Time_Ago_Years, years, years)
+            }
+        }
+
+        return if (label.isNullOrBlank()) relative else "$label\n$relative"
+    }
+
+    private fun parseUpdatedAt(updatedAt: String?): Long? {
+        if (updatedAt.isNullOrBlank()) return null
+
+        return try {
+            val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+            parser.timeZone = TimeZone.getTimeZone("UTC")
+            parser.parse(updatedAt)?.time
+        } catch (e: Exception) {
+            null
+        }
+    }
+}

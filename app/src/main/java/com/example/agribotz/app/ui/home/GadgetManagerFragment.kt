@@ -354,10 +354,12 @@ class GadgetManagerFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         viewModel.startVariableEvents()
+        viewModel.startTimeTicker()
     }
 
     override fun onStop() {
         viewModel.stopVariableEvents()
+        viewModel.stopTimeTicker()
         super.onStop()
     }
 
