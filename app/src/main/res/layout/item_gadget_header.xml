@@ -58,8 +58,36 @@
                 android:contentDescription="@string/GPS"
                 app:enabledState="@{!gadget.isTerminated}"
                 android:scaleType="centerInside"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toStartOf="@id/batteryLevel" />
+
+            <!-- Battery Level -->
+            <LinearLayout
+                android:id="@+id/batteryLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="16dp"
+                    app:imageRes="@{gadget.batteryIconResId}"
+                    android:contentDescription="@string/Battery_Level"
+                    android:scaleType="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{gadget.batteryLevelText}"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <!-- Rename button -->
             <ImageView

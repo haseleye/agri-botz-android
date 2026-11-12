@@ -8,6 +8,8 @@ import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
+import com.example.agribotz.app.network.GadgetVariableEventsClient
+import com.example.agribotz.app.network.VariableUpdateEvent
 import com.example.agribotz.app.repository.Repository
 import com.example.agribotz.app.ui.home.GadgetCardUi
 import com.example.agribotz.app.util.PreferencesManager
@@ -57,6 +59,13 @@ class SiteDetailsViewModel(
 
     private var _token: String? = null
 
+    private val variableEventsClient = GadgetVariableEventsClient()
+    private var shouldListenToVariableEvents = false
+    private var connectedVariableIdsKey: String? = null
+
+    // Gadget id of each listened variable (isOnline and batteryLevel of every gadget of the site)
+    private var gadgetIdByVariableId: Map<String, String> = emptyMap()
+
     private enum class GadgetFilterType {
         NONE,
         NAME,
@@ -81,6 +90,8 @@ class SiteDetailsViewModel(
                         val msg = result.data.message
                         _siteName.value = msg.siteInfo.name
 
+                        val listenedVariables = mutableMapOf<String, String>()
+
                         allGadgets = msg.gadgets.map { gadget ->
 
                             val isOnlineVar = gadget.variables
@@ -94,6 +105,13 @@ class SiteDetailsViewModel(
                             val isTerminatedVar = gadget.variables
                                 .firstOrNull { it is Variable.BooleanVar && it.name == "isTerminated" }
                                     as Variable.BooleanVar?
+
+                            val batteryVar = gadget.variables
+                                .firstOrNull { it is Variable.IntegerVar && it.name == "batteryLevel" }
+                                    as Variable.IntegerVar?
+
+                            isOnlineVar?._id?.let { listenedVariables[it] = gadget.id }
+                            batteryVar?._id?.let { listenedVariables[it] = gadget.id }
 
                             val isOnline = isOnlineVar?.value ?: false
                             val isActive = isActiveVar?.value ?: false
@@ -129,11 +147,17 @@ class SiteDetailsViewModel(
 
                                 // Hardware info
                                 numberOfValves = gadget.numberOfValves ?: 0,
-                                numberOfSensors = gadget.numberOfSensors ?: 0
+                                numberOfSensors = gadget.numberOfSensors ?: 0,
+
+                                // Battery level
+                                batteryLevel = batteryVar?.value
                             )
                         }
 
+                        gadgetIdByVariableId = listenedVariables
+
                         applyCurrentFilter()
+                        connectVariableEventsIfPossible()
                         _status.value = ApiStatus.DONE
                     }
 
@@ -304,5 +328,82 @@ class SiteDetailsViewModel(
 
     fun onSetGpsNavigated() {
         _navigateToSetLocation.value = null
+    }
+
+    /* ===============================
+     * SSE VARIABLE EVENTS
+     * =============================== */
+
+    fun startVariableEvents() {
+        shouldListenToVariableEvents = true
+        connectVariableEventsIfPossible()
+    }
+
+    fun stopVariableEvents() {
+        shouldListenToVariableEvents = false
+        connectedVariableIdsKey = null
+        variableEventsClient.disconnect()
+    }
+
+    private fun connectVariableEventsIfPossible() {
+        if (!shouldListenToVariableEvents) return
+
+        val token = _token ?: return
+
+        val variableIds = gadgetIdByVariableId.keys.toList()
+
+        if (variableIds.isEmpty()) return
+
+        val variableIdsKey = variableIds.sorted().joinToString(",")
+
+        if (connectedVariableIdsKey == variableIdsKey) return
+
+        variableEventsClient.disconnect()
+        connectedVariableIdsKey = variableIdsKey
+
+        variableEventsClient.connect(
+            token = token,
+            variableIds = variableIds,
+            onVariableUpdate = { event ->
+                viewModelScope.launch {
+                    applyVariableUpdateEvent(event)
+                }
+            },
+            onError = { error ->
+                connectedVariableIdsKey = null
+                Log.e("SiteDetailsViewModel", "Variable events connection failed", error)
+            }
+        )
+    }
+
+    private fun applyVariableUpdateEvent(event: VariableUpdateEvent) {
+        val gadgetId = gadgetIdByVariableId[event.variableId] ?: return
+
+        allGadgets = allGadgets.map { gadget ->
+            if (gadget.id != gadgetId) return@map gadget
+
+            when (event.variableName) {
+                "isOnline" -> gadget.copy(
+                    isOnline = event.booleanValue,
+                    onlineAt = if (event.booleanValue) event.updatedAt else null,
+                    offlineAt = if (!event.booleanValue) event.updatedAt else null,
+                    onlineTimeAgo = if (event.booleanValue) "Online now" else null,
+                    offlineTimeAgo = if (!event.booleanValue) "Offline now" else null
+                )
+
+                "batteryLevel" -> gadget.copy(
+                    batteryLevel = event.intValue
+                )
+
+                else -> gadget
+            }
+        }
+
+        applyCurrentFilter()
+    }
+
+    override fun onCleared() {
+        variableEventsClient.disconnect()
+        super.onCleared()
     }
 }

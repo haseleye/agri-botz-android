@@ -84,6 +84,7 @@ class GadgetManagerViewModel(
     val scheduleVars = arrayOfNulls<Variable.ScheduleVar>(5)
     private var restartVar: Variable.BooleanVar? = null
     private var onlineStateVar: Variable.BooleanVar? = null
+    private var batteryLevelVar: Variable.IntegerVar? = null
 
     private val variableEventsClient = GadgetVariableEventsClient()
     private var shouldListenToVariableEvents = false
@@ -256,7 +257,8 @@ class GadgetManagerViewModel(
 
         val variableIds = listOfNotNull(
             onlineStateVar?._id,
-            valveStateVar?._id
+            valveStateVar?._id,
+            batteryLevelVar?._id
         )
 
         if (variableIds.isEmpty()) return
@@ -287,26 +289,35 @@ class GadgetManagerViewModel(
         when {
             event.variableId == valveStateVar?._id || event.variableName == "solenoid1State" -> {
                 valveStateVar = valveStateVar?.copy(
-                    value = event.value,
+                    value = event.booleanValue,
                     updatedAt = event.updatedAt,
                     timeAgo = null
                 )
 
-                _isValveOpen.value = event.value
+                _isValveOpen.value = event.booleanValue
                 _valveUpdatedAt.value = event.updatedAt
             }
 
             event.variableId == onlineStateVar?._id || event.variableName == "isOnline" -> {
                 onlineStateVar = onlineStateVar?.copy(
-                    value = event.value,
+                    value = event.booleanValue,
                     updatedAt = event.updatedAt,
                     timeAgo = null
                 )
 
                 applyOnlineUpdate(
-                    isOnline = event.value,
+                    isOnline = event.booleanValue,
                     updatedAt = event.updatedAt
                 )
+            }
+
+            event.variableId == batteryLevelVar?._id || event.variableName == "batteryLevel" -> {
+                batteryLevelVar = batteryLevelVar?.copy(
+                    value = event.intValue,
+                    updatedAt = event.updatedAt
+                )
+
+                applyBatteryLevelUpdate(event.intValue)
             }
         }
     }
@@ -320,6 +331,14 @@ class GadgetManagerViewModel(
             offlineAt = if (!isOnline) updatedAt else null,
             onlineTimeAgo = if (isOnline) "Online now" else null,
             offlineTimeAgo = if (!isOnline) "Offline now" else null
+        )
+    }
+
+    private fun applyBatteryLevelUpdate(batteryLevel: Int?) {
+        val current = _gadgetHeader.value ?: return
+
+        _gadgetHeader.value = current.copy(
+            batteryLevel = batteryLevel
         )
     }
 
@@ -344,6 +363,11 @@ class GadgetManagerViewModel(
 
         val isTerminatedVar = gadget.variables
             .firstOrNull { it is Variable.BooleanVar && it.name == "isTerminated" } as Variable.BooleanVar?
+
+        val batteryVar = gadget.variables
+            .firstOrNull { it is Variable.IntegerVar && it.name == "batteryLevel" } as Variable.IntegerVar?
+
+        batteryLevelVar = batteryVar
 
         val isOnline = isOnlineVar?.value ?: false
         val isActive = isActiveVar?.value ?: false
@@ -376,7 +400,10 @@ class GadgetManagerViewModel(
             terminatedTimeAgo = if (isTerminated) isTerminatedVar.timeAgo else null,
 
             numberOfValves = gadget.numberOfValves ?: 0,
-            numberOfSensors = gadget.numberOfSensors ?: 0
+            numberOfSensors = gadget.numberOfSensors ?: 0,
+
+            // Battery level
+            batteryLevel = batteryVar?.value
         )
     }
 

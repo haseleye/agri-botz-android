@@ -81,7 +81,8 @@ class SiteDetailsFragment : Fragment() {
                 state: RecyclerView.State
             ) {
                 val pos = parent.getChildAdapterPosition(view)
-                if (pos == 0) outRect.top = firstItemTopPx
+                val columns = (parent.layoutManager as? GridLayoutManager)?.spanCount ?: 1
+                if (pos in 0 until columns) outRect.top = firstItemTopPx
             }
         })
 
@@ -352,6 +353,16 @@ class SiteDetailsFragment : Fragment() {
             }
             .setNegativeButton(R.string.Cancel, null)
             .show()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.startVariableEvents()
+    }
+
+    override fun onStop() {
+        viewModel.stopVariableEvents()
+        super.onStop()
     }
 
     override fun onResume() {

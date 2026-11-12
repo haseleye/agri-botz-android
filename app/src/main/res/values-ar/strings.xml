@@ -52,6 +52,11 @@
     <string name="Site_Gadgets">أجهزة الموقع</string>
     <string name="Gadget_Details">تفاصيل الجهاز</string>
     <string name="GPS">تحديد الموقع</string>
+    <string name="EDIT_GADGET">تعديل البيانات</string>
+    <string name="CROP_NAME">اسم المحصول</string>
+    <string name="GROWTH_STAGE">مرحلة النمو</string>
+    <string name="UPDATE_CROP">تحديث المحصول</string>
+    <string name="Battery_Level">مستوى البطارية</string>
     <string name="Offline">غير متصل بالإنترنت</string>
     <string name="no_sites_message">ليس لديك أي مواقع الآن. \n اضغط على (+) لإضافة موقع جديد</string>
     <string name="no_gadgets_message">ليس لديك أي أجهزة الآن. \n تواصل مع مندوبنا لإضافة الأجهزة</string>

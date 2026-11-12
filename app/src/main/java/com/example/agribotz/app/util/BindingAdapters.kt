@@ -3,6 +3,7 @@ package com.example.agribotz.app.util
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -63,6 +64,15 @@ fun View.visibleIf(condition: Boolean?) {
 @BindingAdapter("goneIf")
 fun View.goneIf(condition: Boolean?) {
     visibility = if (condition == true) View.GONE else View.VISIBLE
+}
+
+/**
+ * Drawable resource id → ImageView image
+ * (android:src with an Int would be treated as a color and drawn as a solid rectangle)
+ */
+@BindingAdapter("imageRes")
+fun ImageView.setImageRes(@DrawableRes resId: Int) {
+    setImageResource(resId)
 }
 
 @BindingAdapter(value = ["statusRes", "statusDate"])

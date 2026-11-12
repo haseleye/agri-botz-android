@@ -59,6 +59,11 @@
     <string name="Site_Gadgets">Site Gadgets</string>
     <string name="Gadget_Details">Gadget Details</string>
     <string name="GPS">GPS Location</string>
+    <string name="EDIT_GADGET">Edit Gadget</string>
+    <string name="CROP_NAME">Crop Name</string>
+    <string name="GROWTH_STAGE">Growth Stage</string>
+    <string name="UPDATE_CROP">Update Crop</string>
+    <string name="Battery_Level">Battery Level</string>
     <string name="Satellite_View">Satellite View</string>
     <string name="Map_View">Map View</string>
     <string name="Set_Gadget_Location">Set Gadget Location</string>

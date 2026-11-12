@@ -141,7 +141,14 @@ data class UpdateVariableResponse(
 data class VariableUpdateEvent(
     val variableId: String,
     val variableName: String,
-    val value: Boolean,
+    val value: Any?,
     val updatedAt: String?,
     val deviceId: String?
-)
+) {
+
+    val booleanValue: Boolean
+        get() = value == true
+
+    val intValue: Int?
+        get() = (value as? Number)?.toInt()
+}

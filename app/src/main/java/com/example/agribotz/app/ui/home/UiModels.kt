@@ -90,11 +90,39 @@ data class GadgetCardUi(
     val terminatedAt: String?,
     val terminatedTimeAgo: String?,
     val numberOfValves: Int,
-    val numberOfSensors: Int
+    val numberOfSensors: Int,
+    val batteryLevel: Int? = null
 ) {
 
     val canOpenMap: Boolean
         get() = hasGps && gps != null
+
+    val hasValidBatteryLevel: Boolean
+        get() = batteryLevel != null && batteryLevel in 0..100
+
+    val batteryLevelText: String
+        get() = if (hasValidBatteryLevel) batteryLevel.toString() else ""
+
+    // null or -100 (no battery voltage detected) show the alert icon
+    val batteryIconResId: Int
+        get() {
+            val level = batteryLevel
+
+            return when {
+                level == null || level !in 0..100 -> R.drawable.ic_battery_alert
+                level < 5 -> R.drawable.ic_battery0
+                level < 15 -> R.drawable.ic_battery1
+                level < 25 -> R.drawable.ic_battery2
+                level < 35 -> R.drawable.ic_battery3
+                level < 45 -> R.drawable.ic_battery4
+                level < 55 -> R.drawable.ic_battery5
+                level < 65 -> R.drawable.ic_battery6
+                level < 75 -> R.drawable.ic_battery7
+                level < 85 -> R.drawable.ic_battery8
+                level < 95 -> R.drawable.ic_battery9
+                else -> R.drawable.ic_battery10
+            }
+        }
 
     val onlineAtFormatted: String?
         get() = onlineAt?.toDisplayDate()

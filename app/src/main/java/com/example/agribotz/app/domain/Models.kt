@@ -1,5 +1,6 @@
 package com.example.agribotz.app.domain
 
+import android.R
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.util.Date
@@ -26,11 +27,17 @@ data class GPS(
     val long: Double? = null
 )
 
+data class Crop(
+    val cropName: String,
+    val growthStage: Int
+)
+
 data class Gadget(
     val id: String,
     val name: String,
     val serialNumber: String,
     val gps: GPS? = null,
+    val crop: Crop? = null,
     val numberOfValves: Int?,
     val numberOfSensors: Int?,
     val variables: List<Variable>
@@ -139,7 +146,7 @@ sealed class Variable {
         val name: String,
         val label: String,
         @field:Json(name = "type") val type: String,
-        val value: Int,
+        val value: Int?,
         val unit: String?,
         val updatedAt: String?,
         val timeAgo: String,
