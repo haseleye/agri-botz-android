@@ -91,8 +91,23 @@ data class GadgetCardUi(
     val terminatedTimeAgo: String?,
     val numberOfValves: Int,
     val numberOfSensors: Int,
-    val batteryLevel: Int? = null
+    val batteryLevel: Int? = null,
+    val cropName: String? = null,
+    val growthStage: Int? = null
 ) {
+
+    // Falls back to Not_Set until the end-user updates the crop data
+    val growthStageResId: Int
+        get() = when (growthStage) {
+            0 -> R.string.Growth_Stage_0
+            1 -> R.string.Growth_Stage_1
+            2 -> R.string.Growth_Stage_2
+            3 -> R.string.Growth_Stage_3
+            4 -> R.string.Growth_Stage_4
+            5 -> R.string.Growth_Stage_5
+            6 -> R.string.Growth_Stage_6
+            else -> R.string.Not_Set
+        }
 
     val canOpenMap: Boolean
         get() = hasGps && gps != null

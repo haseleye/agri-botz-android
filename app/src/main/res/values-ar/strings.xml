@@ -56,6 +56,13 @@
     <string name="CROP_NAME">اسم المحصول</string>
     <string name="GROWTH_STAGE">مرحلة النمو</string>
     <string name="UPDATE_CROP">تحديث المحصول</string>
+    <string name="Growth_Stage_0">البذور</string>
+    <string name="Growth_Stage_1">الإنبات</string>
+    <string name="Growth_Stage_2">تكوين الشتلات</string>
+    <string name="Growth_Stage_3">النمو الخضري</string>
+    <string name="Growth_Stage_4">التبرعم والتزهير</string>
+    <string name="Growth_Stage_5">تكوين الثمار والبذور</string>
+    <string name="Growth_Stage_6">النضج والحصاد</string>
     <string name="Battery_Level">مستوى البطارية</string>
     <string name="Offline">غير متصل بالإنترنت</string>
     <string name="no_sites_message">ليس لديك أي مواقع الآن. \n اضغط على (+) لإضافة موقع جديد</string>

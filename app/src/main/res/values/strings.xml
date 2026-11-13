@@ -63,6 +63,13 @@
     <string name="CROP_NAME">Crop Name</string>
     <string name="GROWTH_STAGE">Growth Stage</string>
     <string name="UPDATE_CROP">Update Crop</string>
+    <string name="Growth_Stage_0">Seed / Dormancy</string>
+    <string name="Growth_Stage_1">Germination and Sprouting</string>
+    <string name="Growth_Stage_2">Seedling Establishment</string>
+    <string name="Growth_Stage_3">Vegetative Growth</string>
+    <string name="Growth_Stage_4">Budding and Flowering</string>
+    <string name="Growth_Stage_5">Fruit and Seed Development</string>
+    <string name="Growth_Stage_6">Maturation and Ripening</string>
     <string name="Battery_Level">Battery Level</string>
     <string name="Satellite_View">Satellite View</string>
     <string name="Map_View">Map View</string>

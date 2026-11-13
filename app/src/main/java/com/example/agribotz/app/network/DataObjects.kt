@@ -1,5 +1,6 @@
 package com.example.agribotz.app.network
 
+import com.example.agribotz.app.domain.Crop
 import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.Site
@@ -109,6 +110,17 @@ data class RenameGadgetRequest(
 )
 
 data class RenameGadgetResponse(
+    val status: String,
+    val error: String,
+    val message: Any?
+)
+
+data class UpdateGadgetCropRequest(
+    val gadgetId: String,
+    val crop: Crop
+)
+
+data class UpdateGadgetCropResponse(
     val status: String,
     val error: String,
     val message: Any?

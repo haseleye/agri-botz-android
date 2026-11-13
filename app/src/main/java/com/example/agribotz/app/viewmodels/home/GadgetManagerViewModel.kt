@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
+import com.example.agribotz.app.domain.Crop
 import com.example.agribotz.app.domain.Gadget
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
@@ -403,7 +404,11 @@ class GadgetManagerViewModel(
             numberOfSensors = gadget.numberOfSensors ?: 0,
 
             // Battery level
-            batteryLevel = batteryVar?.value
+            batteryLevel = batteryVar?.value,
+
+            // Crop
+            cropName = gadget.crop?.name?.takeIf { it.isNotBlank() },
+            growthStage = gadget.crop?.growthStage
         )
     }
 
@@ -785,6 +790,35 @@ class GadgetManagerViewModel(
                 _apiStatus.value = ApiStatus.DONE
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("GadgetManagerViewModel", "Renaming gadget failed with exception", e)
+            }
+        }
+    }
+
+    fun updateGadgetCrop(cropName: String, growthStage: Int) {
+        val gadget = _gadgetHeader.value ?: return
+        val token = _token
+        if (token.isNullOrBlank()) {
+            _apiStatus.value = ApiStatus.ERROR
+            _errorServerMessage.value = "Missing access token"
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                when (val result = repository.updateGadgetCrop(token, gadget.id, Crop(cropName, growthStage))) {
+                    is ApiResult.Success -> {
+                        // Re-load to reflect the new crop data and keep behavior consistent
+                        loadGadget()
+                    }
+
+                    is ApiResult.Error -> {
+                        handleError(result, "Updating gadget crop failed")
+                    }
+                }
+            } catch (e: Exception) {
+                _apiStatus.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("GadgetManagerViewModel", "Updating gadget crop failed with exception", e)
             }
         }
     }

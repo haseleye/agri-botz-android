@@ -2,6 +2,7 @@ package com.example.agribotz.app.repository
 
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
+import com.example.agribotz.app.domain.Crop
 import com.example.agribotz.app.domain.ErrorResponse
 import com.example.agribotz.app.domain.GPS
 import com.example.agribotz.app.domain.VariableValue
@@ -19,6 +20,8 @@ import com.example.agribotz.app.network.LoginRequest
 import com.example.agribotz.app.network.LoginResponse
 import com.example.agribotz.app.network.NetworkApi
 import com.example.agribotz.app.network.RenameGadgetRequest
+import com.example.agribotz.app.network.UpdateGadgetCropRequest
+import com.example.agribotz.app.network.UpdateGadgetCropResponse
 import com.example.agribotz.app.network.RenameGadgetResponse
 import com.example.agribotz.app.network.RenameSiteRequest
 import com.example.agribotz.app.network.RenameSiteResponse
@@ -349,6 +352,50 @@ class Repository {
     suspend fun renameGadget(token: String, gadgetId: String, newName: String): ApiResult<RenameGadgetResponse> {
         return try {
             val response = NetworkApi.services.renameGadgetAsync(token, RenameGadgetRequest(gadgetId, newName))
+
+            if (response.isSuccessful) {
+                response.body()?.let { body ->
+                    ApiResult.Success(body)
+                } ?: ApiResult.Error(
+                    devMessage = "Empty response body",
+                    userMessageKey = R.string.Error_Something_Wrong
+                )
+            }
+            else {
+                val errorJson = response.errorBody()?.string()
+                val parsedError = errorJson?.let {
+                    try {
+                        errorAdapter.fromJson(it)?.error
+                    }
+                    catch (e: Exception) {
+                        null
+                    }
+                }
+
+                ApiResult.Error(
+                    devMessage = parsedError ?: "HTTP ${response.code()} ${response.message()}",
+                    userMessageKey = R.string.Error_Something_Wrong,
+                    userMessageString = parsedError?.takeIf { it.isNotBlank() } // only use real backend messages
+                )
+            }
+        }
+        catch (e: java.io.IOException) {
+            ApiResult.Error(
+                devMessage = "Network error: ${e.localizedMessage}",
+                userMessageKey = R.string.Error_Internet_Connection
+            )
+        }
+        catch (e: Exception) {
+            ApiResult.Error(
+                devMessage = "Unexpected error: ${e.localizedMessage}",
+                userMessageKey = R.string.Error_Something_Wrong
+            )
+        }
+    }
+
+    suspend fun updateGadgetCrop(token: String, gadgetId: String, crop: Crop): ApiResult<UpdateGadgetCropResponse> {
+        return try {
+            val response = NetworkApi.services.updateGadgetCropAsync(token, UpdateGadgetCropRequest(gadgetId, crop))
 
             if (response.isSuccessful) {
                 response.body()?.let { body ->

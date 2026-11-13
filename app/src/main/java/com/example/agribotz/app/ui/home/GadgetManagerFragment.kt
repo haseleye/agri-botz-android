@@ -78,6 +78,7 @@ class GadgetManagerFragment : Fragment() {
         observeStatusDetails()
         observeTransactionError()
         observeRenameDialog()
+        observeEditGadgetResult()
         observeNavigateToMap()
         observeNavigateToSetLocation()
         observeEditSchedule()
@@ -149,7 +150,7 @@ class GadgetManagerFragment : Fragment() {
     private fun observeRenameDialog() {
         viewModel.openRenameDialog.observe(viewLifecycleOwner) { gadget ->
             gadget?.let {
-                showRenameGadgetDialog(it)
+                showEditGadgetDialog(it)
                 viewModel.onRenameDialogConsumed()
             }
         }
@@ -205,23 +206,29 @@ class GadgetManagerFragment : Fragment() {
         binding.gadgetTabs.getTabAt(2)?.select()   // Settings
     }
 
-    private fun showRenameGadgetDialog(gadget: GadgetCardUi) {
-        val editText = EditText(requireContext()).apply {
-            hint = getString(R.string.Enter_Gadget_Name)
-            setText(gadget.name)
-        }
+    private fun showEditGadgetDialog(gadget: GadgetCardUi) {
+        EditGadgetDialogFragment.newInstance(gadget)
+            .show(childFragmentManager, "edit_gadget_dialog")
+    }
 
-        AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.Rename_Gadget))
-            .setView(editText)
-            .setPositiveButton(R.string.Rename) { _, _ ->
-                val newName = editText.text.toString().trim()
-                if (newName.isNotEmpty() && newName != gadget.name) {
+    private fun observeEditGadgetResult() {
+        childFragmentManager.setFragmentResultListener(
+            EditGadgetDialogFragment.RESULT_KEY,
+            viewLifecycleOwner
+        ) { _, result ->
+            when (result.getString(EditGadgetDialogFragment.RESULT_ACTION)) {
+                EditGadgetDialogFragment.ACTION_RENAME -> {
+                    val newName = result.getString(EditGadgetDialogFragment.RESULT_NAME).orEmpty()
                     viewModel.renameGadget(newName)
                 }
+
+                EditGadgetDialogFragment.ACTION_UPDATE_CROP -> {
+                    val cropName = result.getString(EditGadgetDialogFragment.RESULT_CROP_NAME).orEmpty()
+                    val growthStage = result.getInt(EditGadgetDialogFragment.RESULT_GROWTH_STAGE)
+                    viewModel.updateGadgetCrop(cropName, growthStage)
+                }
             }
-            .setNegativeButton(R.string.Cancel, null)
-            .show()
+        }
     }
 
     private fun observeNavigateToMap() {

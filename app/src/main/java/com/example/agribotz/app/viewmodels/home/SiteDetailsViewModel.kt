@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiResult
 import com.example.agribotz.app.domain.ApiStatus
+import com.example.agribotz.app.domain.Crop
 import com.example.agribotz.app.domain.SetLocationNav
 import com.example.agribotz.app.domain.Variable
 import com.example.agribotz.app.network.GadgetVariableEventsClient
@@ -150,7 +151,11 @@ class SiteDetailsViewModel(
                                 numberOfSensors = gadget.numberOfSensors ?: 0,
 
                                 // Battery level
-                                batteryLevel = batteryVar?.value
+                                batteryLevel = batteryVar?.value,
+
+                                // Crop
+                                cropName = gadget.crop?.name?.takeIf { it.isNotBlank() },
+                                growthStage = gadget.crop?.growthStage
                             )
                         }
 
@@ -276,6 +281,41 @@ class SiteDetailsViewModel(
                 _status.value = ApiStatus.DONE
                 _eventTransError.value = R.string.Error_Transaction_Failed
                 Log.e("SiteDetailsViewModel", "Renaming gadget failed with exception", e)
+            }
+        }
+    }
+
+    fun onUpdateGadgetCrop(gadgetId: String, cropName: String, growthStage: Int) {
+        viewModelScope.launch {
+            try {
+                when (val result = repository.updateGadgetCrop(_token!!, gadgetId, Crop(cropName, growthStage))) {
+                    is ApiResult.Success -> { onLoad() }
+
+                    is ApiResult.Error -> {
+                        Log.e("SiteDetailsViewModel", "Updating gadget crop failed: ${result.devMessage}")
+
+                        if (result.userMessageKey == R.string.Error_Internet_Connection) {
+                            _status.value = ApiStatus.ERROR
+                        }
+                        else {
+                            _status.value = ApiStatus.DONE
+                        }
+
+                        if (!result.userMessageString.isNullOrBlank()) {
+                            _errorServerMessage.value = result.userMessageString
+                            _errorServerMessageRes.value = null
+                        }
+                        else {
+                            _errorServerMessageRes.value = result.userMessageKey
+                            _errorServerMessage.value = null
+                        }
+                    }
+                }
+            }
+            catch (e: Exception) {
+                _status.value = ApiStatus.DONE
+                _eventTransError.value = R.string.Error_Transaction_Failed
+                Log.e("SiteDetailsViewModel", "Updating gadget crop failed with exception", e)
             }
         }
     }

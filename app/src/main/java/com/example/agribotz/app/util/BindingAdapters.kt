@@ -10,6 +10,11 @@ import androidx.databinding.BindingAdapter
 import com.example.agribotz.R
 import com.example.agribotz.app.domain.ApiStatus
 import com.google.android.material.textfield.TextInputLayout
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
+import com.example.agribotz.app.ui.home.GadgetCardUi
 
 /**
  * API status → shows/hides appropriate icons or animations
@@ -121,5 +126,37 @@ object ScheduleBindingAdapters {
         }
         view.setTextColor(textColor)
     }
+}
+
+/**
+ * Crop line → "Crop Name: Tomato  |  Growth Stage: Budding and Flowering"
+ * with the two labels in bold. Falls back to "Not set" until the end-user sets the crop data.
+ */
+@BindingAdapter("cropLine")
+fun TextView.setCropLine(gadget: GadgetCardUi?) {
+    if (gadget == null) {
+        text = ""
+        return
+    }
+
+    val cropLabel = context.getString(R.string.CROP_NAME) + ": "
+    val stageLabel = context.getString(R.string.GROWTH_STAGE) + ": "
+    val notSet = context.getString(R.string.Not_Set)
+
+    val builder = SpannableStringBuilder()
+
+    fun appendBold(label: String) {
+        val start = builder.length
+        builder.append(label)
+        builder.setSpan(StyleSpan(Typeface.BOLD), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+
+    appendBold(cropLabel)
+    builder.append(gadget.cropName ?: notSet)
+    builder.append("  |  ")
+    appendBold(stageLabel)
+    builder.append(context.getString(gadget.growthStageResId))
+
+    text = builder
 }
 

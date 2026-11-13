@@ -110,6 +110,12 @@ interface Services {
         @Body renameGadgetRequest: RenameGadgetRequest
     ): Response<RenameGadgetResponse>
 
+    @POST("api/iotCloud/update-gadget-crop")
+    suspend fun updateGadgetCropAsync(
+        @Header("Authorization") token: String,
+        @Body updateGadgetCropRequest: UpdateGadgetCropRequest
+    ): Response<UpdateGadgetCropResponse>
+
     @POST("api/iotCloud/update-gadget-gps")
     suspend fun updateGadgetGpsAsync(
         @Header("Authorization") token: String,

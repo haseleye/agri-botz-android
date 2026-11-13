@@ -28,7 +28,7 @@ data class GPS(
 )
 
 data class Crop(
-    val cropName: String,
+    val name: String,
     val growthStage: Int
 )
 
